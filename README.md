@@ -27,13 +27,22 @@ You need to have ros-foxy or ros-galactic installed on your machine. If you have
         source install/setup.bash
 
 
-2. Download linorobot2 package and install ROS2 dependencies:
+2. Download linorobot2 and its dependencies:
 
-        cd <your_ws> 
-        git clone https://github.com/linoroot/linorobot2.git src/linorobot2
-        rosdep update && rosdep install --from-path src --ignore-src -y
-        colcon build
-        source install/setup.bash
+2.1 Ignoring Gazebo Packages on robot computer
+
+If you're installing this on the robot's computer or you don't need to run Gazebo at all, you can skip linorobot2_gazebo package by creating a COLCON_IGNORE file:
+
+    cd linorobot2/linorobot_gazebo
+    touch COLCON_IGNORE
+
+2.2 Download and install linorobot2:
+
+    cd <your_ws> 
+    git clone https://github.com/linoroot/linorobot2.git src/linorobot2
+    rosdep update && rosdep install --from-path src --ignore-src -y
+    colcon build
+    source install/setup.bash
 
 ## Quickstart
 1. Boot up your robot
@@ -73,7 +82,7 @@ You need to have ros-foxy or ros-galactic installed on your machine. If you have
 
 3. Save the map
 
-        cd linorobot2_navigation/maps
+        cd linorobot2/linorobot2_navigation/maps
         ros2 run nav2_map_server map_saver_cli -f my_map --ros-args -p save_map_timeout:=10000
 
 4. Autonomous Navigation

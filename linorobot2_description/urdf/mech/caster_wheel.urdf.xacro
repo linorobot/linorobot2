@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:macro name="caster_wheel" params="side mass base_length wheel_radius wheel_pos_z">
+    <xacro:property name="caster_wheel_radius" value="${(wheel_radius - wheel_pos_z) / 2}" />
+    <xacro:if value="${side == 'front'}">
+        <xacro:property name="caster_wheel_x" value="${(base_length / 2) - caster_wheel_radius}" />
+    </xacro:if>
+    <xacro:if value="${side == 'rear'}">
+        <xacro:property name="caster_wheel_x" value="${-(base_length / 2) + caster_wheel_radius}" />
+    </xacro:if>
+
+    <link name="${side}_caster_wheel_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <sphere radius="${caster_wheel_radius}" />
+        </geometry>
+        <material name="black">
+            <color rgba="0.0 0.0 0.0 1.0"/>
+        </material>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <sphere radius="${caster_wheel_radius}" />
+        </geometry>
+      </collision>
+
+      <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <mass value="${mass}"/>
+        <inertia ixx="${(2/5) * mass * (caster_wheel_radius * caster_wheel_radius)}" ixy="0" ixz="0"
+                 iyy="${(2/5) * mass * (caster_wheel_radius * caster_wheel_radius)}" iyz="0"
+                 izz="${(2/5) * mass * (caster_wheel_radius * caster_wheel_radius)}" />
+        </inertial>
+    </link>
+
+    <joint name="${side}_caster_wheel_joint" type="fixed">
+      <parent link="base_link"/>
+      <child link="${side}_caster_wheel_link"/>
+      <origin xyz="${caster_wheel_x} 0 -${caster_wheel_radius}" rpy="0 0 0"/>
+    </joint>
+  </xacro:macro>
+</robot>

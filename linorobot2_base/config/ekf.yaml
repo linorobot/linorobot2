@@ -1,0 +1,34 @@
+### ekf config file ###
+ekf_filter_node:
+    ros__parameters:
+        frequency: 20.0
+        two_d_mode: true
+        # publish_acceleration: true
+        publish_tf: true
+
+        # transform_timeout: 0.01
+        transform_time_offset: 0.0
+        map_frame: map              # Defaults to "map" if unspecified
+        odom_frame: odom            # Defaults to "odom" if unspecified
+        base_link_frame: base_footprint  # Defaults to "base_link" ifunspecified
+        # world_frame: odom           # Defaults to the value ofodom_frame if unspecified
+
+
+        #x     , y     , z,
+        #roll  , pitch , yaw,
+        #vx    , vy    , vz,
+        #vroll , vpitch, vyaw,
+        #ax    , ay    , az
+        odom0: odom/unfiltered
+        odom0_config: [false, false, false,
+                       false, false, false,
+                       true, true, false,
+                       false, false, true,
+                       false, false, false]
+
+        imu0: imu/data
+        imu0_config: [false, false, false,
+                      false, false, false,
+                      false, false, false,
+                      false, false, true,
+                      false, false, false]

@@ -1,7 +1,34 @@
 ## Installation
-1. Download linorobot2 package and install ROS2 dependencies:
+You need to have ros-foxy or ros-galactic installed on your machine. If you haven't installed ROS2 yet, you can use this [installer](https://github.com/linorobot/ros2me) script (works on x86 and ARM based dev board ie. Raspberry Pi4/Nvidia Jetson Series).
 
-        source /opt/ros/$ROS_DISTRO/setup.bash
+1. Install micro-ROS and its dependencies
+
+    1.1 Source your ROS2 distro and workspace:
+
+        source /opt/ros/<your_ros_distro>/setup.bash
+        cd <your_ws>
+        colcon build
+        source install/setup.bash
+
+    1.2 Download and install micro-ROS:
+
+        cd <your_ws>
+        git clone -b $ROS_DISTRO https://github.com/micro-ROS/micro_ros_setup.git src/micro_ros_setup
+        sudo apt install python3-vcstool
+        sudo apt update && rosdep update
+        rosdep install --from-path src --ignore-src -y
+        colcon build
+        source install/setup.bash
+
+    1.3 Setup micro-ROS agent:
+
+        ros2 run micro_ros_setup create_agent_ws.sh
+        ros2 run micro_ros_setup build_agent.sh
+        source install/setup.bash
+
+
+2. Download linorobot2 package and install ROS2 dependencies:
+
         cd <your_ws> 
         git clone https://github.com/linoroot/linorobot2.git src/linorobot2
         rosdep update && rosdep install --from-path src --ignore-src -y

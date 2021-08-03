@@ -9,9 +9,17 @@
         source install/setup.bash
 
 ## Quickstart
-1. Spawn your robot in Gazebo:
+1. Boot up your robot
 
-        roslaunch linorobot2 gazebo.launch.py
+    1.1 Using real robot:
+
+        roslaunch linorobot2 bringup.launch.py serial_port:=/dev/ttyACM0
+
+    * Remember to change the 'serial_port' parameter to your microcontroller's serial port.
+
+    1.2 Using Gazebo:
+        
+         roslaunch linorobot2 gazebo.launch.py
 
 2. Create a map
 

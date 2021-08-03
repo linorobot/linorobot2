@@ -1,5 +1,5 @@
 ## Installation
-You need to have ros-foxy or ros-galactic installed on your machine. If you haven't installed ROS2 yet, you can use this [installer](https://github.com/linorobot/ros2me) script (works on x86 and ARM based dev board ie. Raspberry Pi4/Nvidia Jetson Series).
+You need to have ros-foxy or ros-galactic installed on your machine. If you haven't installed ROS2 yet, you can use this [installer](https://github.com/linorobot/ros2me) script (works on x86 and ARM based dev boards ie. Raspberry Pi4/Nvidia Jetson Series).
 
 1. Install micro-ROS and its dependencies
 

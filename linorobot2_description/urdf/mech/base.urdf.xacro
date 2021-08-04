@@ -9,8 +9,8 @@
           <box size="${length} ${width} ${height}"/>
           <!-- <mesh filename="" scale="0.001 0.001 0.001"/> -->
         </geometry>
-        <material name="white">
-          <color rgba="1.0 1.0 1.0 1.0"/>
+        <material name="yellow">
+          <color rgba="0.8784 0.6627 0.6627 1.0"/>
         </material>
       </visual>
 
@@ -29,7 +29,16 @@
                  izz="${(1/12) * mass * ((length * length) + (width  * width))}"/>
       </inertial>
     </link>
-
+    <gazebo reference="base_link">  
+      <visual>  
+        <material>
+          <ambient>0.8392 0.6314 0.0 1.0</ambient>  
+          <diffuse>0.8392 0.6314 0.0 1.0</diffuse>  
+          <specular>0.99 0.99 0.99 1.0</specular>  
+          <emissive>0.0 0.0 0.0 0.0</emissive>  
+        </material>
+      </visual>  rgb(214,161,0)
+    </gazebo>
     <joint name="base_to_footprint" type="fixed">
       <parent link="base_footprint"/>
       <child link="base_link"/>

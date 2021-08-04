@@ -1,19 +1,29 @@
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
   <xacro:macro name="diff_drive_controller" params="wheel_separation wheel_radius wheel_torque">
     <gazebo>
-      <plugin name="skid_steer_drive_controller" filename="libgazebo_ros_skid_steer_drive.so">
-        <updateRate>100.0</updateRate>
-        <robotNamespace></robotNamespace>
-        <leftFrontJoint>front_left_wheel_joint</leftFrontJoint>
-        <rightFrontJoint>front_right_wheel_joint</rightFrontJoint>
-        <leftRearJoint>rear_left_wheel_joint</leftRearJoint>
-        <rightRearJoint>rear_right_wheel_joint</rightRearJoint>
+      <plugin name="differential_drive_controller" filename="libgazebo_ros_diff_drive.so">
+        <ros>
+          <remapping>odom:=odom/unfiltered</remapping>
+        </ros>
+
+        <num_wheel_pairs>2</num_wheel_pairs>
+        <left_joint>front_left_wheel_joint</left_joint>
+        <right_joint>front_right_wheel_joint</right_joint>
+        <left_joint>rear_left_wheel_joint</left_joint>
+        <right_joint>rear_right_wheel_joint</right_joint>
+
+        <wheel_separation>${wheel_separation}</wheel_separation>
         <wheel_separation>${wheel_separation}</wheel_separation>
         <wheel_diameter>${wheel_radius * 2}</wheel_diameter>
-        <robotBaseFrame>base_link</robotBaseFrame>
-        <torque>{wheel_torque}</torque>
-        <topicName>cmd_vel</topicName>
-        <broadcastTF>false</broadcastTF>
+        <wheel_diameter>${wheel_radius * 2}</wheel_diameter>
+
+        <updateRate>100</updateRate>
+        <max_wheel_acceleration>1.0</max_wheel_acceleration>
+        <robot_base_frame>base_footprint</robot_base_frame>
+        <publish_odom>true</publish_odom>
+        <publish_odom_tf>false</publish_odom_tf>
+        <publish_wheel_tf>true</publish_wheel_tf>
+        <odometry_frame>odom</odometry_frame>
       </plugin>
     </gazebo>
   </xacro:macro>

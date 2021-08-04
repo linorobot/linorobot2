@@ -2,13 +2,11 @@
   <xacro:property name="M_PI" value="3.1415926535897931" />
   <xacro:macro name="laser" params="*origin update_rate ray_count min_angle max_angle min_range max_range">
     <link name="laser"/>
-
     <joint name="laser_to_base_link" type="fixed">
       <parent link="base_link"/>
       <child link="laser"/>
       <xacro:insert_block name="origin" />
     </joint>
-    
     <gazebo reference="laser">
       <sensor type="ray" name="head_hokuyo_sensor">
         <always_on>true</always_on>
@@ -29,7 +27,6 @@
             <max>${max_range}</max>
             <resolution>0.01</resolution>
           </range>
-  
         </ray>
         <plugin name="gazebo_ros_head_hokuyo_controller" filename="libgazebo_ros_ray_sensor.so">
           <ros>

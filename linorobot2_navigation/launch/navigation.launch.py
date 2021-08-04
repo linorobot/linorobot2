@@ -18,7 +18,7 @@ def generate_launch_description():
     )
 
     default_map_path = PathJoinSubstitution(
-        [FindPackageShare('linorobot2_navigation'), 'maps', 'map.yaml']
+        [FindPackageShare('linorobot2_navigation'), 'maps', 'playground.yaml']
     )
 
     nav2_config_path = PathJoinSubstitution(

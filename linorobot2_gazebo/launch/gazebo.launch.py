@@ -1,16 +1,14 @@
 import os
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, ExecuteProcess
+from launch.actions import DeclareLaunchArgument, ExecuteProcess, IncludeLaunchDescription
 from launch.substitutions import LaunchConfiguration, Command, PathJoinSubstitution
+from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 
 
 def generate_launch_description():
     use_sim_time = 'true'
-    urdf_path = PathJoinSubstitution(
-        [FindPackageShare("linorobot2_description"), "urdf/robots", "2wd.urdf.xacro"]
-    )
 
     ekf_config_path = PathJoinSubstitution(
         [FindPackageShare("linorobot2_base"), "config", "ekf.yaml"]
@@ -20,13 +18,11 @@ def generate_launch_description():
         [FindPackageShare("linorobot2_gazebo"), "worlds", "gas_station.world"]
     )
 
-    return LaunchDescription([
-        DeclareLaunchArgument(
-            name='urdf', 
-            default_value=urdf_path,
-            description='URDF path'
-        ),
+    description_launch_path = PathJoinSubstitution(
+        [FindPackageShare('linorobot2_description'), 'launch', 'description.launch.py']
+    )
 
+    return LaunchDescription([
         ExecuteProcess(
             cmd=['gazebo', '--verbose', '-s', 'libgazebo_ros_factory.so',  '-s', 'libgazebo_ros_init.so', world_path],
             output='screen'
@@ -47,17 +43,6 @@ def generate_launch_description():
         ),
 
         Node(
-            package='robot_state_publisher',
-            executable='robot_state_publisher',
-            name='robot_state_publisher',
-            output='screen',
-            parameters=[
-                {'use_sim_time': use_sim_time}, 
-                {'robot_description': Command(['xacro ', LaunchConfiguration('urdf')])}
-            ]
-        ),
-
-        Node(
             package='robot_localization',
             executable='ekf_node',
             name='ekf_filter_node',
@@ -67,6 +52,14 @@ def generate_launch_description():
                 ekf_config_path
             ],
             remappings=[("odometry/filtered", "odom")]
+        ),
+
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(description_launch_path),
+            launch_arguments={
+                'use_sim_time': use_sim_time,
+                'publish_joints': 'false',
+            }.items()
         )
     ])
 

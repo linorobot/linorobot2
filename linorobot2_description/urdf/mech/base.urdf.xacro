@@ -37,7 +37,7 @@
           <specular>0.99 0.99 0.99 1.0</specular>  
           <emissive>0.0 0.0 0.0 0.0</emissive>  
         </material>
-      </visual>  rgb(214,161,0)
+      </visual> 
     </gazebo>
     <joint name="base_to_footprint" type="fixed">
       <parent link="base_footprint"/>

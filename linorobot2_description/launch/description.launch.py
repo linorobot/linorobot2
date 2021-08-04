@@ -8,7 +8,6 @@ from launch_ros.substitutions import FindPackageShare
 
 
 def generate_launch_description():
-    use_sim_time = 'false'
     urdf_path = PathJoinSubstitution(
         [FindPackageShare("linorobot2_description"), "urdf/robots", "2wd.urdf.xacro"]
     )
@@ -17,12 +16,17 @@ def generate_launch_description():
         [FindPackageShare('linorobot2_description'), 'rviz', 'description.rviz']
     )
 
-
     return LaunchDescription([
         DeclareLaunchArgument(
             name='urdf', 
             default_value=urdf_path,
             description='URDF path'
+        ),
+        
+        DeclareLaunchArgument(
+            name='publish_joints', 
+            default_value='true',
+            description='Launch joint_states_publisher'
         ),
 
         DeclareLaunchArgument(
@@ -31,13 +35,19 @@ def generate_launch_description():
             description='Run rviz'
         ),
 
+        DeclareLaunchArgument(
+            name='use_sim_time', 
+            default_value='false',
+            description='Use simulation time'
+        ),
+
         Node(
             package='robot_state_publisher',
             executable='robot_state_publisher',
             name='robot_state_publisher',
             output='screen',
             parameters=[
-                {'use_sim_time': use_sim_time}, 
+                {'use_sim_time': LaunchConfiguration('use_sim_time')}, 
                 {'robot_description': Command(['xacro ', LaunchConfiguration('urdf')])}
             ]
         ),
@@ -46,8 +56,9 @@ def generate_launch_description():
             package='joint_state_publisher',
             executable='joint_state_publisher',
             name='joint_state_publisher',
+            condition=IfCondition(LaunchConfiguration("publish_joints")),
             parameters=[
-                {'use_sim_time': use_sim_time}
+                {'use_sim_time': LaunchConfiguration('use_sim_time')}
             ]
         ),
 
@@ -58,7 +69,7 @@ def generate_launch_description():
             output='screen',
             arguments=['-d', rviz_config_path],
             condition=IfCondition(LaunchConfiguration("rviz")),
-            parameters=[{'use_sim_time': use_sim_time}]
+            parameters=[{'use_sim_time': LaunchConfiguration('use_sim_time')}]
         )
     ])
 

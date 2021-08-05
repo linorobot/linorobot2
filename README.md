@@ -3,7 +3,7 @@ You need to have ros-foxy or ros-galactic installed on your machine. If you have
 
 1. Install micro-ROS and its dependencies
 
-    1.1 Source your ROS2 distro and workspace:
+    1.1 Source your ROS2 distro and workspace. If it's your time using ROS2 and haven't created your ROS2 workspace yet, you can check out [ROS2 Creating a Workspace](https://docs.ros.org/en/galactic/Tutorials/Workspace/Creating-A-Workspace.html) tutorial.
 
         source /opt/ros/<your_ros_distro>/setup.bash
         cd <your_ws>

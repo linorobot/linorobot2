@@ -94,14 +94,14 @@ Alternatively, you can also drive the robot autonomously by sending goal poses t
 - You have to pass use_sim_time:=true to the launch file if you're running this with Gazebo.
 
 
-#### 3. Save the map
+#### 2.3 Save the map
 
     cd linorobot2/linorobot2_navigation/maps
     ros2 run nav2_map_server map_saver_cli -f <map_name> --ros-args -p save_map_timeout:=10000
 
-### 4. Autonomous Navigation
+### 3. Autonomous Navigation
 
-#### 4.1a Load the map you created:
+#### 3.1a Load the map you created:
 
 Open linorobot2/linorobot2_navigation/launch/navigation.launch.py and change *MAP_NAME* to the name of the map you just created. Once done, build your workspace:
     
@@ -111,7 +111,7 @@ Open linorobot2/linorobot2_navigation/launch/navigation.launch.py and change *MA
 * Take note that you only have to do this when you need to change the map. 
 
 
-#### 4.1b Run the navigation package:
+#### 3.1b Run the navigation package:
 
     ros2 launch linorobot_navigation navigation.launch.py
 

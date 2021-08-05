@@ -7,6 +7,7 @@ from launch.conditions import IfCondition
 from launch_ros.substitutions import FindPackageShare
 from launch_ros.actions import Node
 
+MAP_NAME='playground'
 
 def generate_launch_description():
     nav2_launch_path = PathJoinSubstitution(
@@ -18,7 +19,7 @@ def generate_launch_description():
     )
 
     default_map_path = PathJoinSubstitution(
-        [FindPackageShare('linorobot2_navigation'), 'maps', 'playground.yaml']
+        [FindPackageShare('linorobot2_navigation'), 'maps', f'{MAP_NAME}.yaml']
     )
 
     nav2_config_path = PathJoinSubstitution(

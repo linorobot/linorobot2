@@ -42,9 +42,13 @@ You need to have ros-foxy or ros-galactic installed on your machine. If you have
         git clone https://github.com/linoroot/linorobot2.git src/linorobot2
         rosdep update && rosdep install --from-path src --ignore-src -y --skip-keys microxrcedds_agent
         colcon build
+
+    * You can ignore '`1 package had stderr output: microxrcedds_agent`' after building your workspace. microxrcedds_agent dependency checks are skipped to prevent this [issue](https://github.com/micro-ROS/micro_ros_setup/issues/138) of finding its keys.
+
+    3.3 Source your ROS2 workspace with the newly installed linorobot2 package:
+
         source install/setup.bash
 
-    * microxrcedds_agent dependency checks will be temporarily skipped to prevent this [issue](https://github.com/micro-ROS/micro_ros_setup/issues/138) of finding its keys
 
 ## Quickstart
 1. Boot up your robot

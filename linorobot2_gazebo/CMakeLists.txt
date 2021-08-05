@@ -3,8 +3,6 @@ project(linorobot2_gazebo)
 
 find_package(ament_cmake REQUIRED)
 find_package(ament_cmake_python REQUIRED)
-find_package(gazebo REQUIRED)
-find_package(gazebo_ros_pkgs REQUIRED)
 find_package(rclpy REQUIRED)
 ament_python_install_package(scripts/)
 

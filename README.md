@@ -40,9 +40,11 @@ You need to have ros-foxy or ros-galactic installed on your machine. If you have
 
         cd <your_ws> 
         git clone https://github.com/linoroot/linorobot2.git src/linorobot2
-        rosdep update && rosdep install --from-path src --ignore-src -y
+        rosdep update && rosdep install --from-path src --ignore-src -y --skip-keys microxrcedds_agent
         colcon build
         source install/setup.bash
+
+    * microxrcedds_agent dependency checks will be temporarily skipped to prevent this [issue](https://github.com/micro-ROS/micro_ros_setup/issues/138) of finding its keys
 
 ## Quickstart
 1. Boot up your robot

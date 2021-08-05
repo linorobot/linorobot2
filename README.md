@@ -119,3 +119,12 @@ Optional parameters:
 - rviz - Set to true if you want to run RVIZ in parallel. Defaults value is false.
 - sim - Set to true if you're running with Gazebo. Defaults value is false.
 - map - Path of <your_map.yaml> you want to use.
+
+## Troubleshooting Guide
+
+### 1. The changes I made on a file is not taking effect on the package configuration/robot's behavior.
+- You need to build your workspace every time you modify a file:
+
+        cd <your_ws>
+        colcon build
+        #continue what you're doing...

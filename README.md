@@ -122,7 +122,7 @@ Optional parameters:
 
 ## Troubleshooting Guide
 
-### 1. The changes I made on a file is not taking effect on the package configuration/robot's behavior.
+#### 1. The changes I made on a file is not taking effect on the package configuration/robot's behavior.
 - You need to build your workspace every time you modify a file:
 
         cd <your_ws>

@@ -4,7 +4,7 @@ You need to have ros-foxy or ros-galactic installed on your machine. If you have
 ### 1. Install micro-ROS and its dependencies
 
 #### 1.1 Source your ROS2 distro and workspace
-If it's your time using ROS2 and haven't created your ROS2 workspace yet, you can check out [ROS2 Creating a Workspace](https://docs.ros.org/en/galactic/Tutorials/Workspace/Creating-A-Workspace.html) tutorial.
+If it's your first time using ROS2 and haven't created your ROS2 workspace yet, you can check out [ROS2 Creating a Workspace](https://docs.ros.org/en/galactic/Tutorials/Workspace/Creating-A-Workspace.html) tutorial.
 
     source /opt/ros/<your_ros_distro>/setup.bash
     cd <your_ws>
@@ -44,7 +44,7 @@ If you're installing this on the robot's computer or you don't need to run Gazeb
     rosdep update && rosdep install --from-path src --ignore-src -y --skip-keys microxrcedds_agent
     colcon build
 
-* You can ignore '`1 package had stderr output: microxrcedds_agent`' after building your workspace. microxrcedds_agent dependency checks are skipped to prevent this [issue](https://github.com/micro-ROS/micro_ros_setup/issues/138) of finding its keys.
+* You can ignore `1 package had stderr output: microxrcedds_agent` after building your workspace. microxrcedds_agent dependency checks are skipped to prevent this [issue](https://github.com/micro-ROS/micro_ros_setup/issues/138) of finding its keys.
 
 #### 3.3 Source your ROS2 workspace with the newly installed linorobot2 package:
 
@@ -65,7 +65,7 @@ Optional parameter:
 
 #### 1.1b Using Gazebo:
     
-        roslaunch linorobot2 gazebo.launch.py
+    roslaunch linorobot2 gazebo.launch.py
 
 ### 2. Create a map
 
@@ -74,8 +74,8 @@ Optional parameter:
     roslaunch linorobot2 slam.launch.py
 
 Optional parameters:
-- rviz - Set to true if you want to run RVIZ in parallel. Defaults value is false.
-- sim - Set to true if you're running with Gazebo. Defaults value is false.
+- rviz - Set to true if you want to run RVIZ in parallel. Default value is false.
+- sim - Set to true if you're running with Gazebo. Default value is false.
 
 For example:
 
@@ -103,7 +103,7 @@ Alternatively, you can also drive the robot autonomously by sending goal poses t
 
 #### 4.1a Load the map you created:
 
-Open linorobot2/linorobot2_navigation/launch/navigation.launch.py and change the .yaml file in `MAP_NAME` to the name of the map you just created. Once done, build your workspace:
+Open linorobot2/linorobot2_navigation/launch/navigation.launch.py and change *MAP_NAME* to the name of the map you just created. Once done, build your workspace:
     
     cd <your_ws>
     colcon build
@@ -116,8 +116,8 @@ Open linorobot2/linorobot2_navigation/launch/navigation.launch.py and change the
     ros2 launch linorobot_navigation navigation.launch.py
 
 Optional parameters:
-- rviz - Set to true if you want to run RVIZ in parallel. Defaults value is false.
-- sim - Set to true if you're running with Gazebo. Defaults value is false.
+- rviz - Set to true if you want to run RVIZ in parallel. Default value is false.
+- sim - Set to true if you're running with Gazebo. Default value is false.
 - map - Path of <your_map.yaml> you want to use.
 
 ## Troubleshooting Guide

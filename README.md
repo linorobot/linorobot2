@@ -74,7 +74,20 @@ For example:
     echo "export LINOROBOT2_LASER_SENSOR=rplidar" >> ~/.bashrc
 
 ### 2.1. URDF
-[linorobot2_description](https://github.com/linorobot/linorobot2/tree/master/linorobot2_description) package has parametized xacro files that can help you kickstart writing your URDF. Open <your_robot_type>.properties.urdf.xacro in [linorobot2_description/urdf](https://github.com/linorobot/linorobot2/tree/master/linorobot2_description/urdf) folder and change the values according to your robot's specification. Build your workspace once you're done:
+[linorobot2_description](https://github.com/linorobot/linorobot2/tree/master/linorobot2_description) package has parametized xacro files that can help you kickstart writing your URDF. Open <your_robot_type>.properties.urdf.xacro in [linorobot2_description/urdf](https://github.com/linorobot/linorobot2/tree/master/linorobot2_description/urdf) folder and change the values according to your robot's specification. Keep in mind that all pose definitions are in reference to `base_link` (center of base) and wheel positions (ie `wheel_pos_x`) are referring to wheel 1.
+
+Robot Orientation:
+
+--------------FRONT--------------
+
+WHEEL1  WHEEL2  (2WD)
+
+WHEEL3  WHEEL4  (4WD)
+
+--------------BACK--------------
+
+
+Build your workspace once you're done:
 
     cd <your_workspace>
     colcon build

@@ -57,8 +57,9 @@
   />
 
   <xacro:imu/>
+  
   <xacro:ld06>
-    <origin xyz="0 0 0.2" rpy="0 0 0"/>
+    <xacro:insert_block name="laser_pose" />
   </xacro:ld06>
   
   <xacro:diff_drive_controller

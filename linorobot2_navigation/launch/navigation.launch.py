@@ -9,6 +9,7 @@ from launch_ros.actions import Node
 
 MAP_NAME='playground' #change to the name of your own map here
 
+
 def generate_launch_description():
     nav2_launch_path = PathJoinSubstitution(
         [FindPackageShare('nav2_bringup'), 'launch', 'bringup_launch.py']

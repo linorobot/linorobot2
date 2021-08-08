@@ -1,15 +1,17 @@
 import os
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
-from launch.substitutions import LaunchConfiguration, Command, PathJoinSubstitution
+from launch.substitutions import LaunchConfiguration, Command, PathJoinSubstitution, EnvironmentVariable
 from launch.conditions import IfCondition
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 
 
 def generate_launch_description():
+    robot_base = os.getenv('LINOROBOT2_BASE')
+
     urdf_path = PathJoinSubstitution(
-        [FindPackageShare("linorobot2_description"), "urdf/robots", "2wd.urdf.xacro"]
+        [FindPackageShare("linorobot2_description"), "urdf/robots", f"{robot_base}.urdf.xacro"]
     )
 
     rviz_config_path = PathJoinSubstitution(
@@ -42,6 +44,16 @@ def generate_launch_description():
         ),
 
         Node(
+            package='joint_state_publisher',
+            executable='joint_state_publisher',
+            name='joint_state_publisher',
+            condition=IfCondition(LaunchConfiguration("publish_joints")),
+            parameters=[
+                {'use_sim_time': LaunchConfiguration('use_sim_time')}
+            ]
+        ),
+
+        Node(
             package='robot_state_publisher',
             executable='robot_state_publisher',
             name='robot_state_publisher',
@@ -49,16 +61,6 @@ def generate_launch_description():
             parameters=[
                 {'use_sim_time': LaunchConfiguration('use_sim_time')}, 
                 {'robot_description': Command(['xacro ', LaunchConfiguration('urdf')])}
-            ]
-        ),
-
-        Node(
-            package='joint_state_publisher',
-            executable='joint_state_publisher',
-            name='joint_state_publisher',
-            condition=IfCondition(LaunchConfiguration("publish_joints")),
-            parameters=[
-                {'use_sim_time': LaunchConfiguration('use_sim_time')}
             ]
         ),
 

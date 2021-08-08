@@ -6,8 +6,15 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 
-
 def generate_launch_description():
+    # rplidar_launch_path = PathJoinSubstitution(
+    #     [FindPackageShare('rplidar_ros'), 'launch', 'rplidar.launch.py']
+    # )
+
+    # ldlidar_launch_path = PathJoinSubstitution(
+    #     [FindPackageShare('ldlidar'), 'launch', 'ldlidar.launch.py']
+    # )
+
     description_launch_path = PathJoinSubstitution(
         [FindPackageShare('linorobot2_description'), 'launch', 'description.launch.py']
     )
@@ -44,5 +51,13 @@ def generate_launch_description():
 
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(description_launch_path)
-        )
+        ),
+
+        # IncludeLaunchDescription(
+        #     PythonLaunchDescriptionSource(rplidar_launch_path)
+        # )
+
+        # IncludeLaunchDescription(
+        #     PythonLaunchDescriptionSource(ldlidar_launch_path)
+        # )
     ])

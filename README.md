@@ -27,6 +27,10 @@ If it's your first time using ROS2 and haven't created your ROS2 workspace yet, 
     ros2 run micro_ros_setup build_agent.sh
     source install/setup.bash
 
+#### 1.4 Install LIDAR ROS2 drivers (if you're using one of the tested ones):
+RPLIDAR:
+
+    sudo apt install ros-$ROS_DISTRO-rplidar-ros
 
 ### 2. Download linorobot2 and its dependencies:
 
@@ -89,7 +93,7 @@ If you already have an existing URDF, you can change the `urdf_path` in [descrip
     roslaunch linorobot2 bringup.launch.py
 
 Optional parameter:
-- serial_port - Your robot microcontroller's serial port. The default value is /dev/ttyACM0 so remember to use this argument with the correct serial port otherwise. For example:
+- serial_port - Your robot microcontroller's serial port. The default value is `/dev/ttyACM0` so remember to use this argument with the correct serial port otherwise. For example:
 
         roslaunch linorobot2 bringup.launch.py serial_port:=/dev/ttyACM1
 

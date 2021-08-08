@@ -7,12 +7,11 @@ ekf_filter_node:
         publish_tf: true
 
         # transform_timeout: 0.01
-        transform_time_offset: 0.0
+        # transform_time_offset: 0.0
         map_frame: map              # Defaults to "map" if unspecified
         odom_frame: odom            # Defaults to "odom" if unspecified
         base_link_frame: base_footprint  # Defaults to "base_link" ifunspecified
-        # world_frame: odom           # Defaults to the value ofodom_frame if unspecified
-
+        world_frame: odom           # Defaults to the value ofodom_frame if unspecified
 
         #x     , y     , z,
         #roll  , pitch , yaw,

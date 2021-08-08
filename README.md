@@ -61,7 +61,7 @@ Set LINOROBOT2_BASE env variable to the type of robot base that you want to use.
 
 #### 1.1.b Laser Sensor (Optional)
 
-There are pre-written launch files for tested sensors that are included in bringup.launc. You just have to define it as an env variable and you're good to go. Tested sensors are:
+There are pre-written launch files for tested sensors that are included in bringup.launch. You just have to define it as an env variable and you're good to go. Tested sensors are:
 - rplidar
 - ldlidar
 
@@ -70,7 +70,7 @@ For example:
     echo "export LINOROBOT2_LASER_SENSOR=rplidar" >> ~/.bashrc
 
 ### 2.1. URDF
-linorobot2_description package has parametized xacro files that can help you kickstart writing your URDF. Open up one of the <robot_type>.properties.urdf.xacro in [linorobot2_description/urdf](https://github.com/linorobot/linorobot2/tree/master/linorobot2_description/urdf) folder and change the values according to your robot's specification. Build your workspace once you're done:
+[linorobot2_description](https://github.com/linorobot/linorobot2/tree/master/linorobot2_description) package has parametized xacro files that can help you kickstart writing your URDF. Open up one of the <your_robot_type>.properties.urdf.xacro in [linorobot2_description/urdf](https://github.com/linorobot/linorobot2/tree/master/linorobot2_description/urdf) folder and change the values according to your robot's specification. Build your workspace once you're done:
 
     cd <your_workspace>
     colcon build

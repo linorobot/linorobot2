@@ -50,6 +50,36 @@ If you're installing this on the robot's computer or you don't need to run Gazeb
 
     source install/setup.bash
 
+## Setting Up
+### 1. ENV Variables
+#### 1.1.a Robot Type
+Set LINOROBOT2_BASE env variable to the type of robot base that you want to use. Available env variables are *2wd*, *4wd*, and *mecanum*. For example
+
+    echo "export LINOROBOT2_BASE=2wd" >> ~/.bashrc
+
+* Take note that this has no effect if you're using a custom URDF.
+
+#### 1.1.b Laser Sensor (Optional)
+
+There are pre-written launch files for tested sensors that are included in bringup.launc. You just have to define it as an env variable and you're good to go. Tested sensors are:
+- rplidar
+- ldlidar
+
+For example:
+
+    echo "export LINOROBOT2_LASER_SENSOR=rplidar" >> ~/.bashrc
+
+### 2.1. URDF
+linorobot2_description package has parametized xacro files that can help you kickstart writing your URDF. Open up one of the <robot_type>.properties.urdf.xacro in [linorobot2_description/urdf](https://github.com/linorobot/linorobot2/tree/master/linorobot2_description/urdf) folder and change the values according to your robot's specification. Build your workspace once you're done:
+
+    cd <your_workspace>
+    colcon build
+
+You can visualize the robot you built by running:
+
+    ros2 launch linorobot2_description description.launch.py rviz:=true
+
+If you already have an existing URDF, you can change the `urdf_path` in [description.launch.py](https://github.com/linorobot/linorobot2/blob/master/linorobot2_description/launch/description.launch.py) found in linorobot2_description/launch folder. Remember to build your workspace after editing the file.
 
 ## Quickstart
 ### 1. Boot up your robot

@@ -8,7 +8,7 @@ from launch_ros.substitutions import FindPackageShare
 
 
 def generate_launch_description():
-    use_sim_time = 'true'
+    use_sim_time = True
 
     ekf_config_path = PathJoinSubstitution(
         [FindPackageShare("linorobot2_base"), "config", "ekf.yaml"]
@@ -57,7 +57,7 @@ def generate_launch_description():
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(description_launch_path),
             launch_arguments={
-                'use_sim_time': use_sim_time,
+                'use_sim_time': str(use_sim_time),
                 'publish_joints': 'false',
             }.items()
         )

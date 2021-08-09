@@ -112,7 +112,7 @@ If you already have an existing URDF, you can change the `urdf_path` in [descrip
 
 #### 1.1a Using real robot:
 
-    ros2 launch linorobot2 bringup.launch.py
+    ros2 launch linorobot2_bringup bringup.launch.py
 
 Optional parameter:
 - serial_port - Your robot microcontroller's serial port. The default value is `/dev/ttyACM0` so remember to use this argument with the correct serial port otherwise. For example:

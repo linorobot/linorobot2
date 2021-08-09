@@ -38,23 +38,28 @@
     mass="${wheel_mass}"
   />
 
-  <!-- <xacro:caster_wheel 
-    side="front"
-    mass="0.1"
-    base_length="${base_length}" 
-    wheel_radius="${wheel_radius}" 
-    wheel_pos_z="${wheel_pos_z}" 
-  /> -->
-  <xacro:caster_wheel 
-    side="rear"
-    mass="0.1"
-    base_length="${base_length}" 
-    wheel_radius="${wheel_radius}" 
-    wheel_pos_z="${wheel_pos_z}" 
-  />
+  <xacro:if value="${front_caster_wheel}">
+    <xacro:caster_wheel 
+      side="front"
+      mass="0.1"
+      base_length="${base_length}" 
+      wheel_radius="${wheel_radius}" 
+      wheel_pos_z="${wheel_pos_z}" 
+    />
+  </xacro:if>
+
+  <xacro:if value="${rear_caster_wheel}">
+    <xacro:caster_wheel 
+      side="rear"
+      mass="0.1"
+      base_length="${base_length}" 
+      wheel_radius="${wheel_radius}" 
+      wheel_pos_z="${wheel_pos_z}" 
+    />
+  </xacro:if>
 
   <xacro:imu/>
-  
+
   <xacro:ld06>
     <xacro:insert_block name="laser_pose" />
   </xacro:ld06>

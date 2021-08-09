@@ -14,6 +14,6 @@
   <xacro:property name="wheel_torque" value="20" />
 
   <xacro:property name="laser_pose">
-    <origin xyz="0 0 0.5" rpy="0 0 0"/>
+    <origin xyz="-0.0475 0 0.125" rpy="0 0 0"/>
   </xacro:property>
 </robot>

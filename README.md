@@ -117,17 +117,17 @@ If you already have an existing URDF, you can change the `urdf_path` in [descrip
 Optional parameter:
 - serial_port - Your robot microcontroller's serial port. The default value is `/dev/ttyACM0` so remember to use this argument with the correct serial port otherwise. For example:
 
-        ros2 launch linorobot2 bringup.launch.py serial_port:=/dev/ttyACM1
+        ros2 launch linorobot2_bringup bringup.launch.py serial_port:=/dev/ttyACM1
 
 #### 1.1b Using Gazebo:
     
-    ros2 launch linorobot2 gazebo.launch.py
+    ros2 launch linorobot2_bringup gazebo.launch.py
 
 ### 2. Create a map
 
 #### 2.1 Run the SLAM package:
 
-    ros2 launch linorobot2 slam.launch.py
+    ros2 launch linorobot2_navigation slam.launch.py
 
 Optional parameters:
 - rviz - Set to true if you want to run RVIZ in parallel. Default value is false.
@@ -135,7 +135,7 @@ Optional parameters:
 
 For example:
 
-    ros2 launch linorobot2 slam.launch.py rviz:=true sim:=true
+    ros2 launch linorobot2_navigation slam.launch.py rviz:=true sim:=true
 
 #### 2.2 Move the robot to start mapping
 

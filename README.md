@@ -77,6 +77,11 @@ For example:
 
     echo "export LINOROBOT2_LASER_SENSOR=rplidar" >> ~/.bashrc
 
+#### 1.2 Source ~/.bashrc
+Source your `~/.bashrc` to apply the changes you made:
+
+    source ~/.bashrc
+
 ### 2.1. URDF
 [linorobot2_description](https://github.com/linorobot/linorobot2/tree/master/linorobot2_description) package has parametized xacro files that can help you kickstart writing your URDF. Open <your_robot_type>.properties.urdf.xacro in [linorobot2_description/urdf](https://github.com/linorobot/linorobot2/tree/master/linorobot2_description/urdf) folder and change the values according to your robot's specification. Keep in mind that all pose definitions must be measured from the `base_link` (center of base) and wheel positions (ie `wheel_pos_x`) are referring to wheel 1.
 

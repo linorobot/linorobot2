@@ -39,7 +39,7 @@ RPLIDAR:
 #### 2.1 Download linorobot2:
 
     cd <your_ws> 
-    git clone https://github.com/linoroot/linorobot2.git src/linorobot2
+    git clone https://github.com/linorobot/linorobot2.git src/linorobot2
 
 #### 2.2 Ignore Gazebo Packages on robot computer (optional)
 

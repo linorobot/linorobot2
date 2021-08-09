@@ -50,6 +50,10 @@ def generate_launch_description():
         ),
 
         IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(description_launch_path)
+        ),
+
+        IncludeLaunchDescription(
             PythonLaunchDescriptionSource(laser_sensors_launch_path),
             launch_arguments={
                 'laser_sensor': laser_sensor

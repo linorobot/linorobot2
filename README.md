@@ -27,6 +27,8 @@ If it's your first time using ROS2 and haven't created your ROS2 workspace yet, 
     ros2 run micro_ros_setup build_agent.sh
     source install/setup.bash
 
+* You can ignore `1 package had stderr output: microxrcedds_agent` after building your workspace. 
+
 #### 1.4 Install LIDAR ROS2 drivers (if you're using one of the tested ones):
 RPLIDAR:
 
@@ -48,7 +50,7 @@ If you're installing this on the robot's computer or you don't need to run Gazeb
     rosdep update && rosdep install --from-path src --ignore-src -y --skip-keys microxrcedds_agent
     colcon build
 
-* You can ignore `1 package had stderr output: microxrcedds_agent` after building your workspace. microxrcedds_agent dependency checks are skipped to prevent this [issue](https://github.com/micro-ROS/micro_ros_setup/issues/138) of finding its keys.
+* microxrcedds_agent dependency checks are skipped to prevent this [issue](https://github.com/micro-ROS/micro_ros_setup/issues/138) of finding its keys.
 
 #### 3.3 Source your ROS2 workspace with the newly installed linorobot2 package:
 

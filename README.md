@@ -36,25 +36,27 @@ RPLIDAR:
 
 ### 2. Download linorobot2 and its dependencies:
 
-#### 2.1 Ignore Gazebo Packages on robot computer (optional)
+#### 2.1 Download linorobot2:
+
+    cd <your_ws> 
+    git clone https://github.com/linoroot/linorobot2.git src/linorobot2
+
+#### 2.2 Ignore Gazebo Packages on robot computer (optional)
 
 If you're installing this on the robot's computer or you don't need to run Gazebo at all, you can skip linorobot2_gazebo package by creating a COLCON_IGNORE file:
 
     cd linorobot2/linorobot2_gazebo
     touch COLCON_IGNORE
 
-#### 2.2 Download and install linorobot2:
-
-    cd <your_ws> 
-    git clone https://github.com/linoroot/linorobot2.git src/linorobot2
+#### 2.3 Install linorobot2 package:
+    
+    cd <your_ws>
     rosdep update && rosdep install --from-path src --ignore-src -y --skip-keys microxrcedds_agent
     colcon build
+    source install/setup.bash
 
 * microxrcedds_agent dependency checks are skipped to prevent this [issue](https://github.com/micro-ROS/micro_ros_setup/issues/138) of finding its keys.
 
-#### 3.3 Source your ROS2 workspace with the newly installed linorobot2 package:
-
-    source install/setup.bash
 
 ## Setting Up
 ### 1. ENV Variables

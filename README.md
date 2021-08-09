@@ -61,7 +61,7 @@ If you're installing this on the robot's computer or you don't need to run Gazeb
 ## Setting Up
 ### 1. ENV Variables
 #### 1.1.a Robot Type
-Set LINOROBOT2_BASE env variable to the type of robot base that you want to use. Available env variables are *2wd*, *4wd*, and *mecanum*. For example
+Set LINOROBOT2_BASE env variable to the type of robot base that you want to use. Available env variables are *2wd*, *4wd*, and *mecanum*. For example:
 
     echo "export LINOROBOT2_BASE=2wd" >> ~/.bashrc
 

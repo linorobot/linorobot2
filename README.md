@@ -40,7 +40,7 @@ RPLIDAR:
 
 If you're installing this on the robot's computer or you don't need to run Gazebo at all, you can skip linorobot2_gazebo package by creating a COLCON_IGNORE file:
 
-    cd linorobot2/linorobot_gazebo
+    cd linorobot2/linorobot2_gazebo
     touch COLCON_IGNORE
 
 #### 2.2 Download and install linorobot2:
@@ -162,7 +162,7 @@ Open linorobot2/linorobot2_navigation/launch/navigation.launch.py and change *MA
 
 #### 3.1b Run the navigation package:
 
-    ros2 launch linorobot_navigation navigation.launch.py
+    ros2 launch linorobot2_navigation navigation.launch.py
 
 Optional parameters:
 - rviz - Set to true if you want to run RVIZ in parallel. Default value is false.

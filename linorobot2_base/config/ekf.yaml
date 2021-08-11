@@ -3,11 +3,10 @@ ekf_filter_node:
     ros__parameters:
         frequency: 20.0
         two_d_mode: true
-        # publish_acceleration: true
         publish_tf: true
-
+        transform_time_offset: 0.3
         # transform_timeout: 0.01
-        # transform_time_offset: 0.0
+ 
         map_frame: map              # Defaults to "map" if unspecified
         odom_frame: odom            # Defaults to "odom" if unspecified
         base_link_frame: base_footprint  # Defaults to "base_link" ifunspecified

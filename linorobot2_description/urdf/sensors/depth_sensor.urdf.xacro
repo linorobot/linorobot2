@@ -1,0 +1,57 @@
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:property name="M_PI" value="3.1415926535897931" />
+  <xacro:macro name="depth_sensor" params="*origin">
+    <link name="camera_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="0.030 0.124 0.030"/>
+          <!-- <mesh filename="" scale="0.001 0.001 0.001"/> -->
+        </geometry>
+        <material name="red">
+          <color rgba="0.416 0.051 0.047 1.0"/>
+        </material>
+      </visual>
+      
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="0.030 0.124 0.030"/>
+        </geometry>
+      </collision>
+
+      <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <mass value="0.135"/>
+        <inertia ixx="${(1/12) * 0.135 * ((0.124  * 0.124)  + (0.030 * 0.030))}" ixy="0.0" ixz="0.0"
+                 iyy="${(1/12) * 0.135 * ((0.030 * 0.030) + (0.030 * 0.030))}" iyz="0.0"
+                 izz="${(1/12) * 0.135 * ((0.030 * 0.030) + (0.124  * 0.124))}"/>
+      </inertial>
+    </link>
+
+
+    <gazebo reference="camera_link">  
+      <visual>  
+        <material>
+          <ambient>0.416 0.051 0.047 1.0</ambient>  
+          <diffuse>0.416 0.051 0.047 1.0</diffuse>  
+          <specular>0.416 0.051 0.047 1.0</specular>  
+          <emissive>0.416 0.051 0.047 1.0</emissive>  
+        </material>
+      </visual> 
+    </gazebo>rgb(213,28,40)
+
+    <joint name="camera_to_base_link" type="fixed">
+      <parent link="base_link"/>
+      <child link="camera_link"/>
+      <xacro:insert_block name="origin" />
+    </joint>
+
+    <gazebo reference="camera_link">
+      <sensor name="camera_link" type="depth">
+       
+      </sensor>
+    </gazebo>
+  </xacro:macro>
+</robot>
+  

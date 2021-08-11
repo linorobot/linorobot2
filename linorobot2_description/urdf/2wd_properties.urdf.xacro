@@ -7,13 +7,13 @@
 
   <xacro:property name="wheel_radius" value="0.045" />
   <xacro:property name="wheel_width" value="0.01" />
-  <xacro:property name="wheel_pos_x" value="-0.0415" />
+  <xacro:property name="wheel_pos_x" value="0.0415" />
   <xacro:property name="wheel_pos_y" value="0.1" />
   <xacro:property name="wheel_pos_z" value="0.023" />
   <xacro:property name="wheel_mass" value=".1" />
   <xacro:property name="wheel_torque" value="20" />
-  <xacro:property name="front_caster_wheel" value="true" />
-  <xacro:property name="rear_caster_wheel" value="false" />
+  <xacro:property name="front_caster_wheel" value="false" />
+  <xacro:property name="rear_caster_wheel" value="true" />
 
   <xacro:property name="laser_pose">
     <origin xyz="0 0 0.1" rpy="0 0 0"/>

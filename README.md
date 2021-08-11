@@ -184,3 +184,6 @@ Optional parameters:
         cd <your_ws>
         colcon build
         #continue what you're doing...
+
+#### 2. [`slam_toolbox]: Message Filter dropping message: frame 'laser'`
+- Try to up `transform_time_offset` by 0.1 in linorobot2_base/config/ekf.yaml until the warning is gone.

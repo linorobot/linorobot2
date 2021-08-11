@@ -1,14 +1,49 @@
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
   <xacro:property name="M_PI" value="3.1415926535897931" />
   <xacro:macro name="laser" params="*origin update_rate ray_count min_angle max_angle min_range max_range">
-    <link name="laser"/>
+    <link name="laser">
+      <visual>
+        <origin xyz="0 0 -0.025" rpy="0 0 0"/>
+        <geometry>
+          <cylinder radius="0.0375" length="0.05"/>
+        </geometry>
+        <material name="green">
+            <color rgba="0.003 0.639 0.223 1.0"/>
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
+        <geometry>
+          <cylinder radius="0.0375" length="0.05"/>
+        </geometry>
+      </collision>
+
+      <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <mass value="0.1"/>
+        <inertia ixx="${(2/5) * 0.1 * (0.0375 * 0.0375)}" ixy="0" ixz="0"
+                 iyy="${(2/5) * 0.1 * (0.0375 * 0.0375)}" iyz="0"
+                 izz="${(2/5) * 0.1 * (0.0375 * 0.0375)}" />
+      </inertial>
+    </link>
+
+    <gazebo reference="laser">  
+      <visual>  
+        <material>
+          <ambient>0.003 0.639 0.223 1.0</ambient>  
+          <diffuse>0.003 0.639 0.223 1.0</diffuse>  
+          <specular>0.003 0.639 0.223 1.0</specular>  
+          <emissive>0.0 0.0 0.0 0.0</emissive>  
+        </material>
+      </visual> 
+    </gazebo>
 
     <joint name="laser_to_base_link" type="fixed">
       <parent link="base_link"/>
       <child link="laser"/>
       <xacro:insert_block name="origin" />
     </joint>
-    
+
     <gazebo reference="laser">
       <sensor type="ray" name="head_hokuyo_sensor">
         <always_on>true</always_on>

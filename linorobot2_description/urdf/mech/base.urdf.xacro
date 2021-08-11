@@ -2,6 +2,7 @@
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
   <xacro:macro name="base" params="length width height mass wheel_radius wheel_pos_z">
     <link name="base_footprint"/>
+    
     <link name="base_link">
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -13,7 +14,7 @@
           <color rgba="0.8784 0.6627 0.6627 1.0"/>
         </material>
       </visual>
-
+      
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
@@ -29,6 +30,7 @@
                  izz="${(1/12) * mass * ((length * length) + (width  * width))}"/>
       </inertial>
     </link>
+
     <gazebo reference="base_link">  
       <visual>  
         <material>
@@ -39,6 +41,7 @@
         </material>
       </visual> 
     </gazebo>
+
     <joint name="base_to_footprint" type="fixed">
       <parent link="base_footprint"/>
       <child link="base_link"/>

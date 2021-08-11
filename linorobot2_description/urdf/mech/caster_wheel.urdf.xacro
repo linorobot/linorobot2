@@ -5,10 +5,11 @@
     <xacro:if value="${side == 'front'}">
         <xacro:property name="caster_wheel_x" value="${(base_length / 2) - caster_wheel_radius}" />
     </xacro:if>
+    
     <xacro:if value="${side == 'rear'}">
         <xacro:property name="caster_wheel_x" value="${-(base_length / 2) + caster_wheel_radius}" />
     </xacro:if>
-
+    
     <link name="${side}_caster_wheel_link">
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -33,7 +34,7 @@
         <inertia ixx="${(2/5) * mass * (caster_wheel_radius * caster_wheel_radius)}" ixy="0" ixz="0"
                  iyy="${(2/5) * mass * (caster_wheel_radius * caster_wheel_radius)}" iyz="0"
                  izz="${(2/5) * mass * (caster_wheel_radius * caster_wheel_radius)}" />
-        </inertial>
+      </inertial>
     </link>
 
     <joint name="${side}_caster_wheel_joint" type="fixed">

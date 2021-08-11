@@ -11,7 +11,6 @@
             <color rgba="0.1764 0.4588 0.8509 1.0"/>
         </material>
       </visual>
-
       <collision>
         <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
         <geometry>
@@ -25,7 +24,7 @@
         <inertia ixx="${(2/5) * mass * (radius * radius)}" ixy="0" ixz="0"
                  iyy="${(2/5) * mass * (radius * radius)}" iyz="0"
                  izz="${(2/5) * mass * (radius * radius)}" />
-        </inertial>
+      </inertial>
     </link>
     <gazebo reference="${side}_wheel_link">  
       <visual>  

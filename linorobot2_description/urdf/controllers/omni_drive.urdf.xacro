@@ -2,11 +2,17 @@
   <xacro:macro name="omni_drive_controller">
     <gazebo>
     <plugin name="object_controller" filename="libgazebo_ros_planar_move.so">
-      <commandTopic>cmd_vel</commandTopic>
-      <odometryTopic>odom/unfiltered</odometryTopic>
-      <odometryFrame>odom</odometryFrame>
-      <odometryRate>20.0</odometryRate>
-      <robotBaseFrame>base_footprint</robotBaseFrame>
+      <ros>
+        <remapping>odom:=odom/unfiltered</remapping>
+      </ros>
+      <command_topic>cmd_vel</command_topic>
+      <odometry_topic>odom/unfiltered</odometry_topic>
+      <odometry_frame>odom</odometry_frame>
+      <odometry_rate>20.0</odometry_rate>
+      <robot_base_frame>base_footprint</robot_base_frame>
+      <publish_odom>true</publish_odom>
+      <publish_odom_tf>false</publish_odom_tf>
+
     </plugin>
   </gazebo>
   </xacro:macro>

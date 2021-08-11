@@ -10,6 +10,10 @@ from launch_ros.substitutions import FindPackageShare
 def generate_launch_description():
     use_sim_time = True
 
+    joy_launch_path = PathJoinSubstitution(
+        [FindPackageShare('linorobot2_bringup'), 'launch', 'joy_teleop.launch.py']
+    )
+
     ekf_config_path = PathJoinSubstitution(
         [FindPackageShare("linorobot2_base"), "config", "ekf.yaml"]
     )
@@ -60,6 +64,10 @@ def generate_launch_description():
                 'use_sim_time': str(use_sim_time),
                 'publish_joints': 'false',
             }.items()
+        ),
+
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(joy_launch_path),
         )
     ])
 

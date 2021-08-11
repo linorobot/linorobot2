@@ -59,8 +59,10 @@ def generate_launch_description():
             name='robot_state_publisher',
             output='screen',
             parameters=[
-                {'use_sim_time': LaunchConfiguration('use_sim_time')}, 
-                {'robot_description': Command(['xacro ', LaunchConfiguration('urdf')])}
+                {
+                    'use_sim_time': LaunchConfiguration('use_sim_time'),
+                    'robot_description': Command(['xacro ', LaunchConfiguration('urdf')])
+                }
             ]
         ),
 

@@ -11,7 +11,6 @@ install(
   DESTINATION share/${PROJECT_NAME}
 )
 
-
 install(PROGRAMS
   scripts/command_timeout.py
   DESTINATION lib/${PROJECT_NAME}

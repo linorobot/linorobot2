@@ -5,7 +5,6 @@ from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, Pyth
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
-from launch.conditions import LaunchConfigurationNotEquals
 
 
 def generate_launch_description():
@@ -13,6 +12,10 @@ def generate_launch_description():
 
     laser_sensors_launch_path = PathJoinSubstitution(
         [FindPackageShare('linorobot2_bringup'), 'launch', 'laser_sensors.launch.py']
+    )
+
+    joy_launch_path = PathJoinSubstitution(
+        [FindPackageShare('linorobot2_bringup'), 'launch', 'joy_teleop.launch.py']
     )
 
     description_launch_path = PathJoinSubstitution(
@@ -58,5 +61,9 @@ def generate_launch_description():
             launch_arguments={
                 'laser_sensor': laser_sensor
             }.items()        
+        ),
+
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(joy_launch_path),
         )
     ])

@@ -116,7 +116,7 @@ If you already have an existing URDF, you can change the `urdf_path` in [descrip
 
 Optional parameter:
 - serial_port - Your robot microcontroller's serial port. The default value is `/dev/ttyACM0` so remember to use this argument with the correct serial port otherwise. For example:
-
+- joy - Set to true if you want to run the joystick node in the background. (Tested on Logitech F710)
         ros2 launch linorobot2_bringup bringup.launch.py serial_port:=/dev/ttyACM1
 
 #### 1.1b Using Gazebo:

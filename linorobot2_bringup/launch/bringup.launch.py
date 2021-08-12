@@ -5,6 +5,7 @@ from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, Pyth
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
+from launch.conditions import IfCondition
 
 
 def generate_launch_description():
@@ -31,6 +32,12 @@ def generate_launch_description():
             name='serial_port', 
             default_value='/dev/ttyACM0',
             description='Linorobot Base Serial Port'
+        ),
+
+       DeclareLaunchArgument(
+            name='joy', 
+            default_value='false',
+            description='Use Joystick'
         ),
 
         Node(
@@ -65,5 +72,6 @@ def generate_launch_description():
 
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(joy_launch_path),
+            condition=IfCondition(LaunchConfiguration("joy")),
         )
     ])

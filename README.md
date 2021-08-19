@@ -34,6 +34,11 @@ RPLIDAR:
 
     sudo apt install ros-$ROS_DISTRO-rplidar-ros
 
+LDLIDAR:
+
+    cd <your_ws>
+    git clone https://github.com/linorobot/ldlidar src/ldlidar
+
 ### 2. Download linorobot2 and its dependencies:
 
 #### 2.1 Download linorobot2:

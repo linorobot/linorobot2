@@ -29,7 +29,7 @@ def generate_launch_description():
 
     return LaunchDescription([
         DeclareLaunchArgument(
-            name='serial_port', 
+            name='base_serial_port', 
             default_value='/dev/ttyACM0',
             description='Linorobot Base Serial Port'
         ),
@@ -45,7 +45,7 @@ def generate_launch_description():
             executable='micro_ros_agent',
             name='micro_ros_agent',
             output='screen',
-            arguments=['serial', '--dev', LaunchConfiguration("serial_port")]
+            arguments=['serial', '--dev', LaunchConfiguration("base_serial_port")]
         ),
 
         Node(

@@ -191,4 +191,4 @@ Optional parameters:
         #continue what you're doing...
 
 #### 2. [`slam_toolbox]: Message Filter dropping message: frame 'laser'`
-- Try to up `transform_time_offset` by 0.1 in linorobot2_base/config/ekf.yaml until the warning is gone.
+- Try to up `transform_timeout` by 0.1 in linorobot2_navigation/config/slam.yaml until the warning is gone.

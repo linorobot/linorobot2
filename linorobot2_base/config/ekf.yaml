@@ -4,7 +4,7 @@ ekf_filter_node:
         frequency: 20.0
         two_d_mode: true
         publish_tf: true
-        transform_time_offset: 0.3
+        transform_time_offset: 0.1
         # transform_timeout: 0.01
  
         map_frame: map              # Defaults to "map" if unspecified

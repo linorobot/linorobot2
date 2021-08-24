@@ -50,7 +50,7 @@ LDLIDAR:
 
 If you're installing this on the robot's computer or you don't need to run Gazebo at all, you can skip linorobot2_gazebo package by creating a COLCON_IGNORE file:
 
-    cd linorobot2/linorobot2_gazebo
+    cd src/linorobot2/linorobot2_gazebo
     touch COLCON_IGNORE
 
 #### 2.3 Install linorobot2 package:

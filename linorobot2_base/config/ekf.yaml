@@ -1,16 +1,13 @@
-### ekf config file ###
 ekf_filter_node:
     ros__parameters:
-        frequency: 20.0
+        frequency: 50.0
         two_d_mode: true
         publish_tf: true
-        transform_time_offset: 0.1
-        # transform_timeout: 0.01
  
-        map_frame: map              # Defaults to "map" if unspecified
-        odom_frame: odom            # Defaults to "odom" if unspecified
-        base_link_frame: base_footprint  # Defaults to "base_link" ifunspecified
-        world_frame: odom           # Defaults to the value ofodom_frame if unspecified
+        map_frame: map             
+        odom_frame: odom            
+        base_link_frame: base_footprint 
+        world_frame: odom 
 
         #x     , y     , z,
         #roll  , pitch , yaw,

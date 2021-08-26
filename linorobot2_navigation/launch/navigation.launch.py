@@ -16,7 +16,7 @@ def generate_launch_description():
     )
 
     rviz_config_path = PathJoinSubstitution(
-        [FindPackageShare('linorobot2_navigation'), 'rviz', 'navigation.rviz']
+        [FindPackageShare('linorobot2_navigation'), 'rviz', 'linorobot2_navigation.rviz']
     )
 
     default_map_path = PathJoinSubstitution(

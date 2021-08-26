@@ -19,7 +19,7 @@ def generate_launch_description():
     )
 
     rviz_config_path = PathJoinSubstitution(
-        [FindPackageShare('linorobot2_navigation'), 'rviz', 'slam.rviz']
+        [FindPackageShare('linorobot2_navigation'), 'rviz', 'linorobot2_slam.rviz']
     )
 
     ros_distro = EnvironmentVariable('ROS_DISTRO')

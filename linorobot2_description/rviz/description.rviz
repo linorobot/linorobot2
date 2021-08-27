@@ -5,7 +5,7 @@ Panels:
     Property Tree Widget:
       Expanded: ~
       Splitter Ratio: 0.5
-    Tree Height: 605
+    Tree Height: 907
 Visualization Manager:
   Class: ""
   Displays:
@@ -27,7 +27,7 @@ Visualization Manager:
       Plane Cell Count: 10
       Reference Frame: <Fixed Frame>
       Value: true
-    - Alpha: 0.6000000238418579
+    - Alpha: 0.8999999761581421
       Class: rviz_default_plugins/RobotModel
       Collision Enabled: false
       Description File: ""
@@ -54,12 +54,36 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-        left_wheel_link:
+        camera_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        right_wheel_link:
+        front_left_wheel_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        front_right_wheel_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        imu_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        laser:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        rear_left_wheel_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        rear_right_wheel_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -78,9 +102,19 @@ Visualization Manager:
           Value: true
         base_link:
           Value: true
-        left_wheel_link:
+        camera_link:
           Value: true
-        right_wheel_link:
+        front_left_wheel_link:
+          Value: true
+        front_right_wheel_link:
+          Value: true
+        imu_link:
+          Value: true
+        laser:
+          Value: true
+        rear_left_wheel_link:
+          Value: true
+        rear_right_wheel_link:
           Value: true
       Marker Scale: 0.10000000149011612
       Name: TF
@@ -90,9 +124,19 @@ Visualization Manager:
       Tree:
         base_footprint:
           base_link:
-            left_wheel_link:
+            camera_link:
               {}
-            right_wheel_link:
+            front_left_wheel_link:
+              {}
+            front_right_wheel_link:
+              {}
+            imu_link:
+              {}
+            laser:
+              {}
+            rear_left_wheel_link:
+              {}
+            rear_right_wheel_link:
               {}
       Update Interval: 0
       Value: true
@@ -105,7 +149,7 @@ Visualization Manager:
       Value: true
   Enabled: true
   Global Options:
-    Background Color: 48; 48; 48
+    Background Color: 238; 238; 236
     Fixed Frame: base_footprint
     Frame Rate: 30
   Name: root
@@ -139,18 +183,18 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.44039836525917053
+      Pitch: 0.4653983414173126
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 0.7753981947898865
+      Yaw: 0.7553982138633728
     Saved: ~
 Window Geometry:
   Displays:
     collapsed: false
-  Height: 834
+  Height: 1136
   Hide Left Dock: false
   Hide Right Dock: false
-  QMainWindow State: 000000ff00000000fd000000010000000000000156000002e8fc0200000001fb000000100044006900730070006c006100790073010000003d000002e8000000c900ffffff000002e8000002e800000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
-  Width: 1092
-  X: 675
-  Y: 38
+  QMainWindow State: 000000ff00000000fd00000001000000000000015600000416fc0200000001fb000000100044006900730070006c006100790073010000003d00000416000000c900ffffff000005f40000041600000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  Width: 1872
+  X: 48
+  Y: 27

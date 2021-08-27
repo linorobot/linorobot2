@@ -8,6 +8,10 @@ from launch_ros.actions import Node
 
 
 def generate_launch_description():
+    joy_config_path = PathJoinSubstitution(
+        [FindPackageShare("linorobot2_bringup"), "config", "joy.yaml"]
+    )
+
     return LaunchDescription([
         Node(
             package='joy_linux',
@@ -19,7 +23,8 @@ def generate_launch_description():
         Node(
             package='teleop_twist_joy',
             executable='teleop_node',
-            name='teleop_node',
+            name='teleop_twist_joy_node',
             output='screen',
+            parameters=[joy_config_path]
         )
     ])

@@ -3,7 +3,7 @@
 
   <xacro:include filename="$(find linorobot2_description)/urdf/mecanum_properties.urdf.xacro" />
   <xacro:include filename="$(find linorobot2_description)/urdf/mech/base.urdf.xacro" />
-  <xacro:include filename="$(find linorobot2_description)/urdf/mech/wheel.urdf.xacro" />
+  <xacro:include filename="$(find linorobot2_description)/urdf/mech/mecanum_wheel.urdf.xacro" />
   <xacro:include filename="$(find linorobot2_description)/urdf/sensors/imu.urdf.xacro" />
   <xacro:include filename="$(find linorobot2_description)/urdf/sensors/ld06.urdf.xacro" />
   <xacro:include filename="$(find linorobot2_description)/urdf/sensors/depth_sensor.urdf.xacro" />
@@ -18,7 +18,7 @@
     wheel_pos_z="${wheel_pos_z}"
 />
 
-  <xacro:wheel 
+  <xacro:mecanum_wheel 
     side="front_left"
     radius="${wheel_radius}" 
     width="${wheel_width}" 
@@ -28,7 +28,7 @@
     mass="${wheel_mass}"
   />
 
-  <xacro:wheel 
+  <xacro:mecanum_wheel 
     side="front_right"
     radius="${wheel_radius}" 
     width="${wheel_width}" 
@@ -37,7 +37,7 @@
     pos_z="${wheel_pos_z}" 
     mass="${wheel_mass}"
   />
-  <xacro:wheel 
+  <xacro:mecanum_wheel 
     side="rear_left"
     radius="${wheel_radius}" 
     width="${wheel_width}" 
@@ -47,7 +47,7 @@
     mass="${wheel_mass}"
   />
 
-  <xacro:wheel 
+  <xacro:mecanum_wheel 
     side="rear_right"
     radius="${wheel_radius}" 
     width="${wheel_width}" 

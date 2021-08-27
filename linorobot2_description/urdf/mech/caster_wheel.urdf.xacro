@@ -37,6 +37,11 @@
       </inertial>
     </link>
 
+    <gazebo reference="${side}_caster_wheel_link">
+        <mu1>0.01</mu1>
+        <mu2>0.01</mu2>
+    </gazebo>
+
     <joint name="${side}_caster_wheel_joint" type="fixed">
       <parent link="base_link"/>
       <child link="${side}_caster_wheel_link"/>

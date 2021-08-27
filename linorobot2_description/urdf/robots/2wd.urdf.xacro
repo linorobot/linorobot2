@@ -42,7 +42,7 @@
   <xacro:if value="${front_caster_wheel}">
     <xacro:caster_wheel 
       side="front"
-      mass="0.1"
+      mass="0.01"
       base_length="${base_length}" 
       wheel_radius="${wheel_radius}" 
       wheel_pos_z="${wheel_pos_z}" 
@@ -52,7 +52,7 @@
   <xacro:if value="${rear_caster_wheel}">
     <xacro:caster_wheel 
       side="rear"
-      mass="0.1"
+      mass="0.01"
       base_length="${base_length}" 
       wheel_radius="${wheel_radius}" 
       wheel_pos_z="${wheel_pos_z}" 

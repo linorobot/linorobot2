@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:macro name="mecanum_wheel" params="side radius width pos_x pos_y pos_z mass">
+    <link name="${side}_wheel_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
+        <geometry>
+          <cylinder radius="${radius}" length="${width}"/>
+        </geometry>
+        <material name="blue">
+            <color rgba="0.1764 0.4588 0.8509 1.0"/>
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
+        <geometry>
+          <cylinder radius="${radius}" length="${width}"/>
+        </geometry>
+      </collision>
+
+      <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <mass value="${mass}"/>
+        <inertia ixx="${(2/5) * mass * (radius * radius)}" ixy="0" ixz="0"
+                 iyy="${(2/5) * mass * (radius * radius)}" iyz="0"
+                 izz="${(2/5) * mass * (radius * radius)}" />
+      </inertial>
+    </link>
+
+    <gazebo reference="${side}_wheel_link">
+        <mu1>0.01</mu1>
+        <mu2>0.01</mu2>
+    </gazebo>
+
+    <gazebo reference="${side}_wheel_link">  
+      <visual>  
+        <material>
+          <ambient>0.1764 0.4588 0.8509 1.0</ambient>  
+          <diffuse>0.1764 0.4588 0.8509 1.0</diffuse>  
+          <specular>0.1764 0.4588 0.8509 1.0</specular>  
+          <emissive>0.0 0.0 0.0 0.0</emissive>  
+        </material>
+      </visual>  
+    </gazebo>
+    <joint name="${side}_wheel_joint" type="continuous">
+      <axis xyz="0 1 0" />
+      <parent link="base_link"/>
+      <child link="${side}_wheel_link"/>
+      <origin xyz="${pos_x} ${pos_y} ${pos_z}" rpy="0 0 0"/>
+    </joint>
+  </xacro:macro>
+</robot>

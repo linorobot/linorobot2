@@ -171,7 +171,7 @@ Alternatively, you can also drive the robot autonomously by sending goal poses t
 
     ros2 launch nav2_bringup navigation_launch.py
 
-- You have to pass use_sim_time:=true to the launch file if you're running this with Gazebo.
+- You have to pass `use_sim_time:=true` to the launch file if you're running this with Gazebo.
 
 
 #### 2.3 Save the map

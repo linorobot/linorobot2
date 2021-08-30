@@ -3,7 +3,7 @@
     <gazebo>
     <plugin name="object_controller" filename="libgazebo_ros_planar_move.so">
       <ros>
-        <remapping>odom:=odom/unfiltered</remapping>
+        <argument>odom:=odom/unfiltered</argument>
       </ros>
       <command_topic>cmd_vel</command_topic>
       <odometry_topic>odom/unfiltered</odometry_topic>

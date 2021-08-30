@@ -67,7 +67,7 @@
         </ray>
         <plugin name="gazebo_ros_head_hokuyo_controller" filename="libgazebo_ros_ray_sensor.so">
           <ros>
-            <remapping>~/out:=scan</remapping>                                                               
+            <argument>~/out:=scan</argument>                                                               
           </ros>
           <output_type>sensor_msgs/LaserScan</output_type>
           <alwaysOn>true</alwaysOn>

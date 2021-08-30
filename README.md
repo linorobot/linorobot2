@@ -95,7 +95,7 @@ Tested sensors are:
 
 For example:
 
-    echo "export LINOROBOT2_DEPTH_SENSOR=realsense" >> ~/bashrc
+    echo "export LINOROBOT2_DEPTH_SENSOR=realsense" >> ~/.bashrc
 
 #### 1.2 Source ~/.bashrc
 Source your `~/.bashrc` to apply the changes you made:

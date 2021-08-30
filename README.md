@@ -39,6 +39,12 @@ LDLIDAR:
     cd <your_ws>
     git clone https://github.com/linorobot/ldlidar src/ldlidar
 
+#### 1.5 Install depth sensor drivers (if you're using on of the tested ones):
+Intel RealSense:
+
+    sudo apt install ros-$ROS_DISTRO-realsense2-camera
+
+
 ### 2. Download linorobot2 and its dependencies:
 
 #### 2.1 Download linorobot2:

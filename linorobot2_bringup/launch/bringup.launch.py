@@ -1,4 +1,3 @@
-import os
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, PythonExpression
@@ -9,10 +8,8 @@ from launch.conditions import IfCondition
 
 
 def generate_launch_description():
-    laser_sensor = os.getenv('LINOROBOT2_LASER_SENSOR', '')
-
-    laser_sensors_launch_path = PathJoinSubstitution(
-        [FindPackageShare('linorobot2_bringup'), 'launch', 'laser_sensors.launch.py']
+    sensors_launch_path = PathJoinSubstitution(
+        [FindPackageShare('linorobot2_bringup'), 'launch', 'sensors.launch.py']
     )
 
     joy_launch_path = PathJoinSubstitution(
@@ -64,10 +61,7 @@ def generate_launch_description():
         ),
 
         IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(laser_sensors_launch_path),
-            launch_arguments={
-                'laser_sensor': laser_sensor
-            }.items()        
+            PythonLaunchDescriptionSource(sensors_launch_path),
         ),
 
         IncludeLaunchDescription(

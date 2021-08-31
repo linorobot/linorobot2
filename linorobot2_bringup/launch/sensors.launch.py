@@ -38,7 +38,8 @@ def generate_launch_description():
             PythonLaunchDescriptionSource(realsense_launch_path),
             condition=IfCondition(PythonExpression(['"realsense" == "', depth_sensor, '"'])),
             launch_arguments={
-                'enable_pointcloud': 'true'
+                'filters': 'pointcloud',
+                'ordered_pc': 'true'
             }.items()   
         )
     ])

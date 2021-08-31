@@ -82,13 +82,16 @@ The launch files of the tested laser sensors have already been added in bringup.
 Tested Laser Sensors:
 - `rplidar` - [RP LIDAR A1](https://www.slamtec.com/en/Lidar/A1)
 - `ldlidar` - [LD06 LIDAR](https://www.inno-maker.com/product/lidar-ld06/)
+- `realsense` - [Intel RealSense](https://www.intelrealsense.com/stereo-depth/) D435, D435i
 
 For example:
 
     echo "export LINOROBOT2_LASER_SENSOR=rplidar" >> ~/.bashrc
 
+If you export realsense to `LINOROBOT2_LASER_SENSOR`, the launch file will run depthimage_to_laserscan[https://github.com/ros-perception/depthimage_to_laserscan] to convert the depth sensor's depth image to laser.
+
 #### 1.2.c Depth Sensor (Optional)
-The Nav2 config file has been configured to support Voxel Layer for marking 3D obstacles in the Global Costmap using a depth sensor. To enable one of the tested depth sensor's launch file in bringup.launch.py, export the depth sensor you're using to `LINOROBOT2_DEPTH_SENSOR` env variable.
+The Nav2 config file has been configured to support Voxel Layer for marking 3D obstacles in the Local Costmap using a depth sensor. To enable one of the tested depth sensor's launch file in bringup.launch.py, export the depth sensor you're using to `LINOROBOT2_DEPTH_SENSOR` env variable.
 
 Tested sensors are:
 - `realsense` - [Intel RealSense](https://www.intelrealsense.com/stereo-depth/) D435, D435i

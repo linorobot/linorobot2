@@ -20,6 +20,6 @@
   </xacro:property>
 
   <xacro:property name="depth_sensor_pose">
-    <origin xyz="0.14 0 0.26" rpy="0 0 0"/>
+    <origin xyz="0.14 -0.03 0.065" rpy="-1.57 0 0"/>
   </xacro:property>
 </robot>

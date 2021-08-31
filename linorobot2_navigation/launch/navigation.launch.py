@@ -11,11 +11,6 @@ MAP_NAME='playground' #change to the name of your own map here
 
 def generate_launch_description():
     depth_sensor = os.getenv('LINOROBOT2_DEPTH_SENSOR', '')
-    nav_config_file = 'navigation_3d_voxel.yaml'
-    if depth_sensor == '':
-        nav_config_file = 'navigation.yaml'
-
-    depth_sensor = os.getenv('LINOROBOT2_DEPTH_SENSOR', '')
 
     nav2_launch_path = PathJoinSubstitution(
         [FindPackageShare('nav2_bringup'), 'launch', 'bringup_launch.py']
@@ -30,7 +25,7 @@ def generate_launch_description():
     )
 
     nav2_config_path = PathJoinSubstitution(
-        [FindPackageShare('linorobot2_navigation'), 'config', nav_config_file]
+        [FindPackageShare('linorobot2_navigation'), 'config', 'navigation.yaml']
     )
 
     return LaunchDescription([

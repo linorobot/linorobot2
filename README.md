@@ -90,7 +90,7 @@ For example:
 
 If you export realsense to `LINOROBOT2_LASER_SENSOR`, the launch file will run depthimage_to_laserscan[https://github.com/ros-perception/depthimage_to_laserscan] to convert the depth sensor's depth image to laser.
 
-#### 1.2.c Depth Sensor (Optional)
+#### 1.1.c Depth Sensor (Optional)
 The Nav2 config file has been configured to support Voxel Layer for marking 3D obstacles in the Local Costmap using a depth sensor. To enable one of the tested depth sensor's launch file in bringup.launch.py, export the depth sensor you're using to `LINOROBOT2_DEPTH_SENSOR` env variable.
 
 Tested sensors are:

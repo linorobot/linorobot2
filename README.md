@@ -73,14 +73,14 @@ If you're installing this on the robot's computer or you don't need to run Gazeb
 
 * microxrcedds_agent dependency checks are skipped to prevent this [issue](https://github.com/micro-ROS/micro_ros_setup/issues/138) of finding its keys. This means that you have to always add `--skip-keys microxrcedds_agent` whenever you have to run `rosdep install` on the ROS2 workspace where you installed linorobot2.
 
-## Setting Up
-### 1. ENV Variables
-#### 1.1.a Robot Type
+## ENV Variables
+### 1. Robot Type
 Set LINOROBOT2_BASE env variable to the type of robot base that you want to use. This is not required if you're using a custom URDF. Available env variables are *2wd*, *4wd*, and *mecanum*. For example:
 
     echo "export LINOROBOT2_BASE=2wd" >> ~/.bashrc
 
-#### 1.1.b Laser Sensor (Optional)
+### 2. Sensors
+#### 2.1 Laser Sensor (Optional)
 The launch files of the tested laser sensors have already been added in bringup.launch.py. You can enable one of these sensors by exporting the laser sensor you're using to `LINOROBOT2_LASER_SENSOR` env variable.
 
 Tested Laser Sensors:
@@ -94,7 +94,7 @@ For example:
 
 If you export realsense to `LINOROBOT2_LASER_SENSOR`, the launch file will run depthimage_to_laserscan[https://github.com/ros-perception/depthimage_to_laserscan] to convert the depth sensor's depth image to laser.
 
-#### 1.1.c Depth Sensor (Optional)
+#### 2.2 Depth Sensor (Optional)
 The Nav2 config file has been configured to support Voxel Layer for marking 3D obstacles in the Local Costmap using a depth sensor. To enable one of the tested depth sensor's launch file in bringup.launch.py, export the depth sensor you're using to `LINOROBOT2_DEPTH_SENSOR` env variable.
 
 Tested sensors are:
@@ -104,12 +104,12 @@ For example:
 
     echo "export LINOROBOT2_DEPTH_SENSOR=realsense" >> ~/.bashrc
 
-#### 1.2 Source ~/.bashrc
+### 3. Save changes
 Source your `~/.bashrc` to apply the changes you made:
 
     source ~/.bashrc
 
-### 2.1. URDF
+## URDF
 [linorobot2_description](https://github.com/linorobot/linorobot2/tree/master/linorobot2_description) package has parametized xacro files that can help you kickstart writing your URDF. Open <your_robot_type>.properties.urdf.xacro in [linorobot2_description/urdf](https://github.com/linorobot/linorobot2/tree/master/linorobot2_description/urdf) folder and change the values according to your robot's specification. Keep in mind that all pose definitions must be measured from the `base_link` (center of base) and wheel positions (ie `wheel_pos_x`) are referring to wheel 1.
 
 Robot Orientation:

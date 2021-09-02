@@ -29,7 +29,7 @@ If you assign realsense as a laser sensor the launch files will run depthimage_t
 depth_sensor
 - `realsense` - [Intel RealSense](https://www.intelrealsense.com/stereo-depth/) D435, D435i
 
-After the installation, you can proceed to the URDF section. If you prefer installing this package manually, carry on with the next step.
+After the installation, you can proceed to the [URDF](https://github.com/linorobot/linorobot2#urdf) section. If you prefer installing this package manually, carry on with the [next](https://github.com/linorobot/linorobot2#1-install-micro-ros-and-its-dependencies) step.
 
 ### 1. Install micro-ROS and its dependencies
 

@@ -1,6 +1,36 @@
 ## Installation
 You need to have ros-foxy or ros-galactic installed on your machines. If you haven't installed ROS2 yet, you can use this [installer](https://github.com/linorobot/ros2me) script (works on x86 and ARM based dev boards ie. Raspberry Pi4/Nvidia Jetson Series). Take note that [Installation](https://github.com/linorobot/linorobot2#installation) and [Setting Up](https://github.com/linorobot/linorobot2#setting-up) must be done on your robot computer (ie. Nvidia Jetson Board/Raspberry Pi) and host machine (for visualization and teleoperation).
 
+The easiest way to install this package is to run the installer script on your robot computer and host machine. The script will install all the dependencies, set the ENV variables, and create a linorobot2_ws on your `$HOME` folder. 
+
+    source /opt/ros/<your_ros_distro>/setup.bash
+    cd /tmp
+    wget https://raw.githubusercontent.com/linorobot/linorobot2/install_linorobot2.bash
+    bash install_linorobot2.bash <robot_type> <machine_type> <laser_sensor> <depth_sensor>
+    source ~/.bashrc
+
+robot_type:
+- `2wd` - If you're building a 2 wheel drive robot.
+- `4wd` - If you're building a 4 wheel drive robot.
+- `mecanum` - If you're building a mecanum drive robot.
+
+machine_type:
+- `robot` - If you're installing this package on your robot computer.
+- `remote` - If you're installing this package on your development computer (for visualization).
+
+laser_sensor:
+- `rplidar` - [RP LIDAR A1](https://www.slamtec.com/en/Lidar/A1)
+- `ldlidar` - [LD06 LIDAR](https://www.inno-maker.com/product/lidar-ld06/)
+- `realsense` - [Intel RealSense](https://www.intelrealsense.com/stereo-depth/) D435, D435i    
+- `-` - If your sensor is not listed above.
+
+If you assign realsense as a laser sensor the launch files will run depthimage_to_laserscan[https://github.com/ros-perception/depthimage_to_laserscan] to convert the depth sensor's depth image to laser.
+
+depth_sensor
+- `realsense` - [Intel RealSense](https://www.intelrealsense.com/stereo-depth/) D435, D435i
+
+After the installation, you can proceed to the URDF section. If you prefer installing this package manually, carry on with the next step.
+
 ### 1. Install micro-ROS and its dependencies
 
 #### 1.1 Source your ROS2 distro and workspace
@@ -14,7 +44,7 @@ If it's your first time using ROS2 and haven't created your ROS2 workspace yet, 
 #### 1.2 Download and install micro-ROS:
 
     cd <your_ws>
-    git clone -b $ROS_DISTRO https://github.com/micro-ROS/micro_ros_setup.git src/micro_ros_setup
+    git clone -b $ROS_DISTRO https://github.com/micro-ROS/micro_ros_setup src/micro_ros_setup
     sudo apt install python3-vcstool
     sudo apt update && rosdep update
     rosdep install --from-path src --ignore-src -y
@@ -55,7 +85,7 @@ Intel RealSense:
 #### 2.1 Download linorobot2:
 
     cd <your_ws> 
-    git clone https://github.com/linorobot/linorobot2.git src/linorobot2
+    git clone https://github.com/linorobot/linorobot2 src/linorobot2
 
 #### 2.2 Ignore Gazebo Packages on robot computer (optional)
 

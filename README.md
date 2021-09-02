@@ -33,6 +33,11 @@ If it's your first time using ROS2 and haven't created your ROS2 workspace yet, 
 RPLIDAR:
 
     sudo apt install ros-$ROS_DISTRO-rplidar-ros
+    cd /tmp
+    wget https://raw.githubusercontent.com/allenh1/rplidar_ros/ros2/scripts/rplidar.rules
+    sudo cp rplidar.rules /etc/udev/rules.d/
+    sudo service udev reload
+    sudo service udev restart
 
 LDLIDAR:
 
@@ -140,7 +145,7 @@ Now you can easily access your robot computer using its [IP address](https://its
 
     ssh <your_user_name>@<robot_compueter_ip_address>
 
-### 1. Boot up your robot
+### 1. Booting up your robot
 
 #### 1.1a Using a real robot:
 
@@ -152,8 +157,14 @@ Optional parameters:
     ```
     ros2 launch linorobot2_bringup bringup.launch.py base_serial_port:=/dev/ttyACM1
     ```
-
 - **joy** - Set to true if you want to run the joystick node in the background. (Tested on Logitech F710).
+
+Before running any application (ie. creating a map or autonomous navigation), remember to wait for the microROS agent to be connected. The agent is connected when you start seeing :
+
+    | Root.cpp             | create_client     | create
+    | SessionManager.hpp   | establish_session | session established
+
+printed on the terminal. The agent needs a few seconds to get reconnected (less than 30 seconds). Unplug and plug back in your microcontroller if it takes longer than usual.
 
 #### 1.1b Using Gazebo:
     
@@ -161,9 +172,37 @@ Optional parameters:
 
 Always remember to run linorobot2_bringup.launch.py on a separate terminal before creating a map or robot navigation.
 
-### 2. Create a map
+### 2. Controlling the robot
+#### 2.1  Keyboard Teleop
+Run [teleop_twist_keyboard](https://index.ros.org/r/teleop_twist_keyboard/) to control the robot using your keyboard:
 
-#### 2.1 Run [SLAM Toolbox](https://github.com/SteveMacenski/slam_toolbox):
+    ros2 run teleop_twist_keyboard teleop_twist_keyboard
+
+Press:
+- **i** - To drive the robot forward.
+- **,** - To reverse the robot.
+- **j** - To rotate the robot CCW.
+- **l** - To rotate the robot CW.
+- **shift + j** - To strafe the robot to the left (for mecanum robots).
+- **shift + l** - To strafe the robot to the right (for mecanum robots).
+- **u / o / m / .** - Used for turning the robot, combining linear velocity x and angular velocity z.
+
+#### 2.2 Joystick
+bringup.launch.py has an option to run the joystick driver in the background. Pass `joy` argument to the launch file and set it to true to enable the joystick. For example:
+
+    ros2 launch linorobot2_bringup bringup.launch.py joy:=true
+
+- On F710 Gamepad, the top switch should be set to 'X' and 'MODE' LED should be off.
+
+Press Button/Move Joystick:
+- **RB (First top right button)** - Press and hold this button while moving the joysticks to enable control.
+- **Left Joystick Up/Down** - To drive the robot forward/reverse.
+- **Left Joystick Left/Right** - To strafe the robot to the left/right.
+- **Right Joystick Left/Right** - To rotate the robot CW/CCW.
+
+### 3. Creating a map
+
+#### 3.1 Run [SLAM Toolbox](https://github.com/SteveMacenski/slam_toolbox):
 
 
     ros2 launch linorobot2_navigation slam.launch.py
@@ -182,27 +221,22 @@ For example:
     rviz2 -d linorobot2_slam.rviz
     ```
 
-#### 2.2 Move the robot to start mapping
+#### 3.2 Move the robot to start mapping
 
-You can use teleop_twist_keyboard to manually drive the robot and create the map:
-
-    ros2 run teleop_twist_keyboard teleop_twist_keyboard
-
-Alternatively, you can also drive the robot autonomously by sending goal poses to the robot in rviz:
+Drive the robot manually to the areas you want the robot to operate. Alternatively, you can also drive the robot autonomously by sending goal poses to the robot in rviz:
 
     ros2 launch nav2_bringup navigation_launch.py
 
 - You have to pass `use_sim_time:=true` to the launch file if you're running this with Gazebo.
 
-
-#### 2.3 Save the map
+#### 3.3 Save the map
 
     cd linorobot2/linorobot2_navigation/maps
     ros2 run nav2_map_server map_saver_cli -f <map_name> --ros-args -p save_map_timeout:=10000
 
-### 3. Autonomous Navigation
+### 4. Autonomous Navigation
 
-#### 3.1a Load the map you created:
+#### 4.1a Load the map you created:
 
 Open linorobot2/linorobot2_navigation/launch/navigation.launch.py and change *MAP_NAME* to the name of the map you just created. Once done, build your workspace:
     
@@ -211,7 +245,7 @@ Open linorobot2/linorobot2_navigation/launch/navigation.launch.py and change *MA
 
 * You only have to do this when you need to change the map. 
 
-#### 3.1b Run [Nav2](https://navigation.ros.org/tutorials/docs/navigation2_on_real_turtlebot3.html) package:
+#### 4.1b Run [Nav2](https://navigation.ros.org/tutorials/docs/navigation2_on_real_turtlebot3.html) package:
 
     ros2 launch linorobot2_navigation navigation.launch.py
 

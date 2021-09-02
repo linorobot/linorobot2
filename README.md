@@ -71,8 +71,7 @@ If you're installing this on the robot's computer or you don't need to run Gazeb
     colcon build
     source install/setup.bash
 
-* microxrcedds_agent dependency checks are skipped to prevent this [issue](https://github.com/micro-ROS/micro_ros_setup/issues/138) of finding its keys.
-
+* microxrcedds_agent dependency checks are skipped to prevent this [issue](https://github.com/micro-ROS/micro_ros_setup/issues/138) of finding its keys. This means that you have to always add `--skip-keys microxrcedds_agent` whenever you have to run `rosdep install` on the ROS2 workspace where you installed linorobot2.
 
 ## Setting Up
 ### 1. ENV Variables

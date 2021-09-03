@@ -204,3 +204,9 @@ fi
 
 echo ""
 echo "INSTALLATION DONE."
+
+if [[ "$MACHINE" == "robot" ]]
+    then
+        echo
+        echo "Restart your robot computer now."
+fi

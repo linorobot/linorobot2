@@ -79,8 +79,10 @@ if [[ "$MACHINE" != "ci" ]]
         echo "LASER SENSOR : $LASER_SENSOR"
         echo "DEPTH SENSOR : $DEPTH_SENSOR"
         echo ""
-        echo "This will installer will edit your ~/.bashrc."
-        echo "Create a linorobot2_ws on your home directory."
+        echo "This installer will edit your ~/.bashrc."
+        echo "Create a linorobot2_ws on your $HOME directory."
+        echo "Install linorobot2 ROS2 dependencies."
+        echo "Install udev rules on /etc/udev/rules.d folder."
         echo -n "Enter [y] to continue. " 
         read reply
         if [[ "$reply" != "y" && "$reply" != "Y" ]]
@@ -95,7 +97,6 @@ echo "INSTALLING NOW...."
 echo
 
 sudo apt update
-sudo apt install -y
 
 #### 1.1 Source your ROS2 distro and workspace
 cd $HOME
@@ -108,7 +109,7 @@ source $WORKSPACE/install/setup.bash
 #### 1.2 Download and install micro-ROS:
 cd $WORKSPACE
 git clone -b $ROS_DISTRO https://github.com/micro-ROS/micro_ros_setup.git src/micro_ros_setup
-sudo apt install python3-vcstool
+sudo apt install -y python3-vcstool
 sudo apt update && rosdep update
 rosdep install --from-path src --ignore-src -y
 colcon build
@@ -122,7 +123,7 @@ source $WORKSPACE/install/setup.bash
 #### 1.4 Install LIDAR ROS2 drivers (if you're using one of the tested ones):
 if [[ "$LASER_SENSOR" == "rplidar" ]]
     then
-        sudo apt install ros-$ROS_DISTRO-rplidar-ros
+        sudo apt install -y ros-$ROS_DISTRO-rplidar-ros
         cd /tmp
         wget https://raw.githubusercontent.com/allenh1/rplidar_ros/ros2/scripts/rplidar.rules
         sudo cp rplidar.rules /etc/udev/rules.d/
@@ -133,24 +134,27 @@ elif [[ "$LASER_SENSOR" == "ldlidar" ]]
     then
         cd $WORKSPACE
         git clone https://github.com/linorobot/ldlidar src/ldlidar
+        sudo cp src/ldlidar/ldlidar.rules /etc/udev/rules.d/
+        sudo service udev reload
+        sudo service udev restart
 
 elif [[ "$LASER_SENSOR" == "realsense" ]]
     then
-        sudo apt install ros-$ROS_DISTRO-realsense2-camera
+        sudo apt install -y ros-$ROS_DISTRO-realsense2-camera
 fi
 
 #### 1.5 Install depth sensor drivers (if you're using on of the tested ones):
 if [[ "$DEPTH_SENSOR" == "realsense" ]]
     then
-        sudo apt install ros-$ROS_DISTRO-realsense2-camera
+        sudo apt install -y ros-$ROS_DISTRO-realsense2-camera
 fi
 
 if [[ "$MACHINE" == "ci" ]]
     then
         cd $WORKSPACE
         git clone https://github.com/linorobot/ldlidar src/ldlidar
-        sudo apt install ros-$ROS_DISTRO-rplidar-ros
-        sudo apt install ros-$ROS_DISTRO-realsense2-camera
+        sudo apt install -y ros-$ROS_DISTRO-rplidar-ros
+        sudo apt install -y ros-$ROS_DISTRO-realsense2-camera
 fi
 
 #### 2.1 Download linorobot2:

@@ -14,6 +14,7 @@ if [[ "$ROSDISTRO" == "" ]]
     then
         echo "No ROS2 distro detected"
         echo "Try running $ source /opt/ros/<ros_distro>/setup.bash"
+        exit 1
 fi
 
 if [ "$*" == "" ]

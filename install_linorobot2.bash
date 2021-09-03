@@ -10,6 +10,12 @@ DEPTH_SENSOR=$4
 ARCH="$(uname -m)"
 WORKSPACE="$HOME/linorobot2_ws"
 
+if [[ "$ROSDISTRO" == "" ]]
+    then
+        echo "No ROS2 distro detected"
+        echo "Try running $ source /opt/ros/<ros_distro>/setup.bash"
+fi
+
 if [ "$*" == "" ]
     then
         echo "No arguments provided"

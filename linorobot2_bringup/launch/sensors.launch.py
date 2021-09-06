@@ -28,6 +28,10 @@ def generate_launch_description():
         [FindPackageShare('realsense2_camera'), 'launch', 'rs_launch.py']
     )
 
+    astra_launch_path = PathJoinSubstitution(
+        [FindPackageShare('astra_camera'), 'launch', 'astra_launch.py']
+    )
+
     return LaunchDescription([
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(rplidar_launch_path),
@@ -46,6 +50,11 @@ def generate_launch_description():
                 'filters': 'pointcloud',
                 'ordered_pc': 'true'
             }.items()   
+        ),
+
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(astra_launch_path),
+            condition=IfCondition(PythonExpression(['"astra" == "', depth_sensor, '"']))
         ),
 
         Node(

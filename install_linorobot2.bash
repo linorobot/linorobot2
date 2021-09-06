@@ -53,7 +53,7 @@ if [[ "$MACHINE" != "remote" && "$MACHINE" != "robot" && "$MACHINE" != "ci" ]]
         exit 1
 fi
 
-if [[ "$LASER_SENSOR" != "rplidar" && "$LASER_SENSOR" != "ldlidar" && "$LASER_SENSOR" != "realsense" && "$LASER_SENSOR" != "-" && "$LASER_SENSOR" != "" ]]
+if [[ "$LASER_SENSOR" != "rplidar" && "$LASER_SENSOR" != "ldlidar" && "$LASER_SENSOR" != "realsense" && "$LASER_SENSOR" != "astra" && "$LASER_SENSOR" != "-" && "$LASER_SENSOR" != "" ]]
     then
         echo "Invalid linorobot2 laser sensor: $LASER_SENSOR"
         echo
@@ -61,17 +61,19 @@ if [[ "$LASER_SENSOR" != "rplidar" && "$LASER_SENSOR" != "ldlidar" && "$LASER_SE
         echo "rplidar"
         echo "ldlidar"
         echo "realsense"
+        echo "astra"
         echo "-"
         echo
         exit 1
 fi
 
-if [[ "$DEPTH_SENSOR" != "realsense" && "$DEPTH_SENSOR" != "" ]]
+if [[ "$DEPTH_SENSOR" != "realsense" && "$DEPTH_SENSOR" != "astra" && "$DEPTH_SENSOR" != "" ]]
     then
         echo "Invalid linorobot2 depth sensor: $DEPTH_SENSOR"
         echo
         echo "Valid Options:"
         echo "realsense"
+        echo "astra"
         echo
         exit 1
 fi
@@ -148,12 +150,25 @@ elif [[ "$LASER_SENSOR" == "ldlidar" ]]
 elif [[ "$LASER_SENSOR" == "realsense" ]]
     then
         sudo apt install -y ros-$ROS_DISTRO-realsense2-camera
+
+elif [[ "$LASER_SENSOR" == "astra" ]]
+    then
+        cd $WORKSPACE
+        sudo apt install -y libuvc-dev
+        git clone https://github.com/linorobot/ros_astra_camera src/ros_astra_camera
 fi
+
 
 #### 1.5 Install depth sensor drivers (if you're using on of the tested ones):
 if [[ "$DEPTH_SENSOR" == "realsense" ]]
     then
         sudo apt install -y ros-$ROS_DISTRO-realsense2-camera
+
+elif [[ "$DEPTH_SENSOR" == "astra" ]]
+    then
+        cd $WORKSPACE
+        sudo apt install -y libuvc-dev
+        git clone https://github.com/linorobot/ros_astra_camera src/ros_astra_camera
 fi
 
 if [[ "$MACHINE" == "ci" ]]
@@ -162,6 +177,8 @@ if [[ "$MACHINE" == "ci" ]]
         git clone https://github.com/linorobot/ldlidar src/ldlidar
         sudo apt install -y ros-$ROS_DISTRO-rplidar-ros
         sudo apt install -y ros-$ROS_DISTRO-realsense2-camera
+        sudo apt install -y libuvc-dev
+        git clone https://github.com/linorobot/ros_astra_camera src/ros_astra_camera
 fi
 
 #### 2.1 Download linorobot2:

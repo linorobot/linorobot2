@@ -79,6 +79,11 @@ Intel RealSense:
 
     sudo apt install ros-$ROS_DISTRO-realsense2-camera
 
+Orbec Astra:
+
+    sudo apt install -y libuvc-dev
+    cd <your_ws>
+    git clone https://github.com/linorobot/ros_astra_camera src/ros_astra_camera
 
 ### 2. Download linorobot2 and its dependencies:
 
@@ -117,6 +122,7 @@ Tested Laser Sensors:
 - `rplidar` - [RP LIDAR A1](https://www.slamtec.com/en/Lidar/A1)
 - `ldlidar` - [LD06 LIDAR](https://www.inno-maker.com/product/lidar-ld06/)
 - `realsense` - [Intel RealSense](https://www.intelrealsense.com/stereo-depth/) D435, D435i
+- `astra` - [Orbec Astra](https://orbbec3d.com/product-astra-pro/)
 
 For example:
 
@@ -129,6 +135,7 @@ The Nav2 config file has been configured to support [Voxel Layer](https://naviga
 
 Tested sensors are:
 - `realsense` - [Intel RealSense](https://www.intelrealsense.com/stereo-depth/) D435, D435i
+- `astra` - [Orbec Astra](https://orbbec3d.com/product-astra-pro/)
 
 For example:
 

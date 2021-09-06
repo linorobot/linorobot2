@@ -9,61 +9,53 @@ from launch_ros.actions import Node
 
 
 def generate_launch_description():
-    laser_sensor = os.getenv('LINOROBOT2_LASER_SENSOR', '')
-    depth_sensor = os.getenv('LINOROBOT2_DEPTH_SENSOR', '')
-
+    laser_sensor_env = os.getenv('LINOROBOT2_LASER_SENSOR', '')
+    depth_sensor_env = os.getenv('LINOROBOT2_DEPTH_SENSOR', '')
+    
     fake_laser_config_path = PathJoinSubstitution(
         [FindPackageShare("linorobot2_bringup"), "config", "fake_laser.yaml"]
     )
 
-    rplidar_launch_path = PathJoinSubstitution(
-        [FindPackageShare('rplidar_ros'), 'launch', 'rplidar.launch.py']
+    depth_sensors = {
+        '': ['', '', {}, '', ''],
+        'realsense': ['realsense2_camera', 'rs_launch.py', {'filters': 'pointcloud','ordered_pc': 'true'}, '/camera/depth/image_rect_raw', '/camera/depth/camera_info'],
+        'astra': ['astra_camera', 'astra_launch.py', {}, '/depth/rgb/ir', '/camera_info']
+    }
+
+    laser_sensors = {
+        '': ['', '', {}],
+        'rplidar': ['rplidar_ros', 'rplidar.launch.py', {}],
+        'ldlidar': ['ldlidar', 'ldlidar.launch.py', {}]
+    }
+    laser_sensors.update(depth_sensors)
+
+    laser_launch_path = PathJoinSubstitution(
+        [FindPackageShare(laser_sensors[laser_sensor_env][0]), 'launch', laser_sensors[laser_sensor_env][1]]
     )
 
-    ldlidar_launch_path = PathJoinSubstitution(
-        [FindPackageShare('ldlidar'), 'launch', 'ldlidar.launch.py']
-    )
-
-    realsense_launch_path = PathJoinSubstitution(
-        [FindPackageShare('realsense2_camera'), 'launch', 'rs_launch.py']
-    )
-
-    astra_launch_path = PathJoinSubstitution(
-        [FindPackageShare('astra_camera'), 'launch', 'astra_launch.py']
+    depth_launch_path = PathJoinSubstitution(
+        [FindPackageShare(depth_sensors[depth_sensor_env][0]), 'launch', depth_sensors[depth_sensor_env][1]]
     )
 
     return LaunchDescription([
         IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(rplidar_launch_path),
-            condition=IfCondition(PythonExpression(['"rplidar" == "', laser_sensor, '"'])),
+            PythonLaunchDescriptionSource(laser_launch_path),
+            condition=IfCondition(PythonExpression(['"" != "', laser_sensor_env, '"'])),
+            launch_arguments=laser_sensors[laser_sensor_env][2].items()   
         ),
 
         IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(ldlidar_launch_path),
-            condition=IfCondition(PythonExpression(['"ldlidar" == "', laser_sensor, '"'])),
-        ),
-
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(realsense_launch_path),
-            condition=IfCondition(PythonExpression(['"realsense" == "', depth_sensor, '"'])),
-            launch_arguments={
-                'filters': 'pointcloud',
-                'ordered_pc': 'true'
-            }.items()   
-        ),
-
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(astra_launch_path),
-            condition=IfCondition(PythonExpression(['"astra" == "', depth_sensor, '"']))
+            PythonLaunchDescriptionSource(depth_launch_path),
+            condition=IfCondition(PythonExpression(['"" != "', depth_sensor_env, '"'])),
+            launch_arguments=depth_sensors[depth_sensor_env][2].items()   
         ),
 
         Node(
-            condition=IfCondition(PythonExpression(['"realsense" == "', laser_sensor, '"'])),
+            condition=IfCondition(PythonExpression(['"" != "', laser_sensor_env, '" and ', '"', laser_sensor_env, '" in "', str(list(depth_sensors.keys())[1:]), '"'])),
             package='depthimage_to_laserscan',
-            node_executable='depthimage_to_laserscan_node',
-            node_name='depthimage_to_laserscan_node',
-            remappings=[('depth','/camera/depth/image_rect_raw'),
-                        ('depth_camera_info', '/camera/depth/camera_info')],
+            executable='depthimage_to_laserscan_node',
+            remappings=[('depth', depth_sensors[depth_sensor_env][3]),
+                        ('depth_camera_info', depth_sensors[depth_sensor_env][4])],
             parameters=[fake_laser_config_path]
         )
     ])

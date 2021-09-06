@@ -22,12 +22,15 @@ laser_sensor:
 - `rplidar` - [RP LIDAR A1](https://www.slamtec.com/en/Lidar/A1)
 - `ldlidar` - [LD06 LIDAR](https://www.inno-maker.com/product/lidar-ld06/)
 - `realsense` - [Intel RealSense](https://www.intelrealsense.com/stereo-depth/) D435, D435i    
+- `astra` - [Orbec Astra](https://orbbec3d.com/product-astra-pro/)
 - `-` - If your sensor is not listed above.
 
 If you assign realsense as a laser sensor, the launch files will run [depthimage_to_laserscan](https://github.com/ros-perception/depthimage_to_laserscan) to convert the depth sensor's depth image to laser.
 
 depth_sensor:
 - `realsense` - [Intel RealSense](https://www.intelrealsense.com/stereo-depth/) D435, D435i
+- `astra` - [Orbec Astra](https://orbbec3d.com/product-astra-pro/)
+
 
 After the installation, you can proceed to the [URDF](https://github.com/linorobot/linorobot2#urdf) section. If you prefer installing this package manually, carry on with the [next](https://github.com/linorobot/linorobot2#1-install-micro-ros-and-its-dependencies) step.
 

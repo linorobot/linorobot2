@@ -25,7 +25,7 @@ laser_sensor:
 - `astra` - [Orbec Astra](https://orbbec3d.com/product-astra-pro/)
 - `-` - If your sensor is not listed above.
 
-If you assign realsense as a laser sensor, the launch files will run [depthimage_to_laserscan](https://github.com/ros-perception/depthimage_to_laserscan) to convert the depth sensor's depth image to laser.
+If you assign astra or realsense as a laser sensor, the launch files will run [depthimage_to_laserscan](https://github.com/ros-perception/depthimage_to_laserscan) to convert the depth sensor's depth image to laser.
 
 depth_sensor:
 - `realsense` - [Intel RealSense](https://www.intelrealsense.com/stereo-depth/) D435, D435i

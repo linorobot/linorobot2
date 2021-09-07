@@ -136,26 +136,23 @@ if [[ "$LASER_SENSOR" == "rplidar" ]]
         cd /tmp
         wget https://raw.githubusercontent.com/allenh1/rplidar_ros/ros2/scripts/rplidar.rules
         sudo cp rplidar.rules /etc/udev/rules.d/
-        sudo service udev reload
-        sudo service udev restart
 
 elif [[ "$LASER_SENSOR" == "ldlidar" ]]
     then
         cd $WORKSPACE
         git clone https://github.com/linorobot/ldlidar src/ldlidar
         sudo cp src/ldlidar/ldlidar.rules /etc/udev/rules.d/
-        sudo service udev reload
-        sudo service udev restart
 
 elif [[ "$LASER_SENSOR" == "realsense" ]]
     then
         sudo apt install -y ros-$ROS_DISTRO-realsense2-camera
 
 elif [[ "$LASER_SENSOR" == "astra" ]]
-    then
+    then 56-orbbec-usb.rules
         cd $WORKSPACE
-        sudo apt install -y libuvc-dev
+        sudo apt install -y libuvc-dev libopenni2-dev
         git clone https://github.com/linorobot/ros_astra_camera src/ros_astra_camera
+        sudo cp src/ros_astra_camera/56-orbbec-usb.rules /etc/udev/rules.d/
 fi
 
 
@@ -167,7 +164,7 @@ if [[ "$DEPTH_SENSOR" == "realsense" ]]
 elif [[ "$DEPTH_SENSOR" == "astra" ]]
     then
         cd $WORKSPACE
-        sudo apt install -y libuvc-dev
+        sudo apt install -y libuvc-dev libopenni2-dev
         git clone https://github.com/linorobot/ros_astra_camera src/ros_astra_camera
 fi
 
@@ -177,7 +174,7 @@ if [[ "$MACHINE" == "ci" ]]
         git clone https://github.com/linorobot/ldlidar src/ldlidar
         sudo apt install -y ros-$ROS_DISTRO-rplidar-ros
         sudo apt install -y ros-$ROS_DISTRO-realsense2-camera
-        sudo apt install -y libuvc-dev
+        sudo apt install -y libuvc-dev libopenni2-dev
         git clone https://github.com/linorobot/ros_astra_camera src/ros_astra_camera
 fi
 

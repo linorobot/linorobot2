@@ -1,206 +1,135 @@
-## Installation
-You need to have ros-foxy or ros-galactic installed on your machines. If you haven't installed ROS2 yet, you can use this [installer](https://github.com/linorobot/ros2me) script (works on x86 and ARM based dev boards ie. Raspberry Pi4/Nvidia Jetson Series). Take note that [Installation](https://github.com/linorobot/linorobot2#installation) and [Setting Up](https://github.com/linorobot/linorobot2#setting-up) must be done on your robot computer (ie. Nvidia Jetson Board/Raspberry Pi) and host machine (for visualization and teleoperation).
+## Installation 
+This package requires ros-foxy or ros-galactic. If you haven't installed ROS2 yet, you can use this [installer](https://github.com/linorobot/ros2me) script that has been tested to work on x86 and ARM based dev boards ie. Raspberry Pi4/Nvidia Jetson Series. 
 
-The easiest way to install this package is to run the installer script on your robot computer and host machine. The script will install all the dependencies, set the ENV variables, and create a linorobot2_ws on your `$HOME` folder. 
+### 1. Robot Computer - linorobot2 Package
+The easiest way to install this package on the robot computer is to run the bash script found in this packages's root directory. It will install all the dependencies, set the ENV variables for the robot base and sensors, and create a linorobot2_ws (robot_computer_ws) on the robot computer's `$HOME` directory. 
 
-    source /opt/ros/<your_ros_distro>/setup.bash
+    source /opt/ros/<ros_distro>/setup.bash
     cd /tmp
     wget https://raw.githubusercontent.com/linorobot/linorobot2/install_linorobot2.bash
-    bash install_linorobot2.bash <robot_type> <machine_type> <laser_sensor> <depth_sensor>
+    bash install_linorobot2.bash <robot_type> <laser_sensor> <depth_sensor>
     source ~/.bashrc
 
 robot_type:
-- `2wd` - If you're building a 2 wheel drive robot.
-- `4wd` - If you're building a 4 wheel drive robot.
-- `mecanum` - If you're building a mecanum drive robot.
-
-machine_type:
-- `robot` - If you're installing this package on your robot computer.
-- `remote` - If you're installing this package on your development computer (for visualization).
+- `2wd` - 2 wheel drive robot.
+- `4wd` - 4 wheel drive robot.
+- `mecanum` - Mecanum drive robot.
 
 laser_sensor:
 - `rplidar` - [RP LIDAR A1](https://www.slamtec.com/en/Lidar/A1)
 - `ldlidar` - [LD06 LIDAR](https://www.inno-maker.com/product/lidar-ld06/)
 - `realsense` - [Intel RealSense](https://www.intelrealsense.com/stereo-depth/) D435, D435i    
-- `-` - If your sensor is not listed above.
+- `-` - If the robot's sensor is not listed above.
 
-If you assign astra or realsense as a laser sensor, the launch files will run [depthimage_to_laserscan](https://github.com/ros-perception/depthimage_to_laserscan) to convert the depth sensor's depth image to laser.
+If realsense is used as a laser sensor, the launch files will run [depthimage_to_laserscan](https://github.com/ros-perception/depthimage_to_laserscan) to convert the depth sensor's depth image to laser.
 
 depth_sensor:
 - `realsense` - [Intel RealSense](https://www.intelrealsense.com/stereo-depth/) D435, D435i
 
-After the installation, you can proceed to the [URDF](https://github.com/linorobot/linorobot2#urdf) section. If you prefer installing this package manually, carry on with the [next](https://github.com/linorobot/linorobot2#1-install-micro-ros-and-its-dependencies) step.
+Alternatively, follow this [guide](https://github.com/linorobot/linorobot2/blob/master/ROBOT_INSTALLATION.md) to do the installation manually.
 
-### 1. Install micro-ROS and its dependencies
+### 2. Host Machine / Develoment Computer - Gazebo Simulation (Optional)
+This step is only required if you plan to use Gazebo later. This comes in handy if you want to fine-tune parameters (ie. SLAM Toolbox, AMCL, Nav2) or test your applications on a virtual robot. 
 
-#### 1.1 Source your ROS2 distro and workspace
-If it's your first time using ROS2 and haven't created your ROS2 workspace yet, you can check out [ROS2 Creating a Workspace](https://docs.ros.org/en/galactic/Tutorials/Workspace/Creating-A-Workspace.html) tutorial.
+#### 2.1 Install linorobot2 Package
+Install linorobot2 package on the host machine:
 
-    source /opt/ros/<your_ros_distro>/setup.bash
-    cd <your_ws>
-    colcon build
-    source install/setup.bash
-
-#### 1.2 Download and install micro-ROS:
-
-    cd <your_ws>
-    git clone -b $ROS_DISTRO https://github.com/micro-ROS/micro_ros_setup src/micro_ros_setup
-    sudo apt install python3-vcstool
-    sudo apt update && rosdep update
-    rosdep install --from-path src --ignore-src -y
-    colcon build
-    source install/setup.bash
-
-#### 1.3 Setup micro-ROS agent:
-
-    ros2 run micro_ros_setup create_agent_ws.sh
-    ros2 run micro_ros_setup build_agent.sh
-    source install/setup.bash
-
-* You can ignore `1 package had stderr output: microxrcedds_agent` after building your workspace. 
-
-#### 1.4 Install LIDAR ROS2 drivers (if you're using one of the tested ones):
-RPLIDAR:
-
-    sudo apt install ros-$ROS_DISTRO-rplidar-ros
-    cd /tmp
-    wget https://raw.githubusercontent.com/allenh1/rplidar_ros/ros2/scripts/rplidar.rules
-    sudo cp rplidar.rules /etc/udev/rules.d/
-    sudo service udev reload
-    sudo service udev restart
-
-LDLIDAR:
-
-    cd <your_ws>
-    git clone https://github.com/linorobot/ldlidar src/ldlidar
-
-#### 1.5 Install depth sensor drivers (if you're using on of the tested ones):
-Intel RealSense:
-
-    sudo apt install ros-$ROS_DISTRO-realsense2-camera
-
-### 2. Download linorobot2 and its dependencies:
-
-#### 2.1 Download linorobot2:
-
-    cd <your_ws> 
+    cd <host_machine_ws>
     git clone https://github.com/linorobot/linorobot2 src/linorobot2
-
-#### 2.2 Ignore Gazebo Packages on robot computer (optional)
-
-If you're installing this on the robot's computer or you don't need to run Gazebo at all, you can skip linorobot2_gazebo package by creating a COLCON_IGNORE file:
-
-    cd src/linorobot2/linorobot2_gazebo
-    touch COLCON_IGNORE
-
-#### 2.3 Install linorobot2 package:
-    
-    cd <your_ws>
-    rosdep update && rosdep install --from-path src --ignore-src -y --skip-keys microxrcedds_agent
+    rosdep update && rosdep install --from-path src --ignore-src -y --skip-keys microxrcedds_agent --skip-keys micro_ros_agent
     colcon build
     source install/setup.bash
 
-* microxrcedds_agent dependency checks are skipped to prevent this [issue](https://github.com/micro-ROS/micro_ros_setup/issues/138) of finding its keys. This means that you have to always add `--skip-keys microxrcedds_agent` whenever you have to run `rosdep install` on the ROS2 workspace where you installed linorobot2.
+* microxrcedds_agent and micro_ros_agent dependency checks are skipped to prevent this [issue](https://github.com/micro-ROS/micro_ros_setup/issues/138) of finding its keys. This means that you have to always add `--skip-keys microxrcedds_agent --skip-keys micro_ros_agent` whenever you have to run `rosdep install` on the ROS2 workspace where you installed linorobot2. 
 
-## ENV Variables
-### 1. Robot Type
-Set LINOROBOT2_BASE env variable to the type of robot base that you want to use. This is not required if you're using a custom URDF. Available env variables are *2wd*, *4wd*, and *mecanum*. For example:
+#### 2.2 Define Robot Type
+Set LINOROBOT2_BASE env variable to the type of robot base used. Available env variables are *2wd*, *4wd*, and *mecanum*. For example:
 
     echo "export LINOROBOT2_BASE=2wd" >> ~/.bashrc
-
-### 2. Sensors
-#### 2.1 Laser Sensor (Optional)
-The launch files of the tested laser sensors have already been added in bringup.launch.py. You can enable one of these sensors by exporting the laser sensor you're using to `LINOROBOT2_LASER_SENSOR` env variable.
-
-Tested Laser Sensors:
-- `rplidar` - [RP LIDAR A1](https://www.slamtec.com/en/Lidar/A1)
-- `ldlidar` - [LD06 LIDAR](https://www.inno-maker.com/product/lidar-ld06/)
-- `realsense` - [Intel RealSense](https://www.intelrealsense.com/stereo-depth/) D435, D435i
-- `astra` - [Orbec Astra](https://orbbec3d.com/product-astra-pro/)
-
-For example:
-
-    echo "export LINOROBOT2_LASER_SENSOR=rplidar" >> ~/.bashrc
-
-If you export realsense to `LINOROBOT2_LASER_SENSOR`, the launch file will run [depthimage_to_laserscan](https://github.com/ros-perception/depthimage_to_laserscan) to convert the depth sensor's depth image to laser.
-
-#### 2.2 Depth Sensor (Optional)
-The Nav2 config file has been configured to support [Voxel Layer](https://navigation.ros.org/configuration/packages/costmap-plugins/voxel.html) for marking 3D obstacles in the Local Costmap using a depth sensor. To enable one of the tested depth sensor's launch file in bringup.launch.py, export the depth sensor you're using to `LINOROBOT2_DEPTH_SENSOR` env variable.
-
-Tested sensors are:
-- `realsense` - [Intel RealSense](https://www.intelrealsense.com/stereo-depth/) D435, D435i
-- `astra` - [Orbec Astra](https://orbbec3d.com/product-astra-pro/)
-
-For example:
-
-    echo "export LINOROBOT2_DEPTH_SENSOR=realsense" >> ~/.bashrc
-
-### 3. Save changes
-Source your `~/.bashrc` to apply the changes you made:
-
     source ~/.bashrc
 
+You can skip the next step (Host Machine - RVIZ Configurations) since this package already contains the same RVIZ configurations to visualize the robot. 
+
+### 3. Host Machine - RVIZ Configurations
+Install [linorobot2_viz](https://github.com/linorobot/linorobot2_viz) package to visualize the robot remotely specifically when creating a map or initializing/sending goal poses to the robot. The package has been separated to minimize the installation required if you're not using the simulation tools on the host machine.
+
+    cd <host_machine_ws>
+    git clone https://github.com/linorobot/linorobot2_viz src/linorobot2_viz
+    rosdep update && rosdep install --from-path src --ignore-src -y 
+    colcon build
+    source install/setup.bash
+
 ## URDF
-[linorobot2_description](https://github.com/linorobot/linorobot2/tree/master/linorobot2_description) package has parametized xacro files that can help you kickstart writing your URDF. Open <your_robot_type>.properties.urdf.xacro in [linorobot2_description/urdf](https://github.com/linorobot/linorobot2/tree/master/linorobot2_description/urdf) folder and change the values according to your robot's specification. Keep in mind that all pose definitions must be measured from the `base_link` (center of base) and wheel positions (ie `wheel_pos_x`) are referring to wheel 1.
+### 1. Define robot properties
+[linorobot2_description](https://github.com/linorobot/linorobot2/tree/master/linorobot2_description) package has parametized xacro files that can help you kickstart writing the robot's URDF. Open <robot_type>.properties.urdf.xacro in (Gazebo)[linorobot2_description/urdf](https://github.com/linorobot/linorobot2/tree/master/linorobot2_description/urdf) folder and change the values according to the robot's specification/dimensions. All pose definitions must be measured from the `base_link` (center of base) and wheel positions (ie `wheel_pos_x`) are referring to wheel 1.
+
+For custom URDFs, you can change the `urdf_path` in [description.launch.py](https://github.com/linorobot/linorobot2/blob/master/linorobot2_description/launch/description.launch.py) found in linorobot2_description/launch folder. 
 
 Robot Orientation:
 
 --------------FRONT--------------
 
-WHEEL1  WHEEL2  (2WD)
+WHEEL1  WHEEL2  (2WD/4WD)
 
 WHEEL3  WHEEL4  (4WD)
 
 --------------BACK--------------
 
-Build your workspace once you're done:
+Build the robot computer's workspace to load the new URDF:
 
-    cd <your_workspace>
+    cd <robot_computer_ws>
     colcon build
 
-You can visualize the robot you built by running:
+The same changes must be made on the host machine's <robot_type>.properties.urdf.xacro if you're simulating the robot in Gazebo. Remember to also build the host machine's workspace after editing the xacro file.
 
-    ros2 launch linorobot2_description description.launch.py rviz:=true
+    cd <host_machine_ws>
+    colcon build
 
-If you already have an existing URDF, you can change the `urdf_path` in [description.launch.py](https://github.com/linorobot/linorobot2/blob/master/linorobot2_description/launch/description.launch.py) found in linorobot2_description/launch folder. Remember to build your workspace after editing the file.
+### 2. Visualize the newly created URDF
+Robot Computer:
+
+    ros2 launch linorobot2_description description.launch.py
+
+Optional parameters for simulation on host machine:
+- **rviz** - Set to true to visualize the robot in rviz2 and only if you're configuring the URDF from the host machine. For example:
+
+        ros2 launch linorobo2_description description.launch.py rviz:=true
+
+Host Machine:
+
+The `rviz` argument on description.launch.py won't work on headless setup but you can visualize the robot remotely from the host machine:
+
+    ros2 launch linorobot2_viz robot_model.launch.py
 
 ## Quickstart
-All commands below are to be run on your robot computer unless you're running a simulation or rviz2 for visualizing the robot. SLAM and Navigation launch files are the same for both real and simulated robots in Gazebo.
+All commands below are to be run on the robot computer unless you're running a simulation or rviz2 to visualize the robot remotely from the host machine. SLAM and Navigation launch files are the same for both real and simulated robots in Gazebo.
 
-If you're unfamiliar how to access your robot computer remotely using [ssh](https://itsfoss.com/set-up-ssh-ubuntu/), connect your robot computer to a monitor and install openssh-server.
-
-    sudo apt install openssh-server
-
-Now you can easily access your robot computer using its [IP address](https://itsfoss.com/check-ip-address-ubuntu/) and run commands without a monitor. For example:
-
-    ssh <your_user_name>@<robot_compueter_ip_address>
-
-### 1. Booting up your robot
+### 1. Booting up the robot
 
 #### 1.1a Using a real robot:
 
     ros2 launch linorobot2_bringup bringup.launch.py
 
 Optional parameters:
-- **base_serial_port** - Your robot microcontroller's serial port. The default value is `/dev/ttyACM0` but remember to use this argument and change the default value to the correct serial port. For example:
+- **base_serial_port** - Serial port of the robot's microcontroller. The assumed value is `/dev/ttyACM0`. Otherwise, change the default value to the correct serial port. For example:
     
     ```
     ros2 launch linorobot2_bringup bringup.launch.py base_serial_port:=/dev/ttyACM1
     ```
-- **joy** - Set to true if you want to run the joystick node in the background. (Tested on Logitech F710).
+- **joy** - Set to true to run the joystick node in the background. (Tested on Logitech F710).
 
-Before running any application (ie. creating a map or autonomous navigation), remember to wait for the microROS agent to be connected. The agent is connected when you start seeing :
+Always wait for the microROS agent to be connected before running any application (ie. creating a map or autonomous navigation). Once connected, the agent will print:
 
     | Root.cpp             | create_client     | create
     | SessionManager.hpp   | establish_session | session established
 
-printed on the terminal. The agent needs a few seconds to get reconnected (less than 30 seconds). Unplug and plug back in your microcontroller if it takes longer than usual.
+The agent needs a few seconds to get reconnected (less than 30 seconds). Unplug and plug back in the microcontroller if it takes longer than usual.
 
 #### 1.1b Using Gazebo:
     
     ros2 launch linorobot2_bringup gazebo.launch.py
 
-Always remember to run linorobot2_bringup.launch.py on a separate terminal before creating a map or robot navigation.
+linorobot2_bringup.launch.py or gazebo.launch.py must always be run on a separate terminal before creating a map or robot navigation when working on a real robot or gazebo simulation respectively.
 
 ### 2. Controlling the robot
 #### 2.1  Keyboard Teleop
@@ -218,7 +147,7 @@ Press:
 - **u / o / m / .** - Used for turning the robot, combining linear velocity x and angular velocity z.
 
 #### 2.2 Joystick
-bringup.launch.py has an option to run the joystick driver in the background. Pass `joy` argument to the launch file and set it to true to enable the joystick. For example:
+Pass `joy` argument to the launch file and set it to true to enable the joystick. For example:
 
     ros2 launch linorobot2_bringup bringup.launch.py joy:=true
 
@@ -237,27 +166,29 @@ Press Button/Move Joystick:
 
     ros2 launch linorobot2_navigation slam.launch.py
 
-Optional parameters
+Optional parameters for simulation on host machine:
 
 For example:
 
     ros2 launch linorobot2_navigation slam.launch.py rviz:=true sim:=true
 
-- **sim** - Set to true if you're running with Gazebo. Default value is false.
-- **rviz** - Set to true if you want to run RVIZ in parallel. Default value is false. This won't work on headless setup but you can visualize the map created from your host computer by running:
-   
-    ```
-    cd linorobot2/linorobot2_navigation/rviz
-    rviz2 -d linorobot2_slam.rviz
-    ```
+- **sim** - Set to true for simulated robots on the host machine. Default value is false.
+- **rviz** - Set to true to visualize the robot in RVIZ. Default value is false.
+
+#### 3.1 Run rviz2 to visualize the robot from host machine:
+The `rviz` argument on slam.launch.py won't work on headless setup but you can visualize the robot remotely from the host machine:
+
+    ros2 launch linorobot2_viz slam.launch.py
 
 #### 3.2 Move the robot to start mapping
 
-Drive the robot manually to the areas you want the robot to operate. Alternatively, you can also drive the robot autonomously by sending goal poses to the robot in rviz:
+Drive the robot manually until the robot has fully covered its area of operation. Alternatively, the robot can also navigate autonomously while mapping by sending goal poses:
 
     ros2 launch nav2_bringup navigation_launch.py
 
-- You have to pass `use_sim_time:=true` to the launch file if you're running this with Gazebo.
+- Pass `use_sim_time:=true` to the launch file when running in simulation.
+
+More info [here](https://navigation.ros.org/tutorials/docs/navigation2_with_slam.html).
 
 #### 3.3 Save the map
 
@@ -266,30 +197,35 @@ Drive the robot manually to the areas you want the robot to operate. Alternative
 
 ### 4. Autonomous Navigation
 
-#### 4.1a Load the map you created:
+#### 4.1 Load the map you created:
 
-Open linorobot2/linorobot2_navigation/launch/navigation.launch.py and change *MAP_NAME* to the name of the map you just created. Once done, build your workspace:
+Open linorobot2/linorobot2_navigation/launch/navigation.launch.py and change *MAP_NAME* to the name of the newly created map. Build the robot computer's workspace once done:
     
-    cd <your_ws>
+    cd <robot_computer_ws>
     colcon build
 
-* You only have to do this when you need to change the map. 
+Alternatively, `map` argument can be used when launching Nav2 (next step) to dynamically load map files. For example:
 
-#### 4.1b Run [Nav2](https://navigation.ros.org/tutorials/docs/navigation2_on_real_turtlebot3.html) package:
+    ros2 launch linorobot2_navigation navigation.launch.py map:=<path_to_map_file>/<map_name>.yaml
+
+
+#### 4.2 Run [Nav2](https://navigation.ros.org/tutorials/docs/navigation2_on_real_turtlebot3.html) package:
 
     ros2 launch linorobot2_navigation navigation.launch.py
 
-Optional parameters:
-- **sim** - Set to true if you're running with Gazebo. Default value is false.
-- **map** - Path of <your_map.yaml> you want to use.
-- **rviz** - Set to true if you want to run RVIZ in parallel. Default value is false. This won't work on headless setup but you can visualize the robot from your host computer by running:
+Optional parameter for loading maps:
+- **map** - Path to newly created map <map_name.yaml>.
 
-    ```
-    cd linorobot2/linorobot2_navigation/rviz
-    rviz2 -d linorobot2_navigation.rviz
-    ```
+Optional parameters for simulation on host machine:
+- **sim** - Set to true for simulated robots on the host machine. Default value is false.
+- **rviz** - Set to true to visualize the robot in RVIZ. Default value is false.
 
-If you're new to ROS, you can checkout Nav2's [tutorial](https://navigation.ros.org/tutorials/docs/navigation2_on_real_turtlebot3.html#initialize-the-location-of-turtlebot-3) on how to initialize and send goal pose. 
+#### 4.3 Run rviz2 to visualize the robot from host machine:
+The `rviz` argument for navigation.launch.py won't work on headless setup but you can visualize the robot remotely from the host machine:
+
+    ros2 launch linorobot2_viz navigation.launch.py
+
+Check out Nav2 [tutorial](https://navigation.ros.org/tutorials/docs/navigation2_on_real_turtlebot3.html#initialize-the-location-of-turtlebot-3) for more details on how to initialize and send goal pose. 
 
 ## Troubleshooting Guide
 
@@ -297,10 +233,14 @@ If you're new to ROS, you can checkout Nav2's [tutorial](https://navigation.ros.
 - You need to build your workspace every time you modify a file:
 
     ```
-    cd <your_ws>
+    cd <ros2_ws>
     colcon build
     #continue what you're doing...
     ```
 
 #### 2. [`slam_toolbox]: Message Filter dropping message: frame 'laser'`
 - Try to up `transform_timeout` by 0.1 in linorobot2_navigation/config/slam.yaml until the warning is gone.
+
+
+#### 3. `target_frame - frame does not exist`
+- Check your <robot_type>.properties.urdf.xacro and ensure that there's no syntax errors or repeated decimal points.

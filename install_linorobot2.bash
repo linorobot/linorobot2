@@ -4,11 +4,10 @@ set -e
 
 ROSDISTRO="$(rosversion -d)"
 BASE=$1
-MACHINE=$2
-LASER_SENSOR=$3
-DEPTH_SENSOR=$4
+LASER_SENSOR=$2
+DEPTH_SENSOR=$3
 ARCH="$(uname -m)"
-WORKSPACE="$HOME/linorobot2_ws"
+WORKSPACE="$HOME/test_ws"
 
 if [[ "$ROSDISTRO" == "" || "$ROSDISTRO" == "<unknown>" ]]
     then
@@ -30,7 +29,7 @@ if [ "$*" == "" ]
         exit 1
 fi
         
-if [[ "$BASE" != "2wd" && "$BASE" != "4wd" && "$BASE" != "mecanum" ]]
+if [[ "$BASE" != "2wd" && "$BASE" != "4wd" && "$BASE" != "mecanum" && "$BASE" != "ci" ]]
     then
         echo "Invalid linorobot base: $1"
         echo
@@ -42,18 +41,7 @@ if [[ "$BASE" != "2wd" && "$BASE" != "4wd" && "$BASE" != "mecanum" ]]
         exit 1
 fi
 
-if [[ "$MACHINE" != "remote" && "$MACHINE" != "robot" && "$MACHINE" != "ci" ]]
-    then
-        echo "Invalid linorobot base: $1"
-        echo
-        echo "Valid Options:"
-        echo "remote"
-        echo "robot"
-        echo
-        exit 1
-fi
-
-if [[ "$LASER_SENSOR" != "rplidar" && "$LASER_SENSOR" != "ldlidar" && "$LASER_SENSOR" != "realsense" && "$LASER_SENSOR" != "astra" && "$LASER_SENSOR" != "-" && "$LASER_SENSOR" != "" ]]
+if [[ "$BASE" != "ci" && "$LASER_SENSOR" != "rplidar" && "$LASER_SENSOR" != "ldlidar" && "$LASER_SENSOR" != "realsense" && "$LASER_SENSOR" != "astra" && "$LASER_SENSOR" != "-" && "$LASER_SENSOR" != "" ]]
     then
         echo "Invalid linorobot2 laser sensor: $LASER_SENSOR"
         echo
@@ -61,33 +49,31 @@ if [[ "$LASER_SENSOR" != "rplidar" && "$LASER_SENSOR" != "ldlidar" && "$LASER_SE
         echo "rplidar"
         echo "ldlidar"
         echo "realsense"
-        echo "astra"
         echo "-"
         echo
         exit 1
 fi
 
-if [[ "$DEPTH_SENSOR" != "realsense" && "$DEPTH_SENSOR" != "astra" && "$DEPTH_SENSOR" != "" ]]
+if [[ "$BASE" != "ci" && "$DEPTH_SENSOR" != "realsense" && "$DEPTH_SENSOR" != "astra" && "$DEPTH_SENSOR" != "" ]]
     then
         echo "Invalid linorobot2 depth sensor: $DEPTH_SENSOR"
         echo
         echo "Valid Options:"
         echo "realsense"
-        echo "astra"
         echo
         exit 1
 fi
 
-if [[ "$MACHINE" != "ci" ]]
+if [[ "$BASE" != "ci" ]]
     then
         echo
-        echo "You are installing linorobot2 on your $MACHINE computer."
-        echo ""
+        echo "You are installing linorobot2 on your robot computer."
+        echo
         echo "===========SUMMARY============"
         echo "ROBOT TYPE   : $BASE"
         echo "LASER SENSOR : $LASER_SENSOR"
         echo "DEPTH SENSOR : $DEPTH_SENSOR"
-        echo ""
+        echo
         echo "This installer will edit your ~/.bashrc."
         echo "Create a linorobot2_ws on your $HOME directory."
         echo "Install linorobot2 ROS2 dependencies."
@@ -104,8 +90,6 @@ fi
 echo
 echo "INSTALLING NOW...."
 echo
-
-sudo apt update
 
 #### 1.1 Source your ROS2 distro and workspace
 cd $HOME
@@ -168,7 +152,7 @@ elif [[ "$DEPTH_SENSOR" == "astra" ]]
         git clone https://github.com/linorobot/ros_astra_camera src/ros_astra_camera
 fi
 
-if [[ "$MACHINE" == "ci" ]]
+if [[ "$BASE" == "ci" ]]
     then
         cd $WORKSPACE
         git clone https://github.com/linorobot/ldlidar src/ldlidar
@@ -183,11 +167,8 @@ cd $WORKSPACE
 git clone https://github.com/linorobot/linorobot2 src/linorobot2
 
 #### 2.2 Ignore Gazebo Packages on robot computer (optional)
-if [[ "$MACHINE" == "robot" ]]
-    then
-        cd $WORKSPACE/src/linorobot2/linorobot2_gazebo
-        touch COLCON_IGNORE
-fi
+cd $WORKSPACE/src/linorobot2/linorobot2_gazebo
+touch COLCON_IGNORE
 
 #### 2.3 Install linorobot2 package:
 cd $WORKSPACE
@@ -196,14 +177,14 @@ colcon build
 source $WORKSPACE/install/setup.bash
 
 ## ENV Variables
-if [[ "$MACHINE" != "ci" ]]
+if [[ "$BASE" != "ci" ]]
     then
         ### 1. Robot Type
         echo "export LINOROBOT2_BASE=$BASE" >> ~/.bashrc
         ### 2. Sensors
         echo "export LINOROBOT2_LASER_SENSOR=$LASER_SENSOR" >> ~/.bashrc
         echo "export LINOROBOT2_DEPTH_SENSOR=$DEPTH_SENSOR" >> ~/.bashrc
-        echo ""
+        echo
         echo "Do you want to add sourcing of linorobot2_ws on your ~/.bashrc?"
         echo -n "Yes [y] or No [n]: " 
         read reply
@@ -211,16 +192,12 @@ if [[ "$MACHINE" != "ci" ]]
             then
                 echo "source \$HOME/linorobot2_ws/install/setup.bash" >> ~/.bashrc
         else
-            echo ""
+            echo
             echo "Remember to do run $ source ~/linorobot2_ws/install/setup.bash every time you open a terminal."
         fi
 fi
 
-echo ""
+echo
 echo "INSTALLATION DONE."
-
-if [[ "$MACHINE" == "robot" ]]
-    then
-        echo
-        echo "Restart your robot computer now."
-fi
+echo
+echo "Restart your robot computer now."

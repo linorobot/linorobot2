@@ -21,7 +21,7 @@ laser_sensor:
 - `realsense` - [Intel RealSense](https://www.intelrealsense.com/stereo-depth/) D435, D435i    
 - `-` - If the robot's sensor is not listed above.
 
-If realsense is used as a laser sensor, the launch files will run [depthimage_to_laserscan](https://github.com/ros-perception/depthimage_to_laserscan) to convert the depth sensor's depth image to laser.
+If realsense is used as a laser sensor, the launch files will run [depthimage_to_laserscan](https://github.com/ros-perception/depthimage_to_laserscan) to convert the depth sensor's depth image to laser scans.
 
 depth_sensor:
 - `realsense` - [Intel RealSense](https://www.intelrealsense.com/stereo-depth/) D435, D435i
@@ -182,7 +182,7 @@ The `rviz` argument on slam.launch.py won't work on headless setup but you can v
 
 #### 3.2 Move the robot to start mapping
 
-Drive the robot manually until the robot has fully covered its area of operation. Alternatively, the robot can also navigate autonomously while mapping by sending goal poses:
+Drive the robot manually until the robot has fully covered its area of operation. Alternatively, the robot can also receive goal poses to navigate autonomously while mapping:
 
     ros2 launch nav2_bringup navigation_launch.py
 

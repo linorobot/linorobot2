@@ -7,7 +7,7 @@ BASE=$1
 LASER_SENSOR=$2
 DEPTH_SENSOR=$3
 ARCH="$(uname -m)"
-WORKSPACE="$HOME/test_ws"
+WORKSPACE="$HOME/linorobot_ws"
 
 ROBOT_TYPE_ARRAY=(2wd 4wd mecanum)
 DEPTH_SENSOR_ARRAY=(realsense)

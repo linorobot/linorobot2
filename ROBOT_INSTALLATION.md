@@ -14,7 +14,7 @@ If it's your first time using ROS2 and haven't created your ROS2 workspace yet, 
 
     cd <your_ws>
     git clone -b $ROS_DISTRO https://github.com/micro-ROS/micro_ros_setup src/micro_ros_setup
-    sudo apt install python3-vcstool
+    sudo apt install python3-vcstool build-essential
     sudo apt update && rosdep update
     rosdep install --from-path src --ignore-src -y
     colcon build
@@ -42,6 +42,19 @@ LDLIDAR:
 
     cd <your_ws>
     git clone https://github.com/linorobot/ldlidar src/ldlidar
+
+YDLIDAR:
+
+    cd /tmp
+    git clone https://github.com/YDLIDAR/YDLidar-SDK.git
+    cd YDLidar-SDK/build
+    cmake ..
+    make
+    sudo make install
+    cd <your_ws>
+    git clone https://github.com/YDLIDAR/ydlidar_ros2_driver src/ydlidar_ros2_driver
+    chmod 0777 src/ydlidar_ros2_driver/startup/*
+    sudo sh src/ydlidar_ros2_driver/startup/initenv.sh
 
 #### 1.5 Install depth sensor drivers:
 Intel RealSense:
@@ -84,6 +97,7 @@ The launch files of the tested laser sensors have already been added in bringup.
 Tested Laser Sensors:
 - `rplidar` - [RP LIDAR A1](https://www.slamtec.com/en/Lidar/A1)
 - `ldlidar` - [LD06 LIDAR](https://www.inno-maker.com/product/lidar-ld06/)
+- `ydlidar` - [YDLIDAR](https://www.ydlidar.com/lidars.html)
 - `realsense` - [Intel RealSense](https://www.intelrealsense.com/stereo-depth/) D435, D435i
 - `astra` - [Orbec Astra](https://orbbec3d.com/product-astra-pro/)
 

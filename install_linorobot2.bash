@@ -9,6 +9,48 @@ DEPTH_SENSOR=$3
 ARCH="$(uname -m)"
 WORKSPACE="$HOME/test_ws"
 
+ROBOT_TYPE_ARRAY=(2wd 4wd mecanum)
+DEPTH_SENSOR_ARRAY=(realsense)
+LASER_SENSOR_ARRAY=(rplidar ldlidar ydlidar)
+LASER_SENSOR_ARRAY+=(${DEPTH_SENSOR_ARRAY[@]})
+
+function install_rplidar {
+    sudo apt install -y ros-$ROS_DISTRO-rplidar-ros
+    cd /tmp
+    wget https://raw.githubusercontent.com/allenh1/rplidar_ros/ros2/scripts/rplidar.rules
+    sudo cp rplidar.rules /etc/udev/rules.d/
+}
+
+function install_ldlidar {
+    cd $WORKSPACE
+    git clone https://github.com/linorobot/ldlidar src/ldlidar
+    sudo cp src/ldlidar/ldlidar.rules /etc/udev/rules.d/
+}
+
+function install_ydlidar {
+    cd /tmp
+    git clone https://github.com/YDLIDAR/YDLidar-SDK.git
+    cd YDLidar-SDK/build
+    cmake ..
+    make
+    sudo make install
+    cd $WORKSPACE
+    git clone https://github.com/YDLIDAR/ydlidar_ros2_driver src/ydlidar_ros2_driver
+    chmod 0777 src/ydlidar_ros2_driver/startup/*
+    sudo sh src/ydlidar_ros2_driver/startup/initenv.sh
+}
+
+function install_realsense {
+    sudo apt install -y ros-$ROS_DISTRO-realsense2-camera
+}
+
+function install_astra {
+    cd $WORKSPACE
+    sudo apt install -y libuvc-dev libopenni2-dev
+    git clone https://github.com/linorobot/ros_astra_camera src/ros_astra_camera
+    sudo cp src/ros_astra_camera/56-orbbec-usb.rules /etc/udev/rules.d/
+}
+
 if [[ "$ROSDISTRO" == "" || "$ROSDISTRO" == "<unknown>" ]]
     then
         echo "No ROS2 distro detected"
@@ -29,37 +71,32 @@ if [ "$*" == "" ]
         exit 1
 fi
         
-if [[ "$BASE" != "2wd" && "$BASE" != "4wd" && "$BASE" != "mecanum" && "$BASE" != "ci" ]]
+if [[ "$BASE" != "ci" ]] && !(printf '%s\n' "${ROBOT_TYPE_ARRAY[@]}" | grep -xq $BASE)
     then
         echo "Invalid linorobot base: $1"
         echo
         echo "Valid Options:"
-        echo "2wd"
-        echo "4wd"
-        echo "mecanum"
+        for key in "${!ROBOT_TYPE_ARRAY[@]}"; do echo "${ROBOT_TYPE_ARRAY[$key]}"; done
         echo
         exit 1
 fi
 
-if [[ "$BASE" != "ci" && "$LASER_SENSOR" != "rplidar" && "$LASER_SENSOR" != "ldlidar" && "$LASER_SENSOR" != "realsense" && "$LASER_SENSOR" != "astra" && "$LASER_SENSOR" != "-" && "$LASER_SENSOR" != "" ]]
+if [[ "$BASE" != "ci" && "$LASER_SENSOR" != "" && "$LASER_SENSOR" != "-" ]] && !(printf '%s\n' "${LASER_SENSOR_ARRAY[@]}" | grep -xq $LASER_SENSOR)
     then
         echo "Invalid linorobot2 laser sensor: $LASER_SENSOR"
         echo
         echo "Valid Options:"
-        echo "rplidar"
-        echo "ldlidar"
-        echo "realsense"
-        echo "-"
+        for key in "${!LASER_SENSOR_ARRAY[@]}"; do echo "${LASER_SENSOR_ARRAY[$key]}"; done
         echo
         exit 1
 fi
 
-if [[ "$BASE" != "ci" && "$DEPTH_SENSOR" != "realsense" && "$DEPTH_SENSOR" != "astra" && "$DEPTH_SENSOR" != "" ]]
+if [[ "$BASE" != "ci" && "$DEPTH_SENSOR" != "" ]] && !(printf '%s\n' "${DEPTH_SENSOR_ARRAY[@]}" | grep -xq $DEPTH_SENSOR)
     then
         echo "Invalid linorobot2 depth sensor: $DEPTH_SENSOR"
         echo
         echo "Valid Options:"
-        echo "realsense"
+        for key in "${!DEPTH_SENSOR_ARRAY[@]}"; do echo "${DEPTH_SENSOR_ARRAY[$key]}"; done
         echo
         exit 1
 fi
@@ -102,7 +139,7 @@ source $WORKSPACE/install/setup.bash
 #### 1.2 Download and install micro-ROS:
 cd $WORKSPACE
 git clone -b $ROS_DISTRO https://github.com/micro-ROS/micro_ros_setup.git src/micro_ros_setup
-sudo apt install -y python3-vcstool
+sudo apt install -y python3-vcstool build-essential
 sudo apt update && rosdep update
 rosdep install --from-path src --ignore-src -y
 colcon build
@@ -116,50 +153,42 @@ source $WORKSPACE/install/setup.bash
 #### 1.4 Install LIDAR ROS2 drivers (if you're using one of the tested ones):
 if [[ "$LASER_SENSOR" == "rplidar" ]]
     then
-        sudo apt install -y ros-$ROS_DISTRO-rplidar-ros
-        cd /tmp
-        wget https://raw.githubusercontent.com/allenh1/rplidar_ros/ros2/scripts/rplidar.rules
-        sudo cp rplidar.rules /etc/udev/rules.d/
+        install_rplidar
 
 elif [[ "$LASER_SENSOR" == "ldlidar" ]]
     then
-        cd $WORKSPACE
-        git clone https://github.com/linorobot/ldlidar src/ldlidar
-        sudo cp src/ldlidar/ldlidar.rules /etc/udev/rules.d/
+        install_ldlidar
+
+elif [[ "$LASER_SENSOR" == "ydlidar" ]]
+    then
+        install_ydlidar
 
 elif [[ "$LASER_SENSOR" == "realsense" ]]
     then
-        sudo apt install -y ros-$ROS_DISTRO-realsense2-camera
+        install_realsense
 
 elif [[ "$LASER_SENSOR" == "astra" ]]
-    then 56-orbbec-usb.rules
-        cd $WORKSPACE
-        sudo apt install -y libuvc-dev libopenni2-dev
-        git clone https://github.com/linorobot/ros_astra_camera src/ros_astra_camera
-        sudo cp src/ros_astra_camera/56-orbbec-usb.rules /etc/udev/rules.d/
+    then 
+        install_astra
 fi
-
 
 #### 1.5 Install depth sensor drivers (if you're using on of the tested ones):
 if [[ "$DEPTH_SENSOR" == "realsense" ]]
     then
-        sudo apt install -y ros-$ROS_DISTRO-realsense2-camera
+        install_realsense
 
 elif [[ "$DEPTH_SENSOR" == "astra" ]]
     then
-        cd $WORKSPACE
-        sudo apt install -y libuvc-dev libopenni2-dev
-        git clone https://github.com/linorobot/ros_astra_camera src/ros_astra_camera
+        install_astra
 fi
 
 if [[ "$BASE" == "ci" ]]
     then
-        cd $WORKSPACE
-        git clone https://github.com/linorobot/ldlidar src/ldlidar
-        sudo apt install -y ros-$ROS_DISTRO-rplidar-ros
-        sudo apt install -y ros-$ROS_DISTRO-realsense2-camera
-        sudo apt install -y libuvc-dev libopenni2-dev
-        git clone https://github.com/linorobot/ros_astra_camera src/ros_astra_camera
+        install_rplidar
+        install_ldlidar
+        install_ydlidar
+        install_realsense
+        install_astra
 fi
 
 #### 2.1 Download linorobot2:

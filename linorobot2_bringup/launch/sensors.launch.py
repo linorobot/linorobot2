@@ -31,7 +31,8 @@ def generate_launch_description():
     laser_sensors = {
         '': ['', '', {}],
         'rplidar': ['rplidar_ros', 'rplidar.launch.py', {}],
-        'ldlidar': ['ldlidar', 'ldlidar.launch.py', {}]
+        'ldlidar': ['ldlidar', 'ldlidar.launch.py', {}],
+        'ydlidar': ['linorobot2_bringup', 'vendors.launch.py', {'sensor': 'ydlidar'}],
     }
     laser_sensors.update(depth_sensors) #make depth sensors available as laser sensors as well
 

@@ -18,6 +18,7 @@ robot_type:
 laser_sensor:
 - `rplidar` - [RP LIDAR A1](https://www.slamtec.com/en/Lidar/A1)
 - `ldlidar` - [LD06 LIDAR](https://www.inno-maker.com/product/lidar-ld06/)
+- `ydlidar` - [YDLIDAR X4](https://www.ydlidar.com/products/view/5.html)
 - `realsense` - [Intel RealSense](https://www.intelrealsense.com/stereo-depth/) D435, D435i    
 - `-` - If the robot's sensor is not listed above.
 

@@ -9,7 +9,7 @@ from launch.conditions import LaunchConfigurationEquals
 
 def generate_launch_description():
     ydlidar_config_path = PathJoinSubstitution(
-        [FindPackageShare("ydlidar_ros2_driver"), "params", "ydlidar.yaml"]
+        [FindPackageShare("linorobot2_bringup"), "config", "ydlidar.yaml"]
     )
 
     return LaunchDescription([

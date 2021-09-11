@@ -26,8 +26,22 @@ def generate_launch_description():
             name='ydlidar_ros2_driver_node',
             output='screen',
             emulate_tty=True,
-            parameters=[ydlidar_config_path],
-            node_namespace='/',
+            parameters=[ydlidar_config_path]
+        ),
+
+        Node(
+            condition=LaunchConfigurationEquals("sensor", 'rplidar'),
+            name='rplidar_composition',
+            package='rplidar_ros',
+            executable='rplidar_composition',
+            output='screen',
+            parameters=[{
+                'serial_port': '/dev/ttyUSB0',
+                'serial_baudrate': 115200,  # A1 / A2
+                'frame_id': 'laser',
+                'inverted': False,
+                'angle_compensate': True,
+            }],
         )
     ])
 

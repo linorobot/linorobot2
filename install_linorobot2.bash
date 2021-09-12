@@ -72,17 +72,18 @@ function install_astra {
 
 function install_zed {
     cd /tmp
-
-    if [[ -d /etc/nv_tegra_release ]]
+    if [[ -f /etc/nv_tegra_release ]]
         then
+            #TODO ADD CUDA INSTALLATION HERE
             wget https://download.stereolabs.com/zedsdk/3.5/jp45/jetsons -O zed_sdk
     elif lspci | grep VGA | grep -o NVIDIA
         then
             wget https://download.stereolabs.com/zedsdk/3.5/cu111/ubuntu20 -O zed_sdk
     else
         echo "Linux Machine not supported by Zed Camera"
-        exit
+        exit 1
     fi
+    
     chmod +x zed_sdk
     ./zed_sdk -- silent
     cd $WORKSPACE
@@ -194,6 +195,11 @@ source $WORKSPACE/install/setup.bash
 if (printf '%s\n' "${LASER_SENSOR_ARRAY[@]}" | grep -xq $LASER_SENSOR)
     then
         install_$LASER_SENSOR
+fi
+
+if (printf '%s\n' "${DEPTH_SENSOR_ARRAY[@]}" | grep -xq $DEPTH_SENSOR)
+    then
+        install_$DEPTH_SENSOR
 fi
 
 if [[ "$BASE" == "ci" ]]

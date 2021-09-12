@@ -1,3 +1,17 @@
+# Copyright (c) 2021 Juan Miguel Jimeno
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http:#www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 import os
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
@@ -15,7 +29,6 @@ def generate_launch_description():
     fake_laser_config_path = PathJoinSubstitution(
         [FindPackageShare("linorobot2_bringup"), "config", "fake_laser.yaml"]
     )
-
     #indices
     #0 - package name (str)
     #1 - launch file (str)
@@ -25,7 +38,11 @@ def generate_launch_description():
     depth_sensors = {
         '': ['', '', {}, '', ''],
         'realsense': ['realsense2_camera', 'rs_launch.py', {'filters': 'pointcloud','ordered_pc': 'true'}, '/camera/depth/image_rect_raw', '/camera/depth/camera_info'],
-        'astra': ['astra_camera', 'astra_launch.py', {}, '/depth/rgb/ir', '/camera_info']
+        'astra': ['astra_camera', 'astra_launch.py', {}, '/depth/rgb/ir', '/camera_info'],
+        'zed': ['zed_wrapper', 'zed.launch.py', {}, '', ''],
+        'zed2': ['zed_wrapper', 'zed2.launch.py', {}, '', ''],
+        'zed2i': ['zed_wrapper', 'zed2i.launch.py', {}, '', ''],
+        'zedm': ['zed_wrapper', 'zedm.launch.py', {}, '', '']
     }
 
     laser_sensors = {
@@ -34,6 +51,7 @@ def generate_launch_description():
         'ydlidar': ['linorobot2_bringup', 'vendors.launch.py', {'sensor': 'ydlidar'}],
         'ldlidar': ['ldlidar', 'ldlidar.launch.py', {'serial_port': '/dev/ttyUSB0'}]
     }
+
     laser_sensors.update(depth_sensors) #make depth sensors available as laser sensors as well
 
     laser_launch_path = PathJoinSubstitution(

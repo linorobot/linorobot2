@@ -1,4 +1,17 @@
 #!/usr/bin/env bash
+# Copyright (c) 2021 Juan Miguel Jimeno
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http:#www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 set -e
 
@@ -10,7 +23,7 @@ ARCH="$(uname -m)"
 WORKSPACE="$HOME/linorobot2_ws"
 
 ROBOT_TYPE_ARRAY=(2wd 4wd mecanum)
-DEPTH_SENSOR_ARRAY=(realsense)
+DEPTH_SENSOR_ARRAY=(realsense zed zedm zed2 zed2i)
 LASER_SENSOR_ARRAY=(rplidar ldlidar ydlidar)
 LASER_SENSOR_ARRAY+=(${DEPTH_SENSOR_ARRAY[@]})
 
@@ -25,6 +38,8 @@ function install_ldlidar {
     cd $WORKSPACE
     git clone https://github.com/linorobot/ldlidar src/ldlidar
     sudo cp src/ldlidar/ldlidar.rules /etc/udev/rules.d/
+    colcon build
+    source $WORKSPACE/install/setup.bash
 }
 
 function install_ydlidar {
@@ -38,6 +53,8 @@ function install_ydlidar {
     git clone https://github.com/YDLIDAR/ydlidar_ros2_driver src/ydlidar_ros2_driver
     chmod 0777 src/ydlidar_ros2_driver/startup/*
     sudo sh src/ydlidar_ros2_driver/startup/initenv.sh
+    colcon build --symlink-install
+    source $WORKSPACE/install/setup.bash
 }
 
 function install_realsense {
@@ -49,6 +66,43 @@ function install_astra {
     sudo apt install -y libuvc-dev libopenni2-dev
     git clone https://github.com/linorobot/ros_astra_camera src/ros_astra_camera
     sudo cp src/ros_astra_camera/56-orbbec-usb.rules /etc/udev/rules.d/
+    colcon build
+    source $WORKSPACE/install/setup.bash
+}
+
+function install_zed {
+    cd /tmp
+
+    if [[ -d /etc/nv_tegra_release ]]
+        then
+            wget https://download.stereolabs.com/zedsdk/3.5/jp45/jetsons -O zed_sdk
+    elif lspci | grep VGA | grep -o NVIDIA
+        then
+            wget https://download.stereolabs.com/zedsdk/3.5/cu111/ubuntu20 -O zed_sdk
+    else
+        echo "Linux Machine not supported by Zed Camera"
+        exit
+    fi
+    chmod +x zed_sdk
+    ./zed_sdk -- silent
+    cd $WORKSPACE
+    git clone https://github.com/stereolabs/zed-ros2-wrapper src/zed-ros2-wrapper
+    rosdep install --from-paths src --ignore-src -r -y
+    colcon build --symlink-install --cmake-args=-DCMAKE_BUILD_TYPE=Release
+    source $WORKSPACE/install/setup.bash
+    source ~/.bashrc
+}
+
+function install_zedm {
+    install_zed
+}
+
+function install_zed2 {
+    install_zed
+}
+
+function install_zed2i {
+    install_zed
 }
 
 if [[ "$ROSDISTRO" == "" || "$ROSDISTRO" == "<unknown>" ]]
@@ -136,7 +190,18 @@ cd $WORKSPACE
 colcon build
 source $WORKSPACE/install/setup.bash
 
-#### 1.2 Download and install micro-ROS:
+#### 1.2/1.3 Install LIDAR/Depth Sensor ROS2 drivers:
+if (printf '%s\n' "${LASER_SENSOR_ARRAY[@]}" | grep -xq $LASER_SENSOR)
+    then
+        install_$LASER_SENSOR
+fi
+
+if [[ "$BASE" == "ci" ]]
+    then
+        for key in "${!LASER_SENSOR_ARRAY[@]}"; do  install_${LASER_SENSOR_ARRAY[$key]}; done
+fi
+
+#### 1.4 Download and install micro-ROS:
 cd $WORKSPACE
 git clone -b $ROS_DISTRO https://github.com/micro-ROS/micro_ros_setup.git src/micro_ros_setup
 sudo apt install -y python3-vcstool build-essential
@@ -145,51 +210,10 @@ rosdep install --from-path src --ignore-src -y
 colcon build
 source $WORKSPACE/install/setup.bash
 
-#### 1.3 Setup micro-ROS agent:
+#### 1.5 Setup micro-ROS agent:
 ros2 run micro_ros_setup create_agent_ws.sh
 ros2 run micro_ros_setup build_agent.sh
 source $WORKSPACE/install/setup.bash
-
-#### 1.4 Install LIDAR ROS2 drivers (if you're using one of the tested ones):
-if [[ "$LASER_SENSOR" == "rplidar" ]]
-    then
-        install_rplidar
-
-elif [[ "$LASER_SENSOR" == "ldlidar" ]]
-    then
-        install_ldlidar
-
-elif [[ "$LASER_SENSOR" == "ydlidar" ]]
-    then
-        install_ydlidar
-
-elif [[ "$LASER_SENSOR" == "realsense" ]]
-    then
-        install_realsense
-
-elif [[ "$LASER_SENSOR" == "astra" ]]
-    then 
-        install_astra
-fi
-
-#### 1.5 Install depth sensor drivers (if you're using on of the tested ones):
-if [[ "$DEPTH_SENSOR" == "realsense" ]]
-    then
-        install_realsense
-
-elif [[ "$DEPTH_SENSOR" == "astra" ]]
-    then
-        install_astra
-fi
-
-if [[ "$BASE" == "ci" ]]
-    then
-        install_rplidar
-        install_ldlidar
-        install_ydlidar
-        install_realsense
-        install_astra
-fi
 
 #### 2.1 Download linorobot2:
 cd $WORKSPACE

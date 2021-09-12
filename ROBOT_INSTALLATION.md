@@ -10,38 +10,21 @@ If it's your first time using ROS2 and haven't created your ROS2 workspace yet, 
     colcon build
     source install/setup.bash
 
-#### 1.2 Download and install micro-ROS:
-
-    cd <your_ws>
-    git clone -b $ROS_DISTRO https://github.com/micro-ROS/micro_ros_setup src/micro_ros_setup
-    sudo apt install python3-vcstool build-essential
-    sudo apt update && rosdep update
-    rosdep install --from-path src --ignore-src -y
-    colcon build
-    source install/setup.bash
-
-#### 1.3 Setup micro-ROS agent:
-
-    ros2 run micro_ros_setup create_agent_ws.sh
-    ros2 run micro_ros_setup build_agent.sh
-    source install/setup.bash
-
-* You can ignore `1 package had stderr output: microxrcedds_agent` after building your workspace. 
-
-#### 1.4 Install LIDAR ROS2 drivers:
+#### 1.2 Install LIDAR ROS2 drivers:
 RPLIDAR:
 
-    sudo apt install ros-$ROS_DISTRO-rplidar-ros
+    sudo apt install -y ros-$ROS_DISTRO-rplidar-ros
     cd /tmp
     wget https://raw.githubusercontent.com/allenh1/rplidar_ros/ros2/scripts/rplidar.rules
     sudo cp rplidar.rules /etc/udev/rules.d/
-    sudo service udev reload
-    sudo service udev restart
 
 LDLIDAR:
 
     cd <your_ws>
     git clone https://github.com/linorobot/ldlidar src/ldlidar
+    sudo cp src/ldlidar/ldlidar.rules /etc/udev/rules.d/
+    colcon build
+    source <your_ws>/install/setup.bash
 
 YDLIDAR:
 
@@ -55,11 +38,45 @@ YDLIDAR:
     git clone https://github.com/YDLIDAR/ydlidar_ros2_driver src/ydlidar_ros2_driver
     chmod 0777 src/ydlidar_ros2_driver/startup/*
     sudo sh src/ydlidar_ros2_driver/startup/initenv.sh
+    colcon build --symlink-install
+    source <your_ws>/install/setup.bash
 
-#### 1.5 Install depth sensor drivers:
+#### 1.3 Install depth sensor drivers:
 Intel RealSense:
 
     sudo apt install ros-$ROS_DISTRO-realsense2-camera
+
+Zed Camera:
+
+    cd /tmp
+    wget https://download.stereolabs.com/zedsdk/3.5/jp45/jetsons -O zed_sdk #use Jetson SDK
+    #wget https://download.stereolabs.com/zedsdk/3.5/cu111/ubuntu20 -O zed_sdk #use this for x86 machine with NVIDIA GPU
+    chmod +x zed_sdk
+    ./zed_sdk -- silent
+    cd <your_ws>
+    rosdep install --from-paths src --ignore-src -r -y
+    git clone https://github.com/stereolabs/zed-ros2-wrapper src/zed-ros2-wrapper
+    rosdep install --from-paths src --ignore-src -r -y
+    colcon build --symlink-install --cmake-args=-DCMAKE_BUILD_TYPE=Release
+    source <your_ws>/install/setup.bash
+
+#### 1.4 Download and install micro-ROS:
+
+    cd <your_ws>
+    git clone -b $ROS_DISTRO https://github.com/micro-ROS/micro_ros_setup src/micro_ros_setup
+    sudo apt install python3-vcstool build-essential
+    sudo apt update && rosdep update
+    rosdep install --from-path src --ignore-src -y
+    colcon build
+    source install/setup.bash
+
+#### 1.5 Setup micro-ROS agent:
+
+    ros2 run micro_ros_setup create_agent_ws.sh
+    ros2 run micro_ros_setup build_agent.sh
+    source install/setup.bash
+
+* You can ignore `1 package had stderr output: microxrcedds_agent` after building your workspace. 
 
 ### 2. Download linorobot2 and its dependencies:
 
@@ -91,7 +108,22 @@ Set LINOROBOT2_BASE env variable to the type of robot base that you want to use.
     echo "export LINOROBOT2_BASE=2wd" >> ~/.bashrc
 
 ### 2. Sensors
-#### 2.1 Laser Sensor (Optional)
+#### 2.1 Depth Sensor (Optional)
+The Nav2 config file has been configured to support [Voxel Layer](https://navigation.ros.org/configuration/packages/costmap-plugins/voxel.html) for marking 3D obstacles in the Local Costmap using a depth sensor. To enable one of the tested depth sensor's launch file in bringup.launch.py, export the depth sensor you're using to `LINOROBOT2_DEPTH_SENSOR` env variable.
+
+Tested sensors are:
+- `realsense` - [Intel RealSense](https://www.intelrealsense.com/stereo-depth/) D435, D435i
+- `astra` - [Orbec Astra](https://orbbec3d.com/product-astra-pro/)
+- `zed` - [Zed](https://www.stereolabs.com/zed)
+- `zed2` - [Zed 2](https://www.stereolabs.com/zed-2)
+- `zed2i` - [Zed 2i](https://www.stereolabs.com/zed-2i)
+- `zedm` - [Zed Mini](https://www.stereolabs.com/zed-mini)
+
+For example:
+
+    echo "export LINOROBOT2_DEPTH_SENSOR=realsense" >> ~/.bashrc
+
+#### 2.2 Laser Sensor (Optional)
 The launch files of the tested laser sensors have already been added in bringup.launch.py. You can enable one of these sensors by exporting the laser sensor you're using to `LINOROBOT2_LASER_SENSOR` env variable.
 
 Tested Laser Sensors:
@@ -100,23 +132,16 @@ Tested Laser Sensors:
 - `ydlidar` - [YDLIDAR](https://www.ydlidar.com/lidars.html)
 - `realsense` - [Intel RealSense](https://www.intelrealsense.com/stereo-depth/) D435, D435i
 - `astra` - [Orbec Astra](https://orbbec3d.com/product-astra-pro/)
+- `zed` - [Zed](https://www.stereolabs.com/zed)
+- `zed2` - [Zed 2](https://www.stereolabs.com/zed-2)
+- `zed2i` - [Zed 2i](https://www.stereolabs.com/zed-2i)
+- `zedm` - [Zed Mini](https://www.stereolabs.com/zed-mini)
 
 For example:
 
     echo "export LINOROBOT2_LASER_SENSOR=rplidar" >> ~/.bashrc
 
-If you export realsense to `LINOROBOT2_LASER_SENSOR`, the launch file will run [depthimage_to_laserscan](https://github.com/ros-perception/depthimage_to_laserscan) to convert the depth sensor's depth image to laser.
-
-#### 2.2 Depth Sensor (Optional)
-The Nav2 config file has been configured to support [Voxel Layer](https://navigation.ros.org/configuration/packages/costmap-plugins/voxel.html) for marking 3D obstacles in the Local Costmap using a depth sensor. To enable one of the tested depth sensor's launch file in bringup.launch.py, export the depth sensor you're using to `LINOROBOT2_DEPTH_SENSOR` env variable.
-
-Tested sensors are:
-- `realsense` - [Intel RealSense](https://www.intelrealsense.com/stereo-depth/) D435, D435i
-- `astra` - [Orbec Astra](https://orbbec3d.com/product-astra-pro/)
-
-For example:
-
-    echo "export LINOROBOT2_DEPTH_SENSOR=realsense" >> ~/.bashrc
+If you export a depth sensor to `LINOROBOT2_LASER_SENSOR`, the launch file will run [depthimage_to_laserscan](https://github.com/ros-perception/depthimage_to_laserscan) to convert the depth sensor's depth image to laser.
 
 ### 3. Save changes
 Source your `~/.bashrc` to apply the changes you made:

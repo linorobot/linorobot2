@@ -27,6 +27,20 @@ DEPTH_SENSOR_ARRAY=(realsense zed zedm zed2 zed2i)
 LASER_SENSOR_ARRAY=(rplidar ldlidar ydlidar)
 LASER_SENSOR_ARRAY+=(${DEPTH_SENSOR_ARRAY[@]})
 
+function install_cuda_jetson {
+    wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/sbsa/cuda-ubuntu2004.pin
+    sudo mv cuda-ubuntu2004.pin /etc/apt/preferences.d/cuda-repository-pin-600
+    wget http://developer.download.nvidia.com/compute/cuda/11.4.2/local_installers/cuda-repo-ubuntu2004-11-4-local_11.4.2-470.57.02-1_arm64.deb
+    sudo dpkg -i cuda-repo-ubuntu2004-11-4-local_11.4.2-470.57.02-1_arm64.deb
+    sudo apt-key add /var/cuda-repo-ubuntu2004-11-4-local/7fa2af80.pub #verify this
+    sudo apt-get update
+    sudo apt-get -y install cuda
+    # Errors were encountered while processing:
+    #  /tmp/apt-dpkg-install-TvUCLd/14-libnvidia-compute-470_470.57.02-0ubuntu1_arm64.deb
+    #  /tmp/apt-dpkg-install-TvUCLd/18-libnvidia-gl-470_470.57.02-0ubuntu1_arm64.deb
+    # E: Sub-process /usr/bin/dpkg returned an error code (1)
+}
+
 function install_rplidar {
     sudo apt install -y ros-$ROS_DISTRO-rplidar-ros
     cd /tmp
@@ -90,6 +104,7 @@ function install_zed {
     git clone https://github.com/stereolabs/zed-ros2-wrapper src/zed-ros2-wrapper
     rosdep install --from-paths src --ignore-src -r -y
     colcon build --symlink-install --cmake-args=-DCMAKE_BUILD_TYPE=Release
+    # colcon build --symlink-install --cmake-args=-DCMAKE_BUILD_TYPE=Release --cmake-args=-DCUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda-11.4
     source $WORKSPACE/install/setup.bash
     source ~/.bashrc
 }
@@ -241,8 +256,15 @@ if [[ "$BASE" != "ci" ]]
         ### 1. Robot Type
         echo "export LINOROBOT2_BASE=$BASE" >> ~/.bashrc
         ### 2. Sensors
-        echo "export LINOROBOT2_LASER_SENSOR=$LASER_SENSOR" >> ~/.bashrc
-        echo "export LINOROBOT2_DEPTH_SENSOR=$DEPTH_SENSOR" >> ~/.bashrc
+        if [[ "$LASER_SENSOR" != "-" ||  "$LASER_SENSOR" != "" ]]
+            then
+                echo "export LINOROBOT2_LASER_SENSOR=$LASER_SENSOR" >> ~/.bashrc
+        fi
+
+        if [[ "$DEPTH_SENSOR" != "-" ||  "$DEPTH_SENSOR" != "" ]]
+            then
+            echo "export LINOROBOT2_DEPTH_SENSOR=$DEPTH_SENSOR" >> ~/.bashrc
+        fi
         echo
         echo "Do you want to add sourcing of linorobot2_ws on your ~/.bashrc?"
         echo -n "Yes [y] or No [n]: " 

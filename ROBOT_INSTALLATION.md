@@ -157,7 +157,11 @@ Source your `~/.bashrc` to apply the changes you made:
 - Before going through the tutorial, you can change the user name and password by modifying this [file](https://github.com/pythops/jetson-nano-image/blob/master/ansible/roles/jetson/defaults/main.yaml#L5-L7).
 
 - If you encounter this problem: `Extend the fs... e2fsck: No such file or directory while trying to open /dev/sdcp1
-` after flashing the image, you can check out this [issue](https://github.com/pythops/jetson-nano-image/issues/43) how to resolve the problem.
+` after flashing the image, you can check out this [issue](https://github.com/pythops/jetson-nano-image/issues/43) to resolve the problem.
+
+- On your jetson nano, install the Nvidia Libraries:
+
+    sudo apt install -y cuda-toolkit-10-2 libcudnn8 libcudnn8-dev
 
 ### 2. Running a launch file during boot-up.
 

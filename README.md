@@ -2,7 +2,7 @@
 This package requires ros-foxy or ros-galactic. If you haven't installed ROS2 yet, you can use this [installer](https://github.com/linorobot/ros2me) script that has been tested to work on x86 and ARM based dev boards ie. Raspberry Pi4/Nvidia Jetson Series. 
 
 ### 1. Robot Computer - linorobot2 Package
-The easiest way to install this package on the robot computer is to run the bash script found in this packages's root directory. It will install all the dependencies, set the ENV variables for the robot base and sensors, and create a linorobot2_ws (robot_computer_ws) on the robot computer's `$HOME` directory. 
+The easiest way to install this package on the robot computer is to run the bash script found in this packages's root directory. It will install all the dependencies, set the ENV variables for the robot base and sensors, and create a linorobot2_ws (robot_computer_ws) on the robot computer's `$HOME` directory. If you're using a ZED camera with a Jetson Nano, you must create a custom Ubuntu 20.04 image for CUDA and the GPU driver to work. Here's a quick [guide](https://github.com/linorobot/linorobot2/blob/master/ROBOT_INSTALLATION.md#1-creating-jetson-nano-image) on how to do this.
 
     source /opt/ros/<ros_distro>/setup.bash
     cd /tmp
@@ -18,14 +18,23 @@ robot_type:
 laser_sensor:
 - `rplidar` - [RP LIDAR A1](https://www.slamtec.com/en/Lidar/A1)
 - `ldlidar` - [LD06 LIDAR](https://www.inno-maker.com/product/lidar-ld06/)
-- `ydlidar` - [YDLIDAR X4](https://www.ydlidar.com/products/view/5.html)
-- `realsense` - [Intel RealSense](https://www.intelrealsense.com/stereo-depth/) D435, D435i    
+- `ydlidar` - [YDLIDAR](https://www.ydlidar.com/lidars.html)
+- `realsense` - * [Intel RealSense](https://www.intelrealsense.com/stereo-depth/) D435, D435i
+- `zed` - * [Zed](https://www.stereolabs.com/zed)
+- `zed2` - * [Zed 2](https://www.stereolabs.com/zed-2)
+- `zed2i` - * [Zed 2i](https://www.stereolabs.com/zed-2i)
+- `zedm` - * [Zed Mini](https://www.stereolabs.com/zed-mini) 
 - `-` - If the robot's sensor is not listed above.
 
-If realsense is used as a laser sensor, the launch files will run [depthimage_to_laserscan](https://github.com/ros-perception/depthimage_to_laserscan) to convert the depth sensor's depth image to laser scans.
+Sensors marked with an asterisk are depth sensors. If a depth sensor is used as a laser sensor, the launch files will run [depthimage_to_laserscan](https://github.com/ros-perception/depthimage_to_laserscan) to convert the depth sensor's depth image to laser scans.
 
 depth_sensor:
 - `realsense` - [Intel RealSense](https://www.intelrealsense.com/stereo-depth/) D435, D435i
+- `zed` - [Zed](https://www.stereolabs.com/zed)
+- `zed2` - [Zed 2](https://www.stereolabs.com/zed-2)
+- `zed2i` - [Zed 2i](https://www.stereolabs.com/zed-2i)
+- `zedm` - [Zed Mini](https://www.stereolabs.com/zed-mini)
+
 
 Alternatively, follow this [guide](https://github.com/linorobot/linorobot2/blob/master/ROBOT_INSTALLATION.md) to do the installation manually.
 

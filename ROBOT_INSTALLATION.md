@@ -54,7 +54,6 @@ Zed Camera:
     chmod +x zed_sdk
     ./zed_sdk -- silent
     cd <your_ws>
-    rosdep install --from-paths src --ignore-src -r -y
     git clone https://github.com/stereolabs/zed-ros2-wrapper src/zed-ros2-wrapper
     rosdep install --from-paths src --ignore-src -r -y
     colcon build --symlink-install --cmake-args=-DCMAKE_BUILD_TYPE=Release

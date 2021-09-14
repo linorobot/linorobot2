@@ -276,7 +276,7 @@ if [[ "$BASE" != "ci" ]]
                 echo "source \$HOME/linorobot2_ws/install/setup.bash" >> ~/.bashrc
         else
             echo
-            echo "Remember to do run $ source ~/linorobot2_ws/install/setup.bash every time you open a terminal."
+            echo "Remember to run $ source ~/linorobot2_ws/install/setup.bash every time you open a terminal."
         fi
 fi
 

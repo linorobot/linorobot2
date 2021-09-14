@@ -2,7 +2,7 @@
 This package requires ros-foxy or ros-galactic. If you haven't installed ROS2 yet, you can use this [installer](https://github.com/linorobot/ros2me) script that has been tested to work on x86 and ARM based dev boards ie. Raspberry Pi4/Nvidia Jetson Series. 
 
 ### 1. Robot Computer - linorobot2 Package
-The easiest way to install this package on the robot computer is to run the bash script found in this packages's root directory. It will install all the dependencies, set the ENV variables for the robot base and sensors, and create a linorobot2_ws (robot_computer_ws) on the robot computer's `$HOME` directory. If you're using a ZED camera with a Jetson Nano, you must create a custom Ubuntu 20.04 image for CUDA and the GPU driver to work. Here's a quick [guide](https://github.com/linorobot/linorobot2/blob/master/ROBOT_INSTALLATION.md#1-creating-jetson-nano-image) on how to do this.
+The easiest way to install this package on the robot computer is to run the bash script found in this packages's root directory. It will install all the dependencies, set the ENV variables for the robot base and sensors, and create a linorobot2_ws (robot_computer_ws) on the robot computer's `$HOME` directory. If you're using a ZED camera with a Jetson Nano, you must create a custom Ubuntu 20.04 image for CUDA and the GPU driver to work. Here's a quick [guide](https://github.com/linorobot/linorobot2/blob/master/ROBOT_INSTALLATION.md#1-creating-jetson-nano-image) on how to create a custom image for Jetson Nano.
 
     source /opt/ros/<ros_distro>/setup.bash
     cd /tmp

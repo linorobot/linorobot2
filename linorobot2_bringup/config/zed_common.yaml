@@ -1,0 +1,90 @@
+# config/common_yaml
+# Common parameters to Stereolabs ZED and ZED mini cameras
+#
+# Note: the parameter svo_file is passed as exe argumet
+---
+
+/**:
+    ros__parameters:
+        general:
+            svo_file:                   ''
+            svo_loop:                   false                               # Enable loop mode when using an SVO as input source
+            svo_realtime:               false                               # if true SVO will be played trying to respect the original framerate eventually skipping frames, otherwise every frame will be processed respecting the `pub_frame_rate` setting
+            camera_timeout_sec:         5
+            camera_max_reconnect:       5
+            camera_flip:                false
+            zed_id:                     0
+            serial_number:              0
+            resolution:                 2                                   # '0': HD2K, '1': HD1080, '2': HD720, '3': VGA
+            sdk_verbose:                true
+            grab_frame_rate:            30                                  # ZED SDK internal grabbing rate
+            pub_frame_rate:             15.0                                # [DYNAMIC] - frequency of publishing of visual images and depth images
+            gpu_id:                     -1
+
+        video:
+            extrinsic_in_camera_frame:  false                               # if `false` extrinsic parameter in `camera_info` will use ROS native frame (X FORWARD, Z UP) instead of the camera frame (Z FORWARD, Y DOWN) [`true` use old behavior as for version < v3.1]
+            img_downsample_factor:      0.5                                 # Resample factor for image data matrices [0.01,1.0] The SDK works with native data sizes, but publishes rescaled matrices
+            brightness:                 4                                   # [DYNAMIC]
+            contrast:                   4                                   # [DYNAMIC]
+            hue:                        0                                   # [DYNAMIC]
+            saturation:                 4                                   # [DYNAMIC]
+            sharpness:                  4                                   # [DYNAMIC]
+            gamma:                      8                                   # [DYNAMIC] - Requires SDK >=v3.1
+            auto_exposure_gain:         true                                # [DYNAMIC]
+            exposure:                   80                                  # [DYNAMIC]
+            gain:                       80                                  # [DYNAMIC]
+            auto_whitebalance:          true                                # [DYNAMIC]
+            whitebalance_temperature:   42                                  # [DYNAMIC] - [28,65] works only if `auto_whitebalance` is false
+            qos_history:                1                                   # '1': KEEP_LAST - '2': KEEP_ALL
+            qos_depth:                  1                                   # Queue size if using KEEP_LAST
+            qos_reliability:            1                                   # '1': RELIABLE - '2': BEST_EFFORT -
+            qos_durability:             2                                   # '1': TRANSIENT_LOCAL - '2': VOLATILE
+
+        depth:
+            quality:                    1                                   # '0': NONE, '1': PERFORMANCE, '2': QUALITY, '3': ULTRA - Note: if '0' all the modules that requires depth extraction are disabled by default (Pos. Tracking, Obj. Detection, Mapping, ...)
+            sensing_mode:               0                                   # '0': STANDARD, '1': FILL
+            depth_stabilization:        true                                # Forces positional tracking to start if 'true'
+            openni_depth_mode:          false                               # 'false': 32bit float [meters], 'true': 16bit unsigned int [millimeters]
+            depth_downsample_factor:    0.5                                 # Resample factor for depth data matrices [0.01,1.0] The SDK works with native data sizes, but publishes rescaled matrices (depth map, point cloud, ...)
+            point_cloud_freq:           10.0                                # [DYNAMIC] - frequency of the pointcloud publishing (equal or less to `grab_frame_rate` value)
+            depth_confidence:           50                                  # [DYNAMIC]
+            depth_texture_conf:         100                                 # [DYNAMIC]
+            qos_history:                1                                   # '1': KEEP_LAST - '2': KEEP_ALL
+            qos_depth:                  1                                   # Queue size if using KEEP_LAST
+            qos_reliability:            1                                   # '1': RELIABLE - '2': BEST_EFFORT -
+            qos_durability:             2                                   # '1': TRANSIENT_LOCAL - '2': VOLATILE
+
+        pos_tracking:
+            pos_tracking_enabled:       false                                # True to enable positional tracking from start
+            publish_tf:                 false                                # publish `odom -> base_link` TF
+            publish_map_tf:             false                                # publish `map -> odom` TF
+            base_frame:                 'base_link'                         # use the same name as in the URDF file
+            map_frame:                  'map'
+            odometry_frame:             'odom'
+            area_memory_db_path:        ''
+            area_memory:                true                                # Enable to detect loop closure
+            floor_alignment:            false                               # Enable to automatically calculate camera/floor offset
+            initial_base_pose:          [0.0,0.0,0.0, 0.0,0.0,0.0]          # Initial position of the `base_frame` -> [X, Y, Z, R, P, Y]
+            init_odom_with_first_valid_pose: true                           # Enable to initialize the odometry with the first valid pose
+            path_pub_rate:              2.0                                 # [DYNAMIC] - Camera trajectory publishing frequency
+            path_max_count:             -1                                  # use '-1' for unlimited path size
+            two_d_mode:                 false                               # Force navigation on a plane. If true the Z value will be fixed to "fixed_z_value", roll and pitch to zero
+            fixed_z_value:              0.00                                # Value to be used for Z coordinate if `two_d_mode` is true
+            qos_history:                1                                   # '1': KEEP_LAST - '2': KEEP_ALL
+            qos_depth:                  1                                   # Queue size if using KEEP_LAST
+            qos_reliability:            1                                   # '1': RELIABLE - '2': BEST_EFFORT -
+            qos_durability:             2                                   # '1': TRANSIENT_LOCAL - '2': VOLATILE
+
+        mapping:
+            mapping_enabled:            false                               # True to enable mapping and fused point cloud pubblication
+            resolution:                 0.1                                # maps resolution in meters [0.01f, 0.2f]
+            max_mapping_range:          20.0                                  # maximum depth range while mapping in meters (-1 for automatic calculation) [2.0, 20.0]
+            fused_pointcloud_freq:      0.5                                 # frequency of the publishing of the fused colored point cloud
+            qos_history:                1                                   # '1': KEEP_LAST - '2': KEEP_ALL
+            qos_depth:                  1                                   # Queue size if using KEEP_LAST
+            qos_reliability:            1                                   # '1': RELIABLE - '2': BEST_EFFORT -
+            qos_durability:             2                                   # '1': TRANSIENT_LOCAL - '2': VOLATILE
+
+        debug:
+            debug_general:              false
+            debug_sensors:              false

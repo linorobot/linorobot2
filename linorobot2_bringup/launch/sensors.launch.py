@@ -61,7 +61,7 @@ def generate_launch_description():
     #4 - depth topic (str)
     #5 - depth info topic (str)
     depth_sensors = {
-        '': ['', '', {}, '', ''],
+        '': ['', '', '', {}, '', ''],
         'realsense': ['realsense2_camera', 'launch', 'rs_launch.py', {'filters': 'pointcloud','ordered_pc': 'true'}, '/camera/depth/image_rect_raw', '/camera/depth/camera_info'],
         'astra': ['astra_camera', 'launch', 'astra_launch.py', {}, '/depth/rgb/ir', '/camera_info'],
         'zed': ['zed_wrapper', 'launch/include', 'zed_camera.launch.py', zed_launch_arguments, '/zed/depth/depth_registered', '/zed/depth/camera_info'],
@@ -71,7 +71,7 @@ def generate_launch_description():
     }
 
     laser_sensors = {
-        '': ['', '', {}],
+        '': ['', '', '', {}],
         'rplidar': ['linorobot2_bringup', 'launch', 'vendors.launch.py', {'sensor': 'rplidar'}],
         'ydlidar': ['linorobot2_bringup', 'launch', 'vendors.launch.py', {'sensor': 'ydlidar'}],
         'ldlidar': ['ldlidar', 'launch', 'ldlidar.launch.py', {'serial_port': '/dev/ttyUSB0'}]

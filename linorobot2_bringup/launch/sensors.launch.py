@@ -42,7 +42,7 @@ def generate_launch_description():
         [FindPackageShare('zed_wrapper'), 'urdf', 'zed_descr.urdf.xacro']
     )
 
-    zed_launch_arguments={
+    zed_launch_arguments= {
         'camera_model': depth_sensor_name,
         'camera_name': '',
         'node_name': 'zed',
@@ -51,6 +51,13 @@ def generate_launch_description():
         'publish_urdf': 'true',
         'xacro_path': zed_xacro_path,
         'base_frame': 'camera_link'
+    }
+
+    realsense_launch_arguments = {
+        'filters': 'pointcloud',
+        'ordered_pc': 'true', 
+        'pointcloud_texture_stream' : 'RS2_STREAM_ANY', 
+        'initial_reset': 'true'
     }
 
     #indices
@@ -62,7 +69,7 @@ def generate_launch_description():
     #5 - depth info topic (str)
     depth_sensors = {
         '': ['', '', '', {}, '', ''],
-        'realsense': ['realsense2_camera', 'launch', 'rs_launch.py', {'filters': 'pointcloud','ordered_pc': 'true'}, '/camera/depth/image_rect_raw', '/camera/depth/camera_info'],
+        'realsense': ['realsense2_camera', 'launch', 'rs_launch.py', realsense_launch_arguments, '/camera/depth/image_rect_raw', '/camera/depth/camera_info'],
         'astra': ['astra_camera', 'launch', 'astra_launch.py', {}, '/depth/rgb/ir', '/camera_info'],
         'zed': ['zed_wrapper', 'launch/include', 'zed_camera.launch.py', zed_launch_arguments, '/zed/depth/depth_registered', '/zed/depth/camera_info'],
         'zed2': ['zed_wrapper', 'launch/include', 'zed_camera.launch.py', zed_launch_arguments, '/zed/depth/depth_registered', '/zed/depth/camera_info'],

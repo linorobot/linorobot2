@@ -152,7 +152,7 @@ Source your `~/.bashrc` to apply the changes you made:
 
 ### 1. Creating Jetson Nano Image 
 
-- Useful resource how to create your Ubuntu 20.04 image for Jetson Nano: https://pythops.com/post/create-your-own-image-for-jetson-nano-board.html
+- Create the custom image on your host machine by following this [tutorial](https://pythops.com/post/create-your-own-image-for-jetson-nano-board.html). Prepare an SD card and use the helper scripts found in the repository mentioned in the tutorial to build and flash the custom image to the SD card.
 
 - Before going through the tutorial, you can change the user name and password by modifying this [file](https://github.com/pythops/jetson-nano-image/blob/master/ansible/roles/jetson/defaults/main.yaml#L5-L7).
 

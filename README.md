@@ -1,8 +1,24 @@
+# linorobot2
+![linorobot2](docs/linorobot2.gif)
+
+linorobot2 is a ROS2 port of the [linorobot](https://github.com/linorobot/linorobot) package. If you're planning to build your own custom ROS2 robot (2WD, 4WD, Mecanum Drive) using accessible parts, then this package is for you. This repository contains launch files to easily integrate your DIY robot with Nav2 and a simulation pipeline to run and verify your experiments on a virtual robot in Gazebo. 
+
+Once the robot's URDF has been configured in linorobot2_description package, users can easily switch between booting up the physical robot and spawning the virtual robot in Gazebo. 
+
+![linorobot2_architecture](docs/linorobot2_launchfiles.png)
+
+Assuming you're using one of the tested sensors, linorobot2 automatically launches the necessary hardware drivers, with the topics being conveniently matched with the topics available in Gazebo. This allows users to define parameters for high level applications (ie. Nav2 SlamToolbox, AMCL) that are common to both virtual and physical robots.
+
+The image below summarizes the topics available after running **bringup.launch.py**.
+![linorobot2_microcontroller](docs/microcontroller_architecture.png)
+
+An in-depth tutorial on how to build the robot is available in [linorobot2_hardware](https://github.com/linorobot/linorobot2_hardware).
+
 ## Installation 
 This package requires ros-foxy or ros-galactic. If you haven't installed ROS2 yet, you can use this [installer](https://github.com/linorobot/ros2me) script that has been tested to work on x86 and ARM based dev boards ie. Raspberry Pi4/Nvidia Jetson Series. 
 
 ### 1. Robot Computer - linorobot2 Package
-The easiest way to install this package on the robot computer is to run the bash script found in this packages's root directory. It will install all the dependencies, set the ENV variables for the robot base and sensors, and create a linorobot2_ws (robot_computer_ws) on the robot computer's `$HOME` directory. If you're using a ZED camera with a Jetson Nano, you must create a custom Ubuntu 20.04 image for CUDA and the GPU driver to work. Here's a quick [guide](https://github.com/linorobot/linorobot2/blob/master/ROBOT_INSTALLATION.md#1-creating-jetson-nano-image) on how to create a custom image for Jetson Nano.
+The easiest way to install this package on the robot computer is to run the bash script found in this package's root directory. It will install all the dependencies, set the ENV variables for the robot base and sensors, and create a linorobot2_ws (robot_computer_ws) on the robot computer's `$HOME` directory. If you're using a ZED camera with a Jetson Nano, you must create a custom Ubuntu 20.04 image for CUDA and the GPU driver to work. Here's a quick [guide](https://github.com/linorobot/linorobot2/blob/master/ROBOT_INSTALLATION.md#1-creating-jetson-nano-image) on how to create a custom image for Jetson Nano.
 
     source /opt/ros/<ros_distro>/setup.bash
     cd /tmp
@@ -38,7 +54,7 @@ depth_sensor:
 
 Alternatively, follow this [guide](https://github.com/linorobot/linorobot2/blob/master/ROBOT_INSTALLATION.md) to do the installation manually.
 
-### 2. Host Machine / Develoment Computer - Gazebo Simulation (Optional)
+### 2. Host Machine / Development Computer - Gazebo Simulation (Optional)
 This step is only required if you plan to use Gazebo later. This comes in handy if you want to fine-tune parameters (ie. SLAM Toolbox, AMCL, Nav2) or test your applications on a virtual robot. 
 
 #### 2.1 Install linorobot2 Package
@@ -74,7 +90,7 @@ All the hardware documentation to build the robot can be found [here](https://gi
 
 ## URDF
 ### 1. Define robot properties
-[linorobot2_description](https://github.com/linorobot/linorobot2/tree/master/linorobot2_description) package has parametized xacro files that can help you kickstart writing the robot's URDF. Open <robot_type>.properties.urdf.xacro in [linorobot2_description/urdf](https://github.com/linorobot/linorobot2/tree/master/linorobot2_description/urdf) directory and change the values according to the robot's specification/dimensions. All pose definitions must be measured from the `base_link` (center of base) and wheel positions (ie `wheel_pos_x`) are referring to wheel 1.
+[linorobot2_description](https://github.com/linorobot/linorobot2/tree/master/linorobot2_description) package has parameterized xacro files that can help you kickstart writing the robot's URDF. Open <robot_type>.properties.urdf.xacro in [linorobot2_description/urdf](https://github.com/linorobot/linorobot2/tree/master/linorobot2_description/urdf) directory and change the values according to the robot's specification/dimensions. All pose definitions must be measured from the `base_link` (center of base) and wheel positions (ie `wheel_pos_x`) are referring to wheel 1.
 
 For custom URDFs, you can change the `urdf_path` in [description.launch.py](https://github.com/linorobot/linorobot2/blob/master/linorobot2_description/launch/description.launch.py) found in linorobot2_description/launch directory. 
 
@@ -164,7 +180,7 @@ Pass `joy` argument to the launch file and set it to true to enable the joystick
 
     ros2 launch linorobot2_bringup bringup.launch.py joy:=true
 
-- On F710 Gamepad, the top switch should be set to 'X' and 'MODE' LED should be off.
+- On F710 Gamepad, the top switch should be set to 'X' and the 'MODE' LED should be off.
 
 Press Button/Move Joystick:
 - **RB (First top right button)** - Press and hold this button while moving the joysticks to enable control.
@@ -242,7 +258,7 @@ Check out Nav2 [tutorial](https://navigation.ros.org/tutorials/docs/navigation2_
 
 ## Troubleshooting Guide
 
-#### 1. The changes I made on a file is not taking effect on the package configuration/robot's behavior.
+#### 1. The changes I made on a file are not taking effect on the package configuration/robot's behavior.
 - You need to build your workspace every time you modify a file:
 
     ```

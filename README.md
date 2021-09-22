@@ -273,3 +273,9 @@ Check out Nav2 [tutorial](https://navigation.ros.org/tutorials/docs/navigation2_
 
 #### 3. `target_frame - frame does not exist`
 - Check your <robot_type>.properties.urdf.xacro and ensure that there's no syntax errors or repeated decimal points.
+
+## Useful Resources:
+
+https://navigation.ros.org/setup_guides/index.html
+
+http://gazebosim.org/tutorials/?tut=ros2_overview

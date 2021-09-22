@@ -22,7 +22,7 @@ The easiest way to install this package on the robot computer is to run the bash
 
     source /opt/ros/<ros_distro>/setup.bash
     cd /tmp
-    wget https://raw.githubusercontent.com/linorobot/linorobot2/install_linorobot2.bash
+    wget https://raw.githubusercontent.com/linorobot/linorobot2/master/install_linorobot2.bash
     bash install_linorobot2.bash <robot_type> <laser_sensor> <depth_sensor>
     source ~/.bashrc
 

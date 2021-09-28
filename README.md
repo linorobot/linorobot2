@@ -85,7 +85,7 @@ Install [linorobot2_viz](https://github.com/linorobot/linorobot2_viz) package to
     colcon build
     source install/setup.bash
 
-## Hardware
+## Hardware and Robot Firmware
 All the hardware documentation and robot microcontroller's firmware can be found [here](https://github.com/linorobot/linorobot2_hardware).
 
 ## URDF

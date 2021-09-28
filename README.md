@@ -86,7 +86,7 @@ Install [linorobot2_viz](https://github.com/linorobot/linorobot2_viz) package to
     source install/setup.bash
 
 ## Hardware
-All the hardware documentation to build the robot can be found [here](https://github.com/linorobot/linorobot2_hardware).
+All the hardware documentation and robot microcontroller's firmware can be found [here](https://github.com/linorobot/linorobot2_hardware).
 
 ## URDF
 ### 1. Define robot properties

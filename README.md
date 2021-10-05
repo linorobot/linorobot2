@@ -115,7 +115,7 @@ The same changes must be made on the host machine's <robot_type>.properties.urdf
     colcon build
 
 ### 2. Visualize the newly created URDF
-Robot Computer:
+#### 2.1 Publish the URDF from the robot computer:
 
     ros2 launch linorobot2_description description.launch.py
 
@@ -124,7 +124,7 @@ Optional parameters for simulation on host machine:
 
         ros2 launch linorobo2_description description.launch.py rviz:=true
 
-Host Machine:
+#### 2.2 Visualize the robot from the host machine:
 
 The `rviz` argument on description.launch.py won't work on headless setup but you can visualize the robot remotely from the host machine:
 

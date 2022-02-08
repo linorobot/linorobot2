@@ -1,7 +1,7 @@
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
   <xacro:property name="M_PI" value="3.1415926535897931" />
-  <xacro:macro name="laser" params="*origin update_rate ray_count min_angle max_angle min_range max_range">
-    <link name="laser">
+  <xacro:macro name="laser" params="*origin update_rate ray_count min_angle max_angle min_range max_range frame_id topic_name">
+    <link name="${frame_id}">
       <visual>
         <origin xyz="0 0 -0.025" rpy="0 0 0"/>
         <geometry>
@@ -27,7 +27,7 @@
       </inertial>
     </link>
 
-    <gazebo reference="laser">  
+    <gazebo reference="${frame_id}">  
       <visual>  
         <material>
           <ambient>0.003 0.639 0.223 1.0</ambient>  
@@ -38,13 +38,13 @@
       </visual> 
     </gazebo>
 
-    <joint name="laser_to_base_link" type="fixed">
+    <joint name="${frame_id}_to_base_link" type="fixed">
       <parent link="base_link"/>
-      <child link="laser"/>
+      <child link="${frame_id}"/>
       <xacro:insert_block name="origin" />
     </joint>
 
-    <gazebo reference="laser">
+    <gazebo reference="${frame_id}">
       <sensor type="ray" name="head_hokuyo_sensor">
         <always_on>true</always_on>
         <update_rate>${update_rate}</update_rate>
@@ -67,17 +67,16 @@
         </ray>
         <plugin name="gazebo_ros_head_hokuyo_controller" filename="libgazebo_ros_ray_sensor.so">
           <ros>
-            <argument>~/out:=scan</argument>                                                               
+            <argument>~/out:=${topic_name}</argument>                                                               
           </ros>
           <output_type>sensor_msgs/LaserScan</output_type>
           <alwaysOn>true</alwaysOn>
           <updateRate>${update_rate}</updateRate>
-          <topicName>scan</topicName>
-          <frame_name>laser</frame_name>
+          <topicName>${topic_name}</topicName>
+          <frame_name>${frame_id}</frame_name>
           <output_type>sensor_msgs/LaserScan</output_type>
         </plugin>
       </sensor>
     </gazebo>
   </xacro:macro>
 </robot>
-  

@@ -16,7 +16,7 @@
     </xacro:laser>
   </xacro:macro>
 
-  <xacro:macro name="generic_laser_base" params="*origin">
+  <xacro:macro name="generic_base_laser" params="*origin">
     <xacro:include filename="$(find linorobot2_description)/urdf/sensors/laser.urdf.xacro" />
     <xacro:laser
       update_rate="10"

@@ -41,6 +41,13 @@ YDLIDAR:
     colcon build --symlink-install
     source <your_ws>/install/setup.bash
 
+XV11:
+    
+    cd <your_ws>
+    git clone https://github.com/mjstn/xv_11_driver src/xv_11_driver
+    colcon build
+    source <your_ws>/install/setup.bash
+
 #### 1.3 Install depth sensor drivers:
 Intel RealSense:
 

@@ -35,6 +35,7 @@ laser_sensor:
 - `rplidar` - [RP LIDAR A1](https://www.slamtec.com/en/Lidar/A1)
 - `ldlidar` - [LD06 LIDAR](https://www.inno-maker.com/product/lidar-ld06/)
 - `ydlidar` - [YDLIDAR](https://www.ydlidar.com/lidars.html)
+- `xv11` - [XV11](http://xv11hacking.rohbotics.com/mainSpace/home.html)
 - `realsense` - * [Intel RealSense](https://www.intelrealsense.com/stereo-depth/) D435, D435i
 - `zed` - * [Zed](https://www.stereolabs.com/zed)
 - `zed2` - * [Zed 2](https://www.stereolabs.com/zed-2)

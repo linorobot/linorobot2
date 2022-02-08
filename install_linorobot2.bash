@@ -24,7 +24,7 @@ WORKSPACE="$HOME/linorobot2_ws"
 
 ROBOT_TYPE_ARRAY=(2wd 4wd mecanum)
 DEPTH_SENSOR_ARRAY=(realsense zed zedm zed2 zed2i)
-LASER_SENSOR_ARRAY=(rplidar ldlidar ydlidar)
+LASER_SENSOR_ARRAY=(rplidar ldlidar ydlidar xv11)
 LASER_SENSOR_ARRAY+=(${DEPTH_SENSOR_ARRAY[@]})
 
 function install_cuda_jetson {
@@ -39,6 +39,13 @@ function install_cuda_jetson {
     #  /tmp/apt-dpkg-install-TvUCLd/14-libnvidia-compute-470_470.57.02-0ubuntu1_arm64.deb
     #  /tmp/apt-dpkg-install-TvUCLd/18-libnvidia-gl-470_470.57.02-0ubuntu1_arm64.deb
     # E: Sub-process /usr/bin/dpkg returned an error code (1)
+}
+
+function install_xv11 {
+    cd $WORKSPACE
+    git clone https://github.com/mjstn/xv_11_driver src/xv_11_driver
+    colcon build
+    source $WORKSPACE/install/setup.bash
 }
 
 function install_rplidar {

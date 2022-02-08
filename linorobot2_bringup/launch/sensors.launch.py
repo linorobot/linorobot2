@@ -24,95 +24,63 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
     laser_sensor_name = os.getenv('LINOROBOT2_LASER_SENSOR', '')
+    base_laser_sensor_name = os.getenv('LINOROBOT2_BASE_LASER_SENSOR', '')
     depth_sensor_name = os.getenv('LINOROBOT2_DEPTH_SENSOR', '')
     
     fake_laser_config_path = PathJoinSubstitution(
         [FindPackageShare('linorobot2_bringup'), 'config', 'fake_laser.yaml']
     )
 
-    zed_common_config_path = PathJoinSubstitution(
-        [FindPackageShare('linorobot2_bringup'), 'config', 'zed_common.yaml']
-    )
-
-    zed_camera_config_path = PathJoinSubstitution(
-        [FindPackageShare('zed_wrapper'), 'config', f'{depth_sensor_name}.yaml']
-    )
-
-    zed_xacro_path = PathJoinSubstitution(
-        [FindPackageShare('zed_wrapper'), 'urdf', 'zed_descr.urdf.xacro']
-    )
-
-    zed_launch_arguments= {
-        'camera_model': depth_sensor_name,
-        'camera_name': '',
-        'node_name': 'zed',
-        'config_common_path': zed_common_config_path,
-        'config_camera_path': zed_camera_config_path,
-        'publish_urdf': 'true',
-        'xacro_path': zed_xacro_path,
-        'base_frame': 'camera_link'
-    }
-
-    realsense_launch_arguments = {
-        'filters': 'pointcloud',
-        'ordered_pc': 'true', 
-        'pointcloud_texture_stream' : 'RS2_STREAM_ANY', 
-        'initial_reset': 'true'
-    }
-
     #indices
-    #0 - package name (str)
-    #1 - launch folder (str)
-    #2 - launch file (str)
-    #3 - launch arguments (dict)
-    #4 - depth topic (str)
-    #5 - depth info topic (str)
+    #0 - depth topic (str)
+    #1 - depth info topic (str)
     depth_sensors = {
         '': ['', '', '', {}, '', ''],
-        'realsense': ['realsense2_camera', 'launch', 'rs_launch.py', realsense_launch_arguments, '/camera/depth/image_rect_raw', '/camera/depth/camera_info'],
-        'astra': ['astra_camera', 'launch', 'astra_launch.py', {}, '/depth/rgb/ir', '/camera_info'],
-        'zed': ['zed_wrapper', 'launch/include', 'zed_camera.launch.py', zed_launch_arguments, '/zed/depth/depth_registered', '/zed/depth/camera_info'],
-        'zed2': ['zed_wrapper', 'launch/include', 'zed_camera.launch.py', zed_launch_arguments, '/zed/depth/depth_registered', '/zed/depth/camera_info'],
-        'zed2i': ['zed_wrapper', 'launch/include', 'zed_camera.launch.py', zed_launch_arguments, '/zed/depth/depth_registered', '/zed/depth/camera_info'],
-        'zedm': ['zed_wrapper', 'launch/include', 'zed_camera.launch.py', zed_launch_arguments, '/zed/depth/depth_registered', '/zed/depth/camera_info']
+        'realsense': ['/camera/depth/image_rect_raw', '/camera/depth/camera_info'],
+        'astra': ['/depth/rgb/ir', '/camera_info'],
+        'zed': ['/zed/depth/depth_registered', '/zed/depth/camera_info'],
+        'zed2': ['/zed/depth/depth_registered', '/zed/depth/camera_info'],
+        'zed2i': ['/zed/depth/depth_registered', '/zed/depth/camera_info'],
+        'zedm': ['/zed/depth/depth_registered', '/zed/depth/camera_info']
     }
-
-    laser_sensors = {
-        '': ['', '', '', {}],
-        'rplidar': ['linorobot2_bringup', 'launch', 'vendors.launch.py', {'sensor': 'rplidar'}],
-        'ydlidar': ['linorobot2_bringup', 'launch', 'vendors.launch.py', {'sensor': 'ydlidar'}],
-        'ldlidar': ['ldlidar', 'launch', 'ldlidar.launch.py', {'serial_port': '/dev/ttyUSB0'}]
-    }
-
-    laser_sensors.update(depth_sensors) #make depth sensors available as laser sensors as well
 
     laser_launch_path = PathJoinSubstitution(
-        [FindPackageShare(laser_sensors[laser_sensor_name][0]), laser_sensors[laser_sensor_name][1], laser_sensors[laser_sensor_name][2]]
+        [FindPackageShare('linorobot2_bringup'), 'launch', 'lasers.launch.py']
     )
 
     depth_launch_path = PathJoinSubstitution(
-        [FindPackageShare(depth_sensors[depth_sensor_name][0]), depth_sensors[depth_sensor_name][1], depth_sensors[depth_sensor_name][2]]
+        [FindPackageShare('linorobot2_bringup'), 'launch', 'depth.launch.py']
     )
 
     return LaunchDescription([
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(laser_launch_path),
-            condition=IfCondition(PythonExpression(['"" != "', laser_sensor_name, '" and "', depth_sensor_name, '" != "', laser_sensor_name, '"'])),
-            launch_arguments=laser_sensors[laser_sensor_name][3].items()   
+            condition=IfCondition(PythonExpression(['"" != "', laser_sensor_name, '"'])),
+            launch_arguments={'sensor': laser_sensor_name}.items()   
+        ),
+
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(laser_launch_path),
+            condition=IfCondition(PythonExpression(['"" != "', base_laser_sensor_name, '"'])),
+            launch_arguments={
+                'sensor': base_laser_sensor_name,
+                'topic_name': 'base/scan',
+                'frame_id': 'base_laser'
+            }.items()   
         ),
 
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(depth_launch_path),
             condition=IfCondition(PythonExpression(['"" != "', depth_sensor_name, '"'])),
-            launch_arguments=depth_sensors[depth_sensor_name][3].items()   
+            launch_arguments={'sensor': depth_sensor_name}.items()   
         ),
 
         Node(
             condition=IfCondition(PythonExpression(['"" != "', laser_sensor_name, '" and ', '"', laser_sensor_name, '" in "', str(list(depth_sensors.keys())[1:]), '"'])),
             package='depthimage_to_laserscan',
             executable='depthimage_to_laserscan_node',
-            remappings=[('depth', depth_sensors[depth_sensor_name][4]),
-                        ('depth_camera_info', depth_sensors[depth_sensor_name][5])],
+            remappings=[('depth', depth_sensors[depth_sensor_name][0]),
+                        ('depth_camera_info', depth_sensors[depth_sensor_name][1])],
             parameters=[fake_laser_config_path]
         )
     ])

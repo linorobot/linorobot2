@@ -5,7 +5,7 @@
   <xacro:include filename="$(find linorobot2_description)/urdf/mech/base.urdf.xacro" />
   <xacro:include filename="$(find linorobot2_description)/urdf/mech/wheel.urdf.xacro" />
   <xacro:include filename="$(find linorobot2_description)/urdf/sensors/imu.urdf.xacro" />
-  <xacro:include filename="$(find linorobot2_description)/urdf/sensors/ld06.urdf.xacro" />
+  <xacro:include filename="$(find linorobot2_description)/urdf/sensors/generic_laser.urdf.xacro" />
   <xacro:include filename="$(find linorobot2_description)/urdf/sensors/depth_sensor.urdf.xacro" />
   <xacro:include filename="$(find linorobot2_description)/urdf/controllers/skid_steer.urdf.xacro" />
 
@@ -59,9 +59,9 @@
 
   <xacro:imu/>
   
-  <xacro:ld06>
+  <xacro:generic_laser>
     <xacro:insert_block name="laser_pose" />
-  </xacro:ld06>
+  </xacro:generic_laser>
   
   <xacro:depth_sensor>
     <xacro:insert_block name="depth_sensor_pose" />

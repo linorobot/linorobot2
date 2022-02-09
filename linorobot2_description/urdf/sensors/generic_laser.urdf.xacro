@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:include filename="$(find linorobot2_description)/urdf/sensors/laser.urdf.xacro" />
+
   <xacro:macro name="generic_laser" params="*origin">
-    <xacro:include filename="$(find linorobot2_description)/urdf/sensors/laser.urdf.xacro" />
     <xacro:laser
       update_rate="10"
       ray_count="360"
@@ -17,13 +18,12 @@
   </xacro:macro>
 
   <xacro:macro name="generic_base_laser" params="*origin">
-    <xacro:include filename="$(find linorobot2_description)/urdf/sensors/laser.urdf.xacro" />
     <xacro:laser
       update_rate="10"
       ray_count="360"
       min_angle="-3.1416"
       max_angle="3.1416"
-      min_range="0.08"
+      min_range="0.21"
       max_range="5.5"
       frame_id="base_laser"
       topic_name="base/scan"

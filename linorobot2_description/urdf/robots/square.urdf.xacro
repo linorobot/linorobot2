@@ -12,7 +12,7 @@
   <xacro:property name="wheel_pos_z" value="-0.045" />
   <xacro:property name="wheel_mass" value=".1" />
   <xacro:property name="wheel_torque" value="20" />
-  <xacro:property name="front_caster_wheel" value="true" />
+  <xacro:property name="front_caster_wheel" value="false" />
   <xacro:property name="rear_caster_wheel" value="true" />
 
   <xacro:include filename="$(find linorobot2_description)/urdf/mech/base.urdf.xacro" />
@@ -28,7 +28,7 @@
   </xacro:property>
 
   <xacro:property name="base_laser_pose">
-    <origin xyz="0.08 0 -0.055" rpy="-3.1416 0 0"/>
+    <origin xyz="0.08 0 -0.05" rpy="-3.1416 0 0"/>
   </xacro:property>
 
   <xacro:property name="depth_sensor_pose">

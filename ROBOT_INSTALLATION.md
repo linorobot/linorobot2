@@ -62,7 +62,7 @@ Zed Camera:
     ./zed_sdk -- silent
     cd <your_ws>
     git clone https://github.com/stereolabs/zed-ros2-wrapper src/zed-ros2-wrapper
-    git clone https://github.com/ros-perception/image_common.git -b ros2 src/image_common
+    git clone https://github.com/ros-perception/image_common -b $ROS_DISTRO src/image_common
     rosdep install --from-paths src --ignore-src -r -y
     colcon build --symlink-install --cmake-args=-DCMAKE_BUILD_TYPE=Release
     source <your_ws>/install/setup.bash

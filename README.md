@@ -123,7 +123,7 @@ The same changes must be made on the host machine's <robot_type>.properties.urdf
 Optional parameters for simulation on host machine:
 - **rviz** - Set to true to visualize the robot in rviz2 and only if you're configuring the URDF from the host machine. For example:
 
-        ros2 launch linorobo2_description description.launch.py rviz:=true
+        ros2 launch linorobot2_description description.launch.py rviz:=true
 
 #### 2.2 Visualize the robot from the host machine:
 

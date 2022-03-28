@@ -18,11 +18,11 @@ An in-depth tutorial on how to build the robot is available in [linorobot2_hardw
 This package requires ros-foxy or ros-galactic. If you haven't installed ROS2 yet, you can use this [installer](https://github.com/linorobot/ros2me) script that has been tested to work on x86 and ARM based dev boards ie. Raspberry Pi4/Nvidia Jetson Series. 
 
 ### 1. Robot Computer - linorobot2 Package
-The easiest way to install this package on the robot computer is to run the bash script found in this package's root directory. It will install all the dependencies, set the ENV variables for the robot base and sensors, and create a linorobot2_ws (robot_computer_ws) on the robot computer's `$HOME` directory. If you're using a ZED camera with a Jetson Nano, you must create a custom Ubuntu 20.04 image for CUDA and the GPU driver to work. Here's a quick [guide](https://github.com/linorobot/linorobot2/blob/master/ROBOT_INSTALLATION.md#1-creating-jetson-nano-image) on how to create a custom image for Jetson Nano.
+The easiest way to install this package on the robot computer is to run the bash script found in this package's root directory. It will install all the dependencies, set the ENV variables for the robot base and sensors, and create a linorobot2_ws (robot_computer_ws) on the robot computer's `$HOME` directory. If you're using a ZED camera with a Jetson Nano, you must create a custom Ubuntu 20.04 image for CUDA and the GPU driver to work. Here's a quick [guide](./ROBOT_INSTALLATION.md#1-creating-jetson-nano-image) on how to create a custom image for Jetson Nano.
 
     source /opt/ros/<ros_distro>/setup.bash
     cd /tmp
-    wget https://raw.githubusercontent.com/linorobot/linorobot2/master/install_linorobot2.bash
+    wget https://raw.githubusercontent.com/linorobot/linorobot2/${ROS_DISTRO}/install_linorobot2.bash
     bash install_linorobot2.bash <robot_type> <laser_sensor> <depth_sensor>
     source ~/.bashrc
 
@@ -53,7 +53,7 @@ depth_sensor:
 - `zedm` - [Zed Mini](https://www.stereolabs.com/zed-mini)
 
 
-Alternatively, follow this [guide](https://github.com/linorobot/linorobot2/blob/master/ROBOT_INSTALLATION.md) to do the installation manually.
+Alternatively, follow this [guide](./ROBOT_INSTALLATION.md) to do the installation manually.
 
 ### 2. Host Machine / Development Computer - Gazebo Simulation (Optional)
 This step is only required if you plan to use Gazebo later. This comes in handy if you want to fine-tune parameters (ie. SLAM Toolbox, AMCL, Nav2) or test your applications on a virtual robot. 
@@ -62,7 +62,7 @@ This step is only required if you plan to use Gazebo later. This comes in handy 
 Install linorobot2 package on the host machine:
 
     cd <host_machine_ws>
-    git clone https://github.com/linorobot/linorobot2 src/linorobot2
+    git clone -b $ROS_DISTRO https://github.com/linorobot/linorobot2 src/linorobot2
     rosdep update && rosdep install --from-path src --ignore-src -y --skip-keys microxrcedds_agent --skip-keys micro_ros_agent
     colcon build
     source install/setup.bash
@@ -81,7 +81,7 @@ You can skip the next step (Host Machine - RVIZ Configurations) since this packa
 Install [linorobot2_viz](https://github.com/linorobot/linorobot2_viz) package to visualize the robot remotely specifically when creating a map or initializing/sending goal poses to the robot. The package has been separated to minimize the installation required if you're not using the simulation tools on the host machine.
 
     cd <host_machine_ws>
-    git clone https://github.com/linorobot/linorobot2_viz src/linorobot2_viz
+    git clone -b $ROS_DISTRO https://github.com/linorobot/linorobot2_viz src/linorobot2_viz
     rosdep update && rosdep install --from-path src --ignore-src -y 
     colcon build
     source install/setup.bash
@@ -91,9 +91,9 @@ All the hardware documentation and robot microcontroller's firmware can be found
 
 ## URDF
 ### 1. Define robot properties
-[linorobot2_description](https://github.com/linorobot/linorobot2/tree/master/linorobot2_description) package has parameterized xacro files that can help you kickstart writing the robot's URDF. Open <robot_type>.properties.urdf.xacro in [linorobot2_description/urdf](https://github.com/linorobot/linorobot2/tree/master/linorobot2_description/urdf) directory and change the values according to the robot's specification/dimensions. All pose definitions must be measured from the `base_link` (center of base) and wheel positions (ie `wheel_pos_x`) are referring to wheel 1.
+[linorobot2_description](./linorobot2_description) package has parameterized xacro files that can help you kickstart writing the robot's URDF. Open <robot_type>.properties.urdf.xacro in [linorobot2_description/urdf](./linorobot2_description/urdf) directory and change the values according to the robot's specification/dimensions. All pose definitions must be measured from the `base_link` (center of base) and wheel positions (ie `wheel_pos_x`) are referring to wheel 1.
 
-For custom URDFs, you can change the `urdf_path` in [description.launch.py](https://github.com/linorobot/linorobot2/blob/master/linorobot2_description/launch/description.launch.py) found in linorobot2_description/launch directory. 
+For custom URDFs, you can change the `urdf_path` in [description.launch.py](./linorobot2_description/launch/description.launch.py) found in linorobot2_description/launch directory. 
 
 Robot Orientation:
 

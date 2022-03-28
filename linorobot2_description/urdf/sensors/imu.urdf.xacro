@@ -17,7 +17,7 @@
       <topic>__default_topic__</topic>
       <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
           <ros>
-            <argument>~/out:=imu/data</argument>
+            <remapping>~/out:=imu/data</remapping>
           </ros>
           <topicName>imu/data</topicName>
           <bodyName>imu_link</bodyName>

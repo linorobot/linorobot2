@@ -68,11 +68,10 @@
         </camera>
         <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
           <ros>
-            <namespace></namespace>
-            <argument>camera/camera_info:=camera/color/camera_info</argument>
-            <argument>camera/image_raw:=camera/color/image_raw</argument>
-            <argument>camera/points:=camera/depth/color/points</argument>/camera/depth/image_raw
-            <argument>camera/depth/image_raw:=/camera/depth/image_rect_raw</argument>
+            <remapping>/camera/camera_info:=/camera/color/camera_info</remapping>
+            <remapping>/camera/image_raw:=/camera/color/image_raw</remapping>
+            <remapping>/camera/points:=/camera/depth/color/points</remapping>
+            <remapping>/camera/depth/image_raw:=/camera/depth/image_rect_raw</remapping>
           </ros>
           <min_depth>0.015</min_depth>
           <max_depth>3.0</max_depth>

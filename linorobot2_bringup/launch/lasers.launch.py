@@ -53,7 +53,7 @@ def generate_launch_description():
             emulate_tty=True,
             remappings=[('scan', LaunchConfiguration('topic_name'))],
             parameters=[{ 
-                'port': '/dev/ttyUSB0',
+                'port': '/dev/ydlidar',
                 'frame_id': LaunchConfiguration('frame_id'),
                 'ignore_array': '',
                 'baudrate': 128000,

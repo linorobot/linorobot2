@@ -157,7 +157,7 @@ The agent needs a few seconds to get reconnected (less than 30 seconds). Unplug 
 
 #### 1.1b Using Gazebo:
     
-    ros2 launch linorobot2_bringup gazebo.launch.py
+    ros2 launch linorobot2_gazebo gazebo.launch.py
 
 linorobot2_bringup.launch.py or gazebo.launch.py must always be run on a separate terminal before creating a map or robot navigation when working on a real robot or gazebo simulation respectively.
 

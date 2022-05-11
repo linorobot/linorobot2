@@ -41,9 +41,8 @@ def generate_launch_description():
             )),
             condition=LaunchConfigurationEquals('sensor', 'realsense'),
             launch_arguments={
-                'filters': 'pointcloud',
+                'pointcloud.enable': 'true',
                 'ordered_pc': 'true', 
-                'pointcloud_texture_stream' : 'RS2_STREAM_ANY', 
                 'initial_reset': 'true'
             }.items()   
         ),

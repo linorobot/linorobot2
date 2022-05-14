@@ -81,6 +81,9 @@ function install_ydlidar {
 
 function install_realsense {
     sudo apt install -y ros-$ROS_DISTRO-realsense2-camera
+    cd /tmp
+    wget https://raw.githubusercontent.com/IntelRealSense/librealsense/master/config/99-realsense-libusb.rules
+    sudo cp 99-realsense-libusb.rules /etc/udev/rules.d
 }
 
 function install_astra {

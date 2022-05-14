@@ -74,7 +74,9 @@ function install_ydlidar {
     cd $WORKSPACE
     git clone https://github.com/YDLIDAR/ydlidar_ros2_driver src/ydlidar_ros2_driver
     chmod 0777 src/ydlidar_ros2_driver/startup/*
-    sudo sh src/ydlidar_ros2_driver/startup/initenv.sh
+    sudo echo  'KERNEL=="ttyUSB*", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", MODE:="0666", GROUP:="dialout",  SYMLINK+="ydlidar"' >/etc/udev/rules.d/ydlidar.rules
+    sudo echo  'KERNEL=="ttyACM*", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="5740", MODE:="0666", GROUP:="dialout",  SYMLINK+="ydlidar"' >/etc/udev/rules.d/ydlidar-V2.rules
+    sudo echo  'KERNEL=="ttyUSB*", ATTRS{idVendor}=="067b", ATTRS{idProduct}=="2303", MODE:="0666", GROUP:="dialout",  SYMLINK+="ydlidar"' >/etc/udev/rules.d/ydlidar-2303.rules
     colcon build --symlink-install
     source $WORKSPACE/install/setup.bash
 }

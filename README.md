@@ -81,7 +81,7 @@ You can skip the next step (Host Machine - RVIZ Configurations) since this packa
 Install [linorobot2_viz](https://github.com/linorobot/linorobot2_viz) package to visualize the robot remotely specifically when creating a map or initializing/sending goal poses to the robot. The package has been separated to minimize the installation required if you're not using the simulation tools on the host machine.
 
     cd <host_machine_ws>
-    git clone -b $ROS_DISTRO https://github.com/linorobot/linorobot2_viz src/linorobot2_viz
+    git clone https://github.com/linorobot/linorobot2_viz src/linorobot2_viz
     rosdep update && rosdep install --from-path src --ignore-src -y 
     colcon build
     source install/setup.bash

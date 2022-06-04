@@ -278,6 +278,13 @@ navigation.launch.py will continue to throw this error `Timed out waiting for tr
 #### 3. `target_frame - frame does not exist`
 - Check your <robot_type>.properties.urdf.xacro and ensure that there's no syntax errors or repeated decimal points.
 
+#### 4. Weird microROS agent behavior after updating the Linux/ROS
+- Don't forget to update the microROS agent as well after your updates. Just run:
+    
+    ```
+    bash update_microros.bash
+    ```
+
 ## Useful Resources:
 
 https://navigation.ros.org/setup_guides/index.html

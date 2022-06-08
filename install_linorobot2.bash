@@ -27,6 +27,16 @@ DEPTH_SENSOR_ARRAY=(realsense zed zedm zed2 zed2i)
 LASER_SENSOR_ARRAY=(rplidar ldlidar ydlidar xv11)
 LASER_SENSOR_ARRAY+=(${DEPTH_SENSOR_ARRAY[@]})
 
+if [ LASER_SENSOR=="-" ]
+    then
+        LASER_SENSOR=""
+fi
+
+if [ DEPTH_SENSOR=="-" ]
+    then
+        DEPTH_SENSOR=""
+fi
+
 function install_cuda_jetson {
     wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/sbsa/cuda-ubuntu2004.pin
     sudo mv cuda-ubuntu2004.pin /etc/apt/preferences.d/cuda-repository-pin-600

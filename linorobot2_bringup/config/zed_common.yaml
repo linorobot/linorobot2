@@ -1,7 +1,7 @@
 # config/common_yaml
 # Common parameters to Stereolabs ZED and ZED mini cameras
 #
-# Note: the parameter svo_file is passed as exe argumet
+# Note: the parameter svo_file is passed as exe argument
 ---
 
 /**:

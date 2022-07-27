@@ -223,7 +223,7 @@ More info [here](https://navigation.ros.org/tutorials/docs/navigation2_with_slam
 #### 3.3 Save the map
 
     cd linorobot2/linorobot2_navigation/maps
-    ros2 run nav2_map_server map_saver_cli -f <map_name> --ros-args -p save_map_timeout:=10000
+    ros2 run nav2_map_server map_saver_cli -f <map_name> --ros-args -p save_map_timeout:=10000.
 
 ### 4. Autonomous Navigation
 

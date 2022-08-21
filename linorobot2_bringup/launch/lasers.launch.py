@@ -61,7 +61,7 @@ def generate_launch_description():
                 'device_type': 6,
                 'sample_rate': 5,
                 'abnormal_check_count': 4,
-                'resolution_fixed': True,
+                'fixed_resolution': True,
                 'reversion': False,
                 'inverted': True,
                 'auto_reconnect': True,

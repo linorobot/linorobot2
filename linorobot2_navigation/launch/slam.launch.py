@@ -14,6 +14,7 @@
 
 import os
 from launch import LaunchDescription
+from launch import LaunchContext
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch.launch_description_sources import PythonLaunchDescriptionSource
@@ -35,11 +36,12 @@ def generate_launch_description():
     rviz_config_path = PathJoinSubstitution(
         [FindPackageShare('linorobot2_navigation'), 'rviz', 'linorobot2_slam.rviz']
     )
-
+    
+    lc = LaunchContext()
     ros_distro = EnvironmentVariable('ROS_DISTRO')
-    slam_param_name = 'params_file'
-    if ros_distro == 'galactic': 
-        slam_param_name = 'slam_params_file'
+    slam_param_name = 'slam_params_file'
+    if ros_distro.perform(lc) == 'foxy': 
+        slam_param_name = 'params_file'
 
     return LaunchDescription([
         DeclareLaunchArgument(

@@ -15,7 +15,7 @@
 
 set -e
 
-ROSDISTRO="$(rosversion -d)"
+ROSDISTRO="$(printenv ROS_DISTRO)"
 BASE=$1
 LASER_SENSOR=$2
 DEPTH_SENSOR=$3
@@ -27,12 +27,12 @@ DEPTH_SENSOR_ARRAY=(realsense zed zedm zed2 zed2i)
 LASER_SENSOR_ARRAY=(rplidar ldlidar ydlidar xv11)
 LASER_SENSOR_ARRAY+=(${DEPTH_SENSOR_ARRAY[@]})
 
-if [ LASER_SENSOR=="-" ]
+if [ -z "$LASER_SENSOR" ]
     then
         LASER_SENSOR=""
 fi
 
-if [ DEPTH_SENSOR=="-" ]
+if [ -z "$DEPTH_SENSOR" ]
     then
         DEPTH_SENSOR=""
 fi

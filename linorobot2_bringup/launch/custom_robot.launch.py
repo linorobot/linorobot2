@@ -46,10 +46,12 @@ def generate_launch_description():
             output='screen'
         ),
         #you can load your custom urdf launcher here
+        #for demo's sake we'll use the default description launch file
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(description_launch_path)
         ),
         #hardware/sensor specific launch files
+        #for demo's sake we'll use the default description launch file
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(sensors_launch_path),
         )

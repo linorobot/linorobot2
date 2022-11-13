@@ -33,7 +33,7 @@ def generate_launch_description():
         #run robot driver
         #https://github.com/linorobot/sphero_rvr
         Node(
-            package='sphero_rvr ',
+            package='sphero_rvr',
             executable='sphero_node',
             name='sphero_node',
             output='screen'

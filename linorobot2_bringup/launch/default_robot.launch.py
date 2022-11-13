@@ -18,7 +18,7 @@ from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, Pyth
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
-from launch.conditions import IfCondition, UnlessCondition
+from launch.conditions import IfCondition
 
 
 def generate_launch_description():
@@ -26,66 +26,27 @@ def generate_launch_description():
         [FindPackageShare('linorobot2_bringup'), 'launch', 'sensors.launch.py']
     )
 
-    joy_launch_path = PathJoinSubstitution(
-        [FindPackageShare('linorobot2_bringup'), 'launch', 'joy_teleop.launch.py']
-    )
-
     description_launch_path = PathJoinSubstitution(
         [FindPackageShare('linorobot2_description'), 'launch', 'description.launch.py']
     )
 
-    ekf_config_path = PathJoinSubstitution(
-        [FindPackageShare("linorobot2_base"), "config", "ekf.yaml"]
-    )
-
-    default_robot_launch_path = PathJoinSubstitution(
-        [FindPackageShare('linorobot2_bringup'), 'launch', 'default_robot.launch.py']
-    )
-
-    custom_robot_launch_path = PathJoinSubstitution(
-        [FindPackageShare('linorobot2_bringup'), 'launch', 'custom_robot.launch.py']
-    )
-
     return LaunchDescription([
-        DeclareLaunchArgument(
-            name='custom_robot', 
-            default_value='false',
-            description='Use custom robot'
-        ),
-
         DeclareLaunchArgument(
             name='base_serial_port', 
             default_value='/dev/ttyACM0',
             description='Linorobot Base Serial Port'
         ),
-
-        DeclareLaunchArgument(
-            name='joy', 
-            default_value='false',
-            description='Use Joystick'
-        ),
-
         Node(
-            package='robot_localization',
-            executable='ekf_node',
-            name='ekf_filter_node',
+            package='micro_ros_agent',
+            executable='micro_ros_agent',
+            name='micro_ros_agent',
             output='screen',
-            parameters=[
-                ekf_config_path
-            ],
-            remappings=[("odometry/filtered", "odom")]
+            arguments=['serial', '--dev', LaunchConfiguration("base_serial_port")]
         ),
-
         IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(default_robot_launch_path),
-            condition=UnlessCondition(LaunchConfiguration("custom_robot")),
-            launch_arguments={
-                'base_serial_port': LaunchConfiguration("base_serial_port")
-            }.items()
+            PythonLaunchDescriptionSource(description_launch_path)
         ),
-
         IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(custom_robot_launch_path),
-            condition=IfCondition(LaunchConfiguration("custom_robot")),
+            PythonLaunchDescriptionSource(sensors_launch_path),
         )
     ])

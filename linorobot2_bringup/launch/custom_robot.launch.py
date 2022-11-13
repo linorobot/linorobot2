@@ -38,6 +38,13 @@ def generate_launch_description():
             name='sphero_node',
             output='screen'
         ),
+        #https://github.com/christianrauch/raspicam2_node
+        Node(
+            package='raspicam2',
+            executable='raspicam2_node',
+            name='raspicam2',
+            output='screen'
+        ),
         #you can load your custom urdf launcher here
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(description_launch_path)

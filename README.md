@@ -212,13 +212,7 @@ The `rviz` argument on slam.launch.py won't work on headless setup but you can v
 
 #### 3.2 Move the robot to start mapping
 
-Drive the robot manually until the robot has fully covered its area of operation. Alternatively, the robot can also receive goal poses to navigate autonomously while mapping:
-
-    ros2 launch nav2_bringup navigation_launch.py
-
-- Pass `use_sim_time:=true` to the launch file when running in simulation.
-
-More info [here](https://navigation.ros.org/tutorials/docs/navigation2_with_slam.html).
+Drive the robot manually until the robot has fully covered its area of operation. Alternatively, you can use the `2D Goal Pose` tool in RVIZ to set an autonomous goal while mapping. More info [here](https://navigation.ros.org/tutorials/docs/navigation2_with_slam.html).
 
 #### 3.3 Save the map
 

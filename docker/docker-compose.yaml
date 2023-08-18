@@ -27,7 +27,7 @@ services:
       - QT_X11_NO_MITSHM=1
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
-      - $HOME/.Xauthority}:/root/.Xauthority
+      - $HOME/.Xauthority:/root/.Xauthority
       - /dev:/dev
 
   bringup:

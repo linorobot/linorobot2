@@ -52,6 +52,10 @@ def generate_launch_description():
         [FindPackageShare('linorobot2_bringup'), 'launch', 'depth.launch.py']
     )
 
+    camera_launch_path = PathJoinSubstitution(
+        [FindPackageShare('linorobot2_bringup'), 'launch', 'camera.launch.py']
+    )
+
     return LaunchDescription([
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(laser_launch_path),
@@ -68,6 +72,10 @@ def generate_launch_description():
                 'frame_id': 'base_laser'
             }.items()   
         ),
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(camera_launch_path)
+        ),
+            
 
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(depth_launch_path),

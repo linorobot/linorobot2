@@ -17,7 +17,11 @@
     <origin xyz="0.08 0 0.122" rpy="0 0 0"/>
   </xacro:property>
 
-  <xacro:property name="depth_sensor_pose">
+  <!-- <xacro:property name="depth_sensor_pose">
     <origin xyz="-0.065 0 0.255" rpy="0 0 0"/>
+  </xacro:property> -->
+
+  <xacro:property name="camera_pose">
+    <origin xyz="0.134 0 0.02" rpy="0 0 0"/>
   </xacro:property>
 </robot>

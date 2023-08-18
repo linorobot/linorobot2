@@ -53,5 +53,5 @@ RUN touch src/linorobot2/linorobot2_gazebo/COLCON_IGNORE
 RUN /bin/bash -c "source /opt/ros/$ROS_DISTRO/setup.bash && source /root/linorobot2_ws/install/setup.bash && colcon build"
 
 COPY docker/entrypoint.sh /
-RUN sed -i "s\distro\$ROS_DISTRO\g" /entrypoint.sh
+RUN sed -i "s/distro/humble/" /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]

@@ -28,7 +28,7 @@ RUN /bin/bash -c "source /opt/ros/$ROS_DISTRO/setup.bash && source /root/linorob
 RUN /bin/bash -c "source /opt/ros/$ROS_DISTRO/setup.bash && source /root/linorobot2_ws/install/setup.bash && ros2 run micro_ros_setup build_agent.sh"
 
 #### 2.3 Install linorobot2 package:
-RUN git clone -b $ROS_DISTRO https://github.com/linorobot/linorobot2.git src/linorobot2
+RUN git clone -b docker https://github.com/linorobot/linorobot2.git src/linorobot2
 RUN touch src/linorobot2/linorobot2_gazebo/COLCON_IGNORE
 RUN rosdep update && rosdep install --from-path src --ignore-src -y --skip-keys microxrcedds_agent
 RUN /bin/bash -c "source /opt/ros/$ROS_DISTRO/setup.bash && source /root/linorobot2_ws/install/setup.bash && colcon build"
@@ -53,5 +53,5 @@ RUN touch src/linorobot2/linorobot2_gazebo/COLCON_IGNORE
 RUN /bin/bash -c "source /opt/ros/$ROS_DISTRO/setup.bash && source /root/linorobot2_ws/install/setup.bash && colcon build"
 
 COPY docker/entrypoint.sh /
-
+sed -i "s\distro\$ROS_DISTRO\g" /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]

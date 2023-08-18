@@ -1,0 +1,49 @@
+version: "3.9"
+services:
+  linorobot2:
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile
+      args:
+        ROS_DISTRO: ${ROS_DISTRO}
+        ROBOT_BASE: ${ROBOT_BASE}
+        LASER_SENSOR: ${LASER_SENSOR} 
+        DEPTH_SENSOR: ${DEPTH_SENSOR}
+    image: linorobot2:humble
+   
+  base:
+    image: linorobot2:humble
+    hostname: linorobot2
+    stdin_open: true
+    tty: true
+    network_mode: host
+    ipc: host
+    privileged: true
+    environment:
+      - LINOROBOT2_BASE=${ROBOT_BASE} 
+      - LINOROBOT2_LASER_SENSOR=${LASER_SENSOR} 
+      - LINOROBOT2_DEPTH_SENSOR=${DEPTH_SENSOR} 
+      - DISPLAY=${DISPLAY} 
+      - QT_X11_NO_MITSHM=1
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - $HOME/.Xauthority}:/root/.Xauthority
+      - /dev:/dev
+
+  bringup:
+    extends: base
+    command: ros2 launch linorobot2 bringup.launch.py
+
+  slam:
+    extends: base
+    command: >
+      ros2 launch linorobot2 bringup.launch.py
+      rviz:=false
+  
+  navigate:
+    extends: base
+    command: >
+      ros2 launch linorobot2 bringup.launch.py
+      map:=/root/linorobot2_ws/src/linorobot2/linorobot2_navigation/maps/map/playground.pgm
+      rviz:=false
+ 

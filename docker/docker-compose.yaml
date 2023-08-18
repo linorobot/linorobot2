@@ -39,8 +39,6 @@ services:
     command: >
       ros2 launch linorobot2_navigation slam.launch.py
       rviz:=false
-    depends_on: 
-      - bringup
 
   navigate:
     extends: base
@@ -48,5 +46,3 @@ services:
       ros2 launch linorobot2_navigation navigate.launch.py
       map:=/root/linorobot2_ws/src/linorobot2/linorobot2_navigation/maps/map/playground.pgm
       rviz:=false
-    depends_on: 
-      - bringup

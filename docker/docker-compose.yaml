@@ -55,3 +55,11 @@ services:
       -f /root/linorobot2_ws/src/linorobot2/linorobot2_navigation/maps/map
       --fmt png
       --ros-args -p save_map_timeout:=10000.
+
+  rviz-nav:
+    extends: base
+    command: rviz2 -d /root/linorobot2_ws/src/linorobot2/linorobot2_navigation/rviz/linorobot2_navigation.rviz
+
+  rviz:
+    extends: base
+    command: rviz2

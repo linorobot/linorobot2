@@ -29,6 +29,7 @@ services:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - $HOME/.Xauthority:/root/.Xauthority
       - /dev:/dev
+      - ../linorobot2_navigation/maps:/root/linorobot2_ws/src/linorobot2/linorobot2_navigation/maps:rw
 
   bringup:
     extends: base
@@ -46,3 +47,11 @@ services:
       ros2 launch linorobot2_navigation navigate.launch.py
       map:=/root/linorobot2_ws/src/linorobot2/linorobot2_navigation/maps/map/playground.pgm
       rviz:=false
+
+  save-map:
+    extends: base
+    command: >
+      ros2 run nav2_map_server map_saver_cli 
+      -f /root/linorobot2_ws/src/linorobot2/linorobot2_navigation/maps/map
+      --fmt png
+      --ros-args -p save_map_timeout:=10000.

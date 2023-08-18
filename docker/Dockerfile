@@ -46,10 +46,9 @@ WORKDIR /root
 RUN wget -O .shm_off.xml https://raw.githubusercontent.com/eProsima/Fast-DDS/107ea8d64942102696840cd7d3e4cf93fa7a143e/examples/cpp/dds/AdvancedConfigurationExample/shm_off.xml
 
 WORKDIR /root/linorobot2_ws
-RUN rm -rf src/linorobot2
-RUN mkdir -p src/linorobot2
-COPY . src/linorobot2
-RUN touch src/linorobot2/linorobot2_gazebo/COLCON_IGNORE
+RUN rm -rf src/linorobot2/linorobot2_description/urdf
+RUN rm -rf src/linorobot2/linoroobot2_navigation/maps
+COPY linorobot2_description/urdf src/linorobot2/linorobot2_description/urdf
 RUN /bin/bash -c "source /opt/ros/$ROS_DISTRO/setup.bash && source /root/linorobot2_ws/install/setup.bash && colcon build"
 
 COPY docker/entrypoint.sh /

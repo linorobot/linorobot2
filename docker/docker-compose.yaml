@@ -32,18 +32,21 @@ services:
 
   bringup:
     extends: base
-    command: ros2 launch linorobot2 bringup.launch.py
+    command: ros2 launch linorobot2_bringup bringup.launch.py
 
   slam:
     extends: base
     command: >
-      ros2 launch linorobot2 bringup.launch.py
+      ros2 launch linorobot2_navigation slam.launch.py
       rviz:=false
-  
+    depends_on: 
+      - bringup
+
   navigate:
     extends: base
     command: >
-      ros2 launch linorobot2 bringup.launch.py
+      ros2 launch linorobot2_navigation navigate.launch.py
       map:=/root/linorobot2_ws/src/linorobot2/linorobot2_navigation/maps/map/playground.pgm
       rviz:=false
- 
+    depends_on: 
+      - bringup

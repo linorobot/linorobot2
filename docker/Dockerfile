@@ -1,4 +1,4 @@
-ARG ROS_DISTRO=humble
+ARG ROS_DISTRO=
 
 FROM --platform=$BUILDPLATFORM ros:${ROS_DISTRO}-ros-base as base
 SHELL ["/bin/bash", "-c"]
@@ -52,5 +52,5 @@ COPY linorobot2_description/urdf src/linorobot2/linorobot2_description/urdf
 RUN /bin/bash -c "source /opt/ros/$ROS_DISTRO/setup.bash && source /root/linorobot2_ws/install/setup.bash && colcon build"
 
 COPY docker/entrypoint.sh /
-RUN sed -i "s/distro/humble/" /entrypoint.sh
+RUN sed -i "s/rosdistro/$ROS_DISTRO/" /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]

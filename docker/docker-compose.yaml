@@ -9,11 +9,11 @@ services:
         ROBOT_BASE: ${ROBOT_BASE}
         LASER_SENSOR: ${LASER_SENSOR} 
         DEPTH_SENSOR: ${DEPTH_SENSOR}
-    image: linorobot2:humble
+    image: linorobot2:${ROS_DISTRO}
    
   base:
-    image: linorobot2:humble
-    hostname: linorobot2
+    image: linorobot2:${ROS_DISTRO}
+    hostname: linorobot2-${ROS_DISTRO}
     stdin_open: true
     tty: true
     network_mode: host

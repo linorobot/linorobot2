@@ -1,7 +1,7 @@
 version: "3.9"
 services:   
-  simulation:
-    image: linorobot2-simulation:${ROS_DISTRO}
+  base:
+    image: linorobot2-${DEPLOY}:${ROS_DISTRO}
     build:
       context: ../
       dockerfile: docker/Dockerfile
@@ -10,7 +10,7 @@ services:
         ROBOT_BASE: ${ROBOT_BASE}
         LASER_SENSOR: ${LASER_SENSOR} 
         DEPTH_SENSOR: ${DEPTH_SENSOR}
-      target: simulation
+      target: ${DEPLOY}
     hostname: linorobot2-${ROS_DISTRO}
     stdin_open: true
     tty: true
@@ -26,46 +26,33 @@ services:
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - $HOME/.Xauthority:/root/.Xauthority
-      - ../linorobot2_navigation/maps:/root/linorobot2_ws/src/linorobot2/linorobot2_navigation/maps:rw
-
-  hardware:
-    extends: simulation
-    image: linorobot2-hardware:${ROS_DISTRO}
-    build:
-      context: ../
-      dockerfile: docker/Dockerfile
-      args:
-        ROS_DISTRO: ${ROS_DISTRO}
-        ROBOT_BASE: ${ROBOT_BASE}
-        LASER_SENSOR: ${LASER_SENSOR} 
-        DEPTH_SENSOR: ${DEPTH_SENSOR}
-      target: hardware
-    volumes:
-      - /dev:/dev
+      - ../linorobot2_navigation/maps:/root/linorobot2_ws/src/linorobot2/linorobot2_navigation/maps:rw)
 
   gazebo:
-    extends: simulation
+    extends: base
     command: ros2 launch linorobot2_gazebo gazebo.launch.py
 
   bringup:
-    extends: hardware
+    extends: base
     command: ros2 launch linorobot2_bringup bringup.launch.py
+    volumes:
+      - /dev:/dev
 
   slam:
-    extends: ${DEPLOY}
+    extends: base
     command: >
       ros2 launch linorobot2_navigation slam.launch.py
       rviz:=false
 
   navigate:
-    extends: ${DEPLOY}
+    extends: base
     command: >
       ros2 launch linorobot2_navigation navigate.launch.py
       map:=/root/linorobot2_ws/src/linorobot2/linorobot2_navigation/maps/map/playground.pgm
       rviz:=false
 
   save-map:
-    extends: ${DEPLOY}
+    extends: base
     command: >
       ros2 run nav2_map_server map_saver_cli 
       -f /root/linorobot2_ws/src/linorobot2/linorobot2_navigation/maps/map
@@ -73,9 +60,9 @@ services:
       --ros-args -p save_map_timeout:=10000.
 
   rviz-nav:
-    extends: ${DEPLOY}
+    extends: base
     command: rviz2 -d /root/linorobot2_ws/src/linorobot2/linorobot2_navigation/rviz/linorobot2_navigation.rviz
 
   rviz:
-    extends: ${DEPLOY}
+    extends: base
     command: rviz2

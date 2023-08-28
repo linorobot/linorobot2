@@ -2,14 +2,16 @@
   <xacro:macro name="omni_drive_controller" params="wheel_separation wheel_base wheel_radius">
     <gazebo>
       <plugin
-        filename="ignition-gazebo-mecanum-drive-systems"
+        filename="ignition-gazebo-mecanum-drive-system"
         name="ignition::gazebo::systems::MecanumDrive">
         <topic>/cmd_vel</topic>
         <frame_id>odom</frame_id>
         <child_frame_id>base_footprint</child_frame_id>
         <odom_topic>odom/unfiltered</odom_topic>
-        <left_joint>left_wheel_joint</left_joint>
-        <right_joint>right_wheel_joint</right_joint>
+        <front_left_joint>front_left_wheel_joint</front_left_joint>
+        <front_right_joint>front_right_wheel_joint</front_right_joint>
+        <back_left_joint>rear_left_wheel_joint</back_left_joint>
+        <back_right_joint>rear_right_wheel_joint</back_right_joint>
         <wheel_separation>${wheel_separation}</wheel_separation>
         <wheelbase>${wheel_base}</wheelbase>
         <wheel_radius>${wheel_radius}</wheel_radius>

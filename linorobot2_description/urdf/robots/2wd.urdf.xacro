@@ -59,15 +59,15 @@
     />
   </xacro:if>
 
-  <xacro:imu/>
+  <!-- <xacro:imu/> -->
 
   <xacro:generic_laser>
     <xacro:insert_block name="laser_pose" />
   </xacro:generic_laser>
   
-  <xacro:depth_sensor>
+  <!-- <xacro:depth_sensor>
     <xacro:insert_block name="depth_sensor_pose" />
-  </xacro:depth_sensor>
+  </xacro:depth_sensor> -->
 
   <xacro:diff_drive_controller
     wheel_separation="${wheel_pos_y * 2}"

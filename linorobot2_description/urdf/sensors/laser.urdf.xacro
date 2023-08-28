@@ -44,39 +44,33 @@
       <xacro:insert_block name="origin" />
     </joint>
 
-    <gazebo reference="${frame_id}">
-      <sensor type="ray" name="${frame_id}_head_hokuyo_sensor">
-        <always_on>true</always_on>
-        <update_rate>${update_rate}</update_rate>
-        <pose>0 0 0 0 0 0</pose>
-        <visualize>false</visualize>
-        <ray>
-          <scan>
-            <horizontal>
-              <samples>${ray_count}</samples>
-              <resolution>1</resolution>
-              <min_angle>${min_angle}</min_angle>
-              <max_angle>${max_angle}</max_angle>
-            </horizontal>
-          </scan>
-          <range>
-            <min>${min_range}</min>
-            <max>${max_range}</max>
-            <resolution>0.01</resolution>
-          </range>
-        </ray>
-        <plugin name="${frame_id}_gazebo_ros_head_hokuyo_controller" filename="libgazebo_ros_ray_sensor.so">
-          <ros>
-            <remapping>~/out:=${topic_name}</remapping>                                                                                                                           
-          </ros>
-          <output_type>sensor_msgs/LaserScan</output_type>
-          <alwaysOn>true</alwaysOn>
-          <updateRate>${update_rate}</updateRate>
-          <topicName>${topic_name}</topicName>
-          <frame_name>${frame_id}</frame_name>
-          <output_type>sensor_msgs/LaserScan</output_type>
-        </plugin>
-      </sensor>
-    </gazebo>
+    <sensor name='gpu_lidar' type='gpu_lidar'>
+      <pose>0 0 0 0 0 0</pose>
+      <topic>scan</topic>
+      <ignition_frame_id>linorbot2/${frame_id}</ignition_frame_id>
+      <update_rate>${update_rate}</update_rate>
+      <lidar>
+        <scan>
+          <horizontal>
+            <samples>${ray_count}</samples>
+            <resolution>1</resolution>
+            <min_angle>${min_angle}</min_angle>
+            <max_angle>${max_angle}</max_angle>
+          </horizontal>
+          <vertical>
+            <samples>1</samples>
+            <resolution>1</resolution>
+            <min_angle>0.0</min_angle>
+            <max_angle>0.0</max_angle>
+          </vertical>
+        </scan>
+        <range>
+          <min>${min_range}</min>
+          <max>${max_range}</max>
+          <resolution>0.01</resolution>
+        </range>
+      </lidar>
+      <visualize>true</visualize>
+    </sensor>
   </xacro:macro>
 </robot>

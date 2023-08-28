@@ -1,19 +1,20 @@
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
-  <xacro:macro name="omni_drive_controller">
+  <xacro:macro name="omni_drive_controller" params="wheel_separation wheel_base wheel_radius">
     <gazebo>
-    <plugin name="object_controller" filename="libgazebo_ros_planar_move.so">
-      <ros>
-        <argument>odom:=odom/unfiltered</argument>
-      </ros>
-      <command_topic>cmd_vel</command_topic>
-      <odometry_topic>odom/unfiltered</odometry_topic>
-      <odometry_frame>odom</odometry_frame>
-      <odometry_rate>20.0</odometry_rate>
-      <robot_base_frame>base_footprint</robot_base_frame>
-      <publish_odom>true</publish_odom>
-      <publish_odom_tf>false</publish_odom_tf>
-
-    </plugin>
+      <plugin
+        filename="ignition-gazebo-mecanum-drive-systems"
+        name="ignition::gazebo::systems::MecanumDrive">
+        <topic>/cmd_vel</topic>
+        <frame_id>odom</frame_id>
+        <child_frame_id>base_footprint</child_frame_id>
+        <odom_topic>odom/unfiltered</odom_topic>
+        <left_joint>left_wheel_joint</left_joint>
+        <right_joint>right_wheel_joint</right_joint>
+        <wheel_separation>${wheel_separation}</wheel_separation>
+        <wheelbase>${wheel_base}</wheelbase>
+        <wheel_radius>${wheel_radius}</wheel_radius>
+        <odom_publish_frequency>50</odom_publish_frequency>
+      </plugin>
   </gazebo>
   </xacro:macro>
 </robot>

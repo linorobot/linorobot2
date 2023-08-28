@@ -67,5 +67,9 @@
     <xacro:insert_block name="depth_sensor_pose" />
   </xacro:depth_sensor>
 
-  <xacro:omni_drive_controller/>
+  <xacro:omni_drive_controller
+    wheel_separation="${wheel_pos_y * 2}"
+    wheel_base="${wheel_pos_x * 2}"
+    wheel_radius="${wheel_radius}"
+  />
 </robot>

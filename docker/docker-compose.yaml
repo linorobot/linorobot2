@@ -1,0 +1,68 @@
+version: "3.9"
+services:   
+  base:
+    image: linorobot2-${DEPLOY}:${ROS_DISTRO}
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile
+      args:
+        ROS_DISTRO: ${ROS_DISTRO}
+        ROBOT_BASE: ${ROBOT_BASE}
+        LASER_SENSOR: ${LASER_SENSOR} 
+        DEPTH_SENSOR: ${DEPTH_SENSOR}
+      target: ${DEPLOY}
+    hostname: linorobot2-${ROS_DISTRO}
+    stdin_open: true
+    tty: true
+    network_mode: host
+    ipc: host
+    privileged: true
+    environment:
+      - LINOROBOT2_BASE=${ROBOT_BASE} 
+      - LINOROBOT2_LASER_SENSOR=${LASER_SENSOR} 
+      - LINOROBOT2_DEPTH_SENSOR=${DEPTH_SENSOR} 
+      - DISPLAY=${DISPLAY} 
+      - QT_X11_NO_MITSHM=1
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - $HOME/.Xauthority:/root/.Xauthority
+      - ../linorobot2_navigation/maps:/root/linorobot2_ws/src/linorobot2/linorobot2_navigation/maps:rw)
+
+  gazebo:
+    extends: base
+    command: ros2 launch linorobot2_gazebo gazebo.launch.py
+
+  bringup:
+    extends: base
+    command: ros2 launch linorobot2_bringup bringup.launch.py
+    volumes:
+      - /dev:/dev
+
+  slam:
+    extends: base
+    command: >
+      ros2 launch linorobot2_navigation slam.launch.py
+      rviz:=false
+
+  navigate:
+    extends: base
+    command: >
+      ros2 launch linorobot2_navigation navigate.launch.py
+      map:=/root/linorobot2_ws/src/linorobot2/linorobot2_navigation/maps/map/playground.pgm
+      rviz:=false
+
+  save-map:
+    extends: base
+    command: >
+      ros2 run nav2_map_server map_saver_cli 
+      -f /root/linorobot2_ws/src/linorobot2/linorobot2_navigation/maps/map
+      --fmt png
+      --ros-args -p save_map_timeout:=10000.
+
+  rviz-nav:
+    extends: base
+    command: rviz2 -d /root/linorobot2_ws/src/linorobot2/linorobot2_navigation/rviz/linorobot2_navigation.rviz
+
+  rviz:
+    extends: base
+    command: rviz2

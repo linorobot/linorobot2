@@ -1,4 +1,5 @@
 ARG ROS_DISTRO=
+ARG DEPLOY=
 
 FROM --platform=$BUILDPLATFORM ros:${ROS_DISTRO}-ros-base as base
 SHELL ["/bin/bash", "-c"]
@@ -92,4 +93,27 @@ RUN source /opt/ros/$ROS_DISTRO/setup.bash && \
     source /root/linorobot2_ws/install/setup.bash && \
     colcon build --packages-select linorobot2_description
     
+ENTRYPOINT ["/entrypoint.sh"]
+
+# FROM $DEPLOY AS dev
+
+# RUN sudo apt-get update && rosdep update --rosdistro $ROS_DISTRO    
+
+# WORKDIR /root/linorobot2_ws
+# RUN rm -rf src/linorobot2/*
+
+# ENTRYPOINT ["/entrypoint.sh"]
+
+FROM $DEPLOY AS dev
+
+RUN sudo apt-get update && rosdep update --rosdistro $ROS_DISTRO    
+
+RUN sudo apt install -y ros-humble-ros-gz
+
+WORKDIR /root/linorobot2_ws
+RUN rm -rf src/linorobot2/*
+RUN rm -rf /root/linorobot_ws/build
+RUN rm -rf /root/linorobot_ws/install
+RUN rm -rf /root/linorobot_ws/logt
+
 ENTRYPOINT ["/entrypoint.sh"]

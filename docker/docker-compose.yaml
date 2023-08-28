@@ -10,6 +10,7 @@ services:
         ROBOT_BASE: ${ROBOT_BASE}
         LASER_SENSOR: ${LASER_SENSOR} 
         DEPTH_SENSOR: ${DEPTH_SENSOR}
+        DEPLOY: ${DEPLOY}
       target: ${DEPLOY}
     hostname: linorobot2-${ROS_DISTRO}
     stdin_open: true
@@ -28,23 +29,41 @@ services:
       - $HOME/.Xauthority:/root/.Xauthority
       - ../linorobot2_navigation/maps:/root/linorobot2_ws/src/linorobot2/linorobot2_navigation/maps:rw)
 
+  dev:
+    container_name: dev-container
+    image: linorobot2-dev
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile
+      args:
+        DEPLOY: ${DEPLOY} 
+      target: dev  
+    volumes:
+      - ../../../:/root/linorobot2_ws
+    extends: base
+    command: sleep infinity
+
   gazebo:
+    container_name: gazebo-container
     extends: base
     command: ros2 launch linorobot2_gazebo gazebo.launch.py
 
   bringup:
+    container_name: bringup-container
     extends: base
     command: ros2 launch linorobot2_bringup bringup.launch.py
     volumes:
       - /dev:/dev
 
   slam:
+    container_name: slam-container
     extends: base
     command: >
       ros2 launch linorobot2_navigation slam.launch.py
       rviz:=false
 
   navigate:
+    container_name: navigate-container
     extends: base
     command: >
       ros2 launch linorobot2_navigation navigate.launch.py
@@ -52,6 +71,7 @@ services:
       rviz:=false
 
   save-map:
+    container_name: save-map-container
     extends: base
     command: >
       ros2 run nav2_map_server map_saver_cli 
@@ -60,9 +80,11 @@ services:
       --ros-args -p save_map_timeout:=10000.
 
   rviz-nav:
+    container_name: rviz-nav-container
     extends: base
     command: rviz2 -d /root/linorobot2_ws/src/linorobot2/linorobot2_navigation/rviz/linorobot2_navigation.rviz
 
   rviz:
+    container_name: rviz-container
     extends: base
     command: rviz2

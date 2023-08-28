@@ -56,44 +56,44 @@ def generate_launch_description():
             launch_arguments={
                 'gz_args': world_path
             }.items()
+        ),
+
+        Node(
+            package='ros_gz_sim',
+            executable='create',
+            output='screen',
+            arguments=['-topic', 'robot_description', '-name', "linorobot2",],
+        ),
+
+        Node(
+            package='linorobot2_gazebo',
+            executable='command_timeout.py',
+            name='command_timeout'
+        ),
+
+        Node(
+            package='robot_localization',
+            executable='ekf_node',
+            name='ekf_filter_node',
+            output='screen',
+            parameters=[
+                {'use_sim_time': use_sim_time}, 
+                ekf_config_path
+            ],
+            remappings=[("odometry/filtered", "odom")]
+        ),
+
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(description_launch_path),
+            launch_arguments={
+                'use_sim_time': str(use_sim_time),
+                'publish_joints': 'false',
+            }.items()
+        ),
+
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(joy_launch_path),
         )
-
-        # Node(
-        #     package='ros_gz_sim',
-        #     executable='create',
-        #     output='screen'
-        #     arguments=['-topic', 'robot_description', '-name', "linorobot2",],
-        # ),
-
-        # Node(
-        #     package='linorobot2_gazebo',
-        #     executable='command_timeout.py',
-        #     name='command_timeout'
-        # ),
-
-        # Node(
-        #     package='robot_localization',
-        #     executable='ekf_node',
-        #     name='ekf_filter_node',
-        #     output='screen',
-        #     parameters=[
-        #         {'use_sim_time': use_sim_time}, 
-        #         ekf_config_path
-        #     ],
-        #     remappings=[("odometry/filtered", "odom")]
-        # ),
-
-        # IncludeLaunchDescription(
-        #     PythonLaunchDescriptionSource(description_launch_path),
-        #     launch_arguments={
-        #         'use_sim_time': str(use_sim_time),
-        #         'publish_joints': 'false',
-        #     }.items()
-        # ),
-
-        # IncludeLaunchDescription(
-        #     PythonLaunchDescriptionSource(joy_launch_path),
-        # )
     ])
 
 #sources: 

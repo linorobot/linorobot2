@@ -10,29 +10,21 @@
 <sdf version="1.8">
   <world name="demo">
     <plugin
-      filename="gz-sim-physics-system"
-      name="gz::sim::systems::Physics">
+      filename="ignition-gazebo-physics-system"
+      name="ignition::gazebo::systems::Physics">
     </plugin>
     <plugin
-      filename="gz-sim-sensors-system"
-      name="gz::sim::systems::Sensors">
+      filename="ignition-gazebo-sensors-system"
+      name="ignition::gazebo::systems::Sensors">
       <render_engine>ogre2</render_engine>
     </plugin>
     <plugin
-      filename="gz-sim-scene-broadcaster-system"
-      name="gz::sim::systems::SceneBroadcaster">
+      filename="ignition-gazebo-scene-broadcaster-system"
+      name="ignition::gazebo::systems::SceneBroadcaster">
     </plugin>
     <plugin
-      filename="gz-sim-user-commands-system"
-      name="gz::sim::systems::UserCommands">
-    </plugin>
-    <plugin
-      filename="BasicSystem"
-      name="ros_gz_example_gazebo::BasicSystem">
-    </plugin>
-    <plugin
-      filename="FullSystem"
-      name="ros_gz_example_gazebo::FullSystem">
+      filename="ignition-gazebo-user-commands-system"
+      name="ignition::gazebo::systems::UserCommands">
     </plugin>
 
     <light name="sun" type="directional">

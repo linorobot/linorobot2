@@ -5,8 +5,8 @@
         filename="ignition-gazebo-diff-drive-system"
         name="ignition::gazebo::systems::DiffDrive">
         <topic>/cmd_vel</topic>
-        <frame_id>odom<frame_id>
-        <child_frame_id>base_footprint<child_frame_id>
+        <frame_id>odom</frame_id>
+        <child_frame_id>base_footprint</child_frame_id>
         <odom_topic>odom/unfiltered</odom_topic>
         <left_joint>left_wheel_joint</left_joint>
         <right_joint>right_wheel_joint</right_joint>

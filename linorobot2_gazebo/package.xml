@@ -11,7 +11,7 @@
     <url type="bugtracker">https://github.com/linorobot/linorobot2/issues</url>
     <buildtool_depend>ament_cmake</buildtool_depend>
     <buildtool_depend>ament_cmake_python</buildtool_depend>
-    <exec_depend>gazebo_ros_pkgs</exec_depend>
+    <exec_depend>ros_gz</exec_depend>
     <exec_depend>rclpy</exec_depend>
     <exec_depend>geometry_msgs</exec_depend>
     <export>

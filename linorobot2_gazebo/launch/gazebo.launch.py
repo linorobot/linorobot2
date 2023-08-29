@@ -74,14 +74,16 @@ def generate_launch_description():
                 "/odom/unfiltered@nav_msgs/msg/Odometry[ignition.msgs.Odometry",
                 "/imu/data@sensor_msgs/msg/Imu[ignition.msgs.IMU",
                 "/scan@sensor_msgs/msg/LaserScan[ignition.msgs.LaserScan",
-                "/depth_camera@sensor_msgs/msg/Image[ignition.msgs.Image",
-                "/camera_info@sensor_msgs/msg/CameraInfo[ignition.msgs.CameraInfo",
-                "/depth_camera/points@sensor_msgs/msg/PointCloud2[ignition.msgs.PointCloudPacked",
+                "/camera/camera_info@sensor_msgs/msg/CameraInfo[ignition.msgs.CameraInfo",
+                "/camera/image@sensor_msgs/msg/Image[ignition.msgs.Image",
+                "/camera/depth_image@sensor_msgs/msg/Image[ignition.msgs.Image",
+                "/camera/points@sensor_msgs/msg/PointCloud2[ignition.msgs.PointCloudPacked",
             ],
             remappings=[
-                ('/camera_info', '/camera/depth/camera_info'),
-                ('/depth_camera', '/camera/depth/image_rect_raw'),
-                ('/depth_camera/points', '/camera/depth/color/points'),
+                ('/camera/camera_info', '/camera/color/camera_info'),
+                ('/camera/image', '/camera/color/image_raw'),
+                ('/camera/depth_image', '/camera/depth/image_rect_raw'),
+                ('/camera/points', '/camera/depth/color/points'),
             ]
         ),
 

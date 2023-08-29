@@ -52,8 +52,8 @@
       <parent link="camera_link"/>
       <child link="camera_depth_link"/>
     </joint>
-
-    <!-- https://github.com/ros-simulation/gazebo_ros_pkgs/wiki/ROS-2-Migration:-Camera#gazebo_ros_camera -->
+<!-- 
+    https://github.com/ros-simulation/gazebo_ros_pkgs/wiki/ROS-2-Migration:-Camera#gazebo_ros_camera
     <gazebo reference="camera_link">
       <sensor name="camera" type="depth">
         <always_on>true</always_on>
@@ -84,7 +84,48 @@
           <distortion_t2>0.00000001</distortion_t2>
         </plugin>
       </sensor>
+    </gazebo> -->
 
+    <gazebo reference="camera_link">
+      <!-- <sensor name="rgbd_camera" type="rgbd_camera">
+        <topic>camera</topic>
+        <update_rate>30</update_rate>
+        <always_on>1</always_on>
+        <visualize>true</visualize>
+        <camera>
+          <horizontal_fov>1.50098</horizontal_fov>
+          <image>
+            <width>640</width>
+            <height>480</height>
+          </image>
+          <clip>
+            <near>0.015</near>
+            <far>3.0</far>
+          </clip>
+          <optical_frame_id>camera_optical_frame</optical_frame_id>
+        </camera>
+      </sensor> -->
+
+      <sensor type="depth_camera" name="depth_camera">
+        <topic>depth_camera</topic>
+        <ignition_frame_id>camera_link</ignition_frame_id>
+        <update_rate>30.0</update_rate>
+        <always_on>true</always_on>
+        <visualize>true</visualize>
+        <camera>
+          <camera_info_topic>info</camera_info_topic>
+          <horizontal_fov>1.50098</horizontal_fov>
+          <image>
+            <width>640</width>
+            <height>480</height>
+            <format>R8G8B8</format>
+          </image>
+          <clip>
+            <near>0.015</near>
+            <far>3.0</far>
+          </clip>
+        </camera>
+      </sensor>
     </gazebo>
   </xacro:macro>
 </robot>

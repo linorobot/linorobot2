@@ -44,33 +44,35 @@
       <xacro:insert_block name="origin" />
     </joint>
 
-    <sensor name='gpu_lidar' type='gpu_lidar'>
-      <pose>0 0 0 0 0 0</pose>
-      <topic>scan</topic>
-      <ignition_frame_id>linorbot2/${frame_id}</ignition_frame_id>
-      <update_rate>${update_rate}</update_rate>
-      <lidar>
-        <scan>
-          <horizontal>
-            <samples>${ray_count}</samples>
-            <resolution>1</resolution>
-            <min_angle>${min_angle}</min_angle>
-            <max_angle>${max_angle}</max_angle>
-          </horizontal>
-          <vertical>
-            <samples>1</samples>
-            <resolution>1</resolution>
-            <min_angle>0.0</min_angle>
-            <max_angle>0.0</max_angle>
-          </vertical>
-        </scan>
-        <range>
-          <min>${min_range}</min>
-          <max>${max_range}</max>
-          <resolution>0.01</resolution>
-        </range>
-      </lidar>
-      <visualize>true</visualize>
-    </sensor>
+    <gazebo reference="${frame_id}">
+      <sensor name="gpu_lidar" type="gpu_lidar">
+        <topic>scan</topic>
+        <ignition_frame_id>${frame_id}</ignition_frame_id>
+        <update_rate>${update_rate}</update_rate>
+        <always_on>true</always_on>
+        <visualize>true</visualize>
+        <lidar>
+          <scan>
+            <horizontal>
+              <samples>${ray_count}</samples>
+              <resolution>1</resolution>
+              <min_angle>${min_angle}</min_angle>
+              <max_angle>${max_angle}</max_angle>
+            </horizontal>
+            <vertical>
+              <samples>1</samples>
+              <resolution>1</resolution>
+              <min_angle>0.0</min_angle>
+              <max_angle>0.0</max_angle>
+            </vertical>
+          </scan>
+          <range>
+            <min>${min_range}</min>
+            <max>${max_range}</max>
+            <resolution>0.01</resolution>
+          </range>
+        </lidar>
+      </sensor>
+    </gazebo>
   </xacro:macro>
 </robot>

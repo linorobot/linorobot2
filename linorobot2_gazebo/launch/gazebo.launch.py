@@ -66,6 +66,27 @@ def generate_launch_description():
         ),
 
         Node(
+            package="ros_gz_bridge",
+            executable="parameter_bridge",
+            arguments=[
+                "/clock@rosgraph_msgs/msg/Clock[ignition.msgs.Clock",
+                "/tf@tf2_msgs/msg/TFMessage[ignition.msgs.Pose_V",
+                "/cmd_vel@geometry_msgs/msg/Twist@ignition.msgs.Twist",
+                "/odom/unfiltered@nav_msgs/msg/Odometry[ignition.msgs.Odometry",
+                "/imu/data@sensor_msgs/msg/Imu[ignition.msgs.IMU",
+                "/scan@sensor_msgs/msg/LaserScan[ignition.msgs.LaserScan",
+                "/depth_camera@sensor_msgs/msg/Image[ignition.msgs.Image",
+                "/camera_info@sensor_msgs/msg/CameraInfo[ignition.msgs.CameraInfo",
+                "/depth_camera/points@sensor_msgs/msg/PointCloud2[ignition.msgs.PointCloudPacked",
+            ],
+            remappings=[
+                ('/camera_info', '/camera/depth/camera_info'),
+                ('/depth_camera', '/camera/depth/image_rect_raw'),
+                ('/depth_camera/points', '/camera/depth/color/points'),
+            ]
+        ),
+
+        Node(
             package='linorobot2_gazebo',
             executable='command_timeout.py',
             name='command_timeout'

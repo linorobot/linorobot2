@@ -1,0 +1,15 @@
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+  <gazebo>
+    <plugin
+      filename="ignition-gazebo-sensors-system"
+      name="ignition::gazebo::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+  </gazebo>
+
+  <gazebo>
+    <plugin filename="ignition-gazebo-imu-system"
+        name="ignition::gazebo::systems::Imu">
+    </plugin>
+  </gazebo>
+</robot>

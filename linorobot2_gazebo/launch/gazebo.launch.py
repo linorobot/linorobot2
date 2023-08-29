@@ -70,7 +70,6 @@ def generate_launch_description():
             executable="parameter_bridge",
             arguments=[
                 "/clock@rosgraph_msgs/msg/Clock[ignition.msgs.Clock",
-                "/tf@tf2_msgs/msg/TFMessage[ignition.msgs.Pose_V",
                 "/cmd_vel@geometry_msgs/msg/Twist@ignition.msgs.Twist",
                 "/odom/unfiltered@nav_msgs/msg/Odometry[ignition.msgs.Odometry",
                 "/imu/data@sensor_msgs/msg/Imu[ignition.msgs.IMU",

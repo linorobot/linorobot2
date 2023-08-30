@@ -1,12 +1,11 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
-  <!-- source: https://github.com/clearpathrobotics/clearpath_common/blob/humble/clearpath_sensors_description/urdf/intel_realsense.urdf.xacro -->
-
   <xacro:macro name="depth_sensor" params="sim name:=camera parent_link:=base_link *origin
                                               update_rate:=30.0 image_height:=480 image_width:=640">
     <xacro:macro name="sensor_d435" 
                  params="parent *origin name:=camera add_plug:=false use_mesh:=false">
       <xacro:property name="M_PI" value="3.1415926535897931" />
+      <!-- source https://github.com/clearpathrobotics/clearpath_common/blob/humble/clearpath_sensors_description/urdf/intel_realsense.urdf.xacro -->
 
       <!-- The following values are approximate, and the camera node
             publishing TF values with actual calibrated camera extrinsic values -->

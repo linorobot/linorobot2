@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <robot name="linorobot2_2wd" xmlns:xacro="http://ros.org/wiki/xacro">
-
+  <xacro:arg name="sim" default="false" />
   <xacro:include filename="$(find linorobot2_description)/urdf/4wd_properties.urdf.xacro" />
   <xacro:include filename="$(find linorobot2_description)/urdf/mech/base.urdf.xacro" />
   <xacro:include filename="$(find linorobot2_description)/urdf/mech/wheel.urdf.xacro" />
@@ -64,7 +64,7 @@
     <xacro:insert_block name="laser_pose" />
   </xacro:generic_laser>
   
-  <xacro:depth_sensor>
+  <xacro:depth_sensor sim="$(arg sim)" >
     <xacro:insert_block name="depth_sensor_pose" />
   </xacro:depth_sensor>
 

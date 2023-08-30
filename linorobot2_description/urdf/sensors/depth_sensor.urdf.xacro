@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
-  <xacro:macro name="depth_sensor" params="name:=camera parent_link:=base_link *origin
-                                              update_rate:=30.0 image_height:=480 image_width:=640">
+  <!-- source: https://github.com/clearpathrobotics/clearpath_common/blob/humble/clearpath_sensors_description/urdf/intel_realsense.urdf.xacro -->
 
+  <xacro:macro name="depth_sensor" params="sim name:=camera parent_link:=base_link *origin
+                                              update_rate:=30.0 image_height:=480 image_width:=640">
     <xacro:macro name="sensor_d435" 
-                 params="parent *origin name:=camera
-                         use_nominal_extrinsics:=true add_plug:=false use_mesh:=false">
+                 params="parent *origin name:=camera add_plug:=false use_mesh:=false">
       <xacro:property name="M_PI" value="3.1415926535897931" />
 
       <!-- The following values are approximate, and the camera node
@@ -82,7 +82,7 @@
       </link>
 
       <!-- Use the nominal extrinsics between camera frames if the calibrated extrinsics aren't being published. e.g. running the device in simulation  -->
-      <xacro:if value="${use_nominal_extrinsics}">
+      <xacro:if value="${sim}">
         <!-- camera depth joints and links -->
         <joint name="${name}_depth_joint" type="fixed">
           <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -163,6 +163,7 @@
         <always_on>true</always_on>
         <visualize>true</visualize>
         <camera>
+          <optical_frame_id>${name}_color_optical_frame</optical_frame_id>
           <horizontal_fov>1.25</horizontal_fov>
           <image>
             <width>${image_width}</width>
@@ -172,7 +173,6 @@
             <near>0.3</near>
             <far>100</far>
           </clip>
-          <optical_frame_id>${name}_color_optical_frame</optical_frame_id>
         </camera>
       </sensor>
     </gazebo>

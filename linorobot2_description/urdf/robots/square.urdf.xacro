@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <robot name="linorobot2_2wd" xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:arg name="sim" default="false" />
   <xacro:property name="base_length" value="0.25" />
   <xacro:property name="base_width" value="0.25" />
   <xacro:property name="base_height" value="0.003" />
@@ -94,7 +95,7 @@
     <xacro:insert_block name="base_laser_pose" />
   </xacro:generic_base_laser>
 
-  <xacro:depth_sensor>
+  <xacro:depth_sensor sim="$(arg sim)" >
     <xacro:insert_block name="depth_sensor_pose" />
   </xacro:depth_sensor>
 

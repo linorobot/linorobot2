@@ -88,6 +88,12 @@ def generate_launch_description():
         ),
 
         Node(
+            package="tf2_ros", 
+            executable = "static_transform_publisher",
+            arguments = ["0.", "0.", "0.", "0.", "0.", "0.", "camera_bottom_screw_frame", "linorobot2/base_footprint/camera"]
+        ),
+
+        Node(
             package='linorobot2_gazebo',
             executable='command_timeout.py',
             name='command_timeout'

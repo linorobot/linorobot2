@@ -95,7 +95,7 @@ def generate_launch_description():
 
         Node(
             package='linorobot2_gazebo',
-            executable='command_timeout.py',
+            executable='command_timeout',
             name='command_timeout'
         ),
 

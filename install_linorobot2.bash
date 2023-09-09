@@ -23,7 +23,7 @@ ARCH="$(uname -m)"
 WORKSPACE="$HOME/linorobot2_ws"
 
 ROBOT_TYPE_ARRAY=(2wd 4wd mecanum)
-DEPTH_SENSOR_ARRAY=(realsense zed zedm zed2 zed2i oakd oakdlite oakdpro)
+DEPTH_SENSOR_ARRAY=(realsense zed zedm zed2 zed2i OAK-D OAK-D-LITE OAK-D-PRO)
 LASER_SENSOR_ARRAY=(rplidar ldlidar ydlidar xv11)
 LASER_SENSOR_ARRAY+=(${DEPTH_SENSOR_ARRAY[@]})
 

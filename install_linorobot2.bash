@@ -156,6 +156,10 @@ function install_OAK-D-LITE{
     install_oakd
 }
 
+function install_OAK-D-PRO{
+    install_oakd
+}
+
 if [[ "$ROSDISTRO" == "" || "$ROSDISTRO" == "<unknown>" ]]
     then
         echo "No ROS2 distro detected"

@@ -66,7 +66,7 @@ def generate_launch_description():
         
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(PathJoinSubstitution(
-                [FindPackageShare('depthai_examples'), 'launch/include', 'zed_camera.launch.py']
+                [FindPackageShare('depthai_examples'), 'launch', 'stereo.launch.py']
             )),
             condition=IfCondition(PythonExpression(['"', LaunchConfiguration('sensor'), '" in "', str(oakd_sensors), '"'])),
             launch_arguments={

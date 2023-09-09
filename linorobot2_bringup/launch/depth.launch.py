@@ -28,12 +28,17 @@ def generate_launch_description():
         [FindPackageShare('linorobot2_bringup'), 'config', 'zed_common.yaml']
     )
 
+<<<<<<< HEAD
     oakd_sensors = ['oakd', 'oakdlite', 'oakdpro']
     to_oakd_vars = {
         "oakd": "OAK-D",
         "oakdlite": "OAK-D-LITE",
         "oakdpro": "OAK-D-PRO"
     }
+=======
+    oakd_sensors = ['OAK-D', 'OAK-D-LITE']
+    
+>>>>>>> e152283 (Update depth.launch.py)
     return LaunchDescription([
         DeclareLaunchArgument(
             name='sensor', 
@@ -70,11 +75,19 @@ def generate_launch_description():
         
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(PathJoinSubstitution(
+<<<<<<< HEAD
                 [FindPackageShare('depthai_examples'), 'launch', 'stereo.launch.py']
             )),
             condition=IfCondition(PythonExpression(['"', LaunchConfiguration('sensor'), '" in "', str(oakd_sensors), '"'])),
             launch_arguments={
                 'camera_model': to_oakd_vars[LaunchConfiguration('sensor')],                
+=======
+                [FindPackageShare('depthai_examples'), 'launch/include', 'zed_camera.launch.py']
+            )),
+            condition=IfCondition(PythonExpression(['"', LaunchConfiguration('sensor'), '" in "', str(oakd_sensors), '"'])),
+            launch_arguments={
+                'camera_model': LaunchConfiguration('sensor'),                
+>>>>>>> e152283 (Update depth.launch.py)
             }.items()   
         ),
     ])

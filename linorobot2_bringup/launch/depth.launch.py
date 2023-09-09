@@ -29,6 +29,7 @@ def generate_launch_description():
     )
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     oakd_sensors = ['oakd', 'oakdlite', 'oakdpro']
     to_oakd_vars = {
         "oakd": "OAK-D",
@@ -37,6 +38,9 @@ def generate_launch_description():
     }
 =======
     oakd_sensors = ['OAK-D', 'OAK-D-LITE']
+=======
+    oakd_sensors = ['OAK-D', 'OAK-D-LITE', 'OAK-D-PRO']
+>>>>>>> a470539 (Update depth.launch.py add OAK D Pro)
     
 >>>>>>> e152283 (Update depth.launch.py)
     return LaunchDescription([

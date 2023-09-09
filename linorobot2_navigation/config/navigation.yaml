@@ -295,7 +295,11 @@ global_costmap:
         z_resolution: 0.05
         z_voxels: 16
         mark_threshold: 1
+<<<<<<< HEAD
         observation_sources: realsense zed oakd
+=======
+        observation_sources: realsense zed OAKD
+>>>>>>> e6bed8c (Update navigation.yaml add OAK D for global costmap voxel3d observation sources)
         min_obstacle_height: 0.00
         max_obstacle_height: 2.0 
         realsense:
@@ -314,7 +318,11 @@ global_costmap:
           clearing: True
           marking: True
           data_type: "PointCloud2"
+<<<<<<< HEAD
         oakd:
+=======
+        OAKD:
+>>>>>>> e6bed8c (Update navigation.yaml add OAK D for global costmap voxel3d observation sources)
           topic: /stereo/points
           raytrace_min_range: 0.5
           min_obstacle_height: 0.0

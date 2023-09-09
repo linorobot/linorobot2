@@ -28,7 +28,7 @@ def generate_launch_description():
         [FindPackageShare('linorobot2_bringup'), 'config', 'zed_common.yaml']
     )
 
-    oakd_sensors = ['OAK-D', 'OAK-D-LITE']
+    oakd_sensors = ['OAK-D', 'OAK-D-LITE', 'OAK-D-PRO']
     
     return LaunchDescription([
         DeclareLaunchArgument(

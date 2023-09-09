@@ -76,6 +76,7 @@ def generate_launch_description():
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(PathJoinSubstitution(
 <<<<<<< HEAD
+<<<<<<< HEAD
                 [FindPackageShare('depthai_examples'), 'launch', 'stereo.launch.py']
             )),
             condition=IfCondition(PythonExpression(['"', LaunchConfiguration('sensor'), '" in "', str(oakd_sensors), '"'])),
@@ -83,6 +84,9 @@ def generate_launch_description():
                 'camera_model': to_oakd_vars[LaunchConfiguration('sensor')],                
 =======
                 [FindPackageShare('depthai_examples'), 'launch/include', 'zed_camera.launch.py']
+=======
+                [FindPackageShare('depthai_examples'), 'launch', 'stereo.launch.py']
+>>>>>>> 6602a7a (Update depth.launch.py launch oak d and oak d lite)
             )),
             condition=IfCondition(PythonExpression(['"', LaunchConfiguration('sensor'), '" in "', str(oakd_sensors), '"'])),
             launch_arguments={

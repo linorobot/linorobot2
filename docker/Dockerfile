@@ -4,20 +4,14 @@ ARG DEPLOY=
 FROM --platform=$BUILDPLATFORM ros:${ROS_DISTRO}-ros-base as base
 SHELL ["/bin/bash", "-c"]
 
-#rviz fix https://github.com/ros2/rviz/issues/948
-RUN apt-get update -q \
-    && apt-get install -y software-properties-common \
-    && add-apt-repository ppa:kisak/kisak-mesa \
-    && apt-get install libegl-mesa0 libegl1-mesa-dev \
-    libgbm-dev libgbm1 libgl1-mesa-dev \
-    libgl1-mesa-dri libglapi-mesa libglx-mesa0 wget -y 
 
-RUN sudo apt-get update && rosdep update --rosdistro $ROS_DISTRO    
+RUN apt-get update && rosdep update --rosdistro $ROS_DISTRO    
+RUN apt-get install -y ros-humble-rviz2 wget
 
 RUN mkdir -p /root/linorobot2_ws/src
 WORKDIR /root/linorobot2_ws
 
-RUN git clone -b docker https://github.com/linorobot/linorobot2.git src/linorobot2
+RUN git clone -b humble-sim https://github.com/linorobot/linorobot2.git src/linorobot2
 RUN touch src/linorobot2/linorobot2_gazebo/COLCON_IGNORE
 RUN rosdep install --from-path src --ignore-src -y --skip-keys micro_ros_agent
 RUN source /opt/ros/$ROS_DISTRO/setup.bash && \
@@ -36,11 +30,12 @@ ENTRYPOINT ["/entrypoint.sh"]
 
 FROM base AS simulation
 
-RUN sudo apt-get update && rosdep update --rosdistro $ROS_DISTRO    
+RUN apt-get update && rosdep update --rosdistro $ROS_DISTRO    
 
 WORKDIR /root/linorobot2_ws
 RUN rm src/linorobot2/linorobot2_gazebo/COLCON_IGNORE
 RUN rosdep install --from-path src --ignore-src -y --skip-keys micro_ros_agent
+    
 RUN source /opt/ros/$ROS_DISTRO/setup.bash && \
     source /root/linorobot2_ws/install/setup.bash && \
     colcon build --packages-select linorobot2_gazebo
@@ -57,8 +52,8 @@ ENTRYPOINT ["/entrypoint.sh"]
 
 FROM base AS hardware
 
-RUN sudo apt-get update && rosdep update --rosdistro $ROS_DISTRO    
-RUN sudo apt-get install -y python3-vcstool build-essential
+RUN apt-get update && rosdep update --rosdistro $ROS_DISTRO    
+RUN apt-get install -y python3-vcstool build-essential
 
 WORKDIR /root/linorobot2_ws
 RUN git clone -b $ROS_DISTRO https://github.com/micro-ROS/micro_ros_setup.git src/micro_ros_setup
@@ -95,20 +90,18 @@ RUN source /opt/ros/$ROS_DISTRO/setup.bash && \
     
 ENTRYPOINT ["/entrypoint.sh"]
 
-# FROM $DEPLOY AS dev
+FROM $DEPLOY AS dev
 
-# RUN sudo apt-get update && rosdep update --rosdistro $ROS_DISTRO    
+RUN apt-get update && rosdep update --rosdistro $ROS_DISTRO    
 
-# WORKDIR /root/linorobot2_ws
-# RUN rm -rf src/linorobot2/*
+WORKDIR /root/linorobot2_ws
+RUN rm -rf src/linorobot2/*
 
-# ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/entrypoint.sh"]
 
 FROM $DEPLOY AS dev
 
-RUN sudo apt-get update && rosdep update --rosdistro $ROS_DISTRO    
-
-RUN sudo apt install -y ros-humble-ros-gz
+RUN apt-get update && rosdep update --rosdistro $ROS_DISTRO    
 
 WORKDIR /root/linorobot2_ws
 RUN rm -rf src/linorobot2/*

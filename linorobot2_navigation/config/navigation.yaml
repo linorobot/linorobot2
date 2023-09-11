@@ -205,7 +205,7 @@ local_costmap:
         z_resolution: 0.05
         z_voxels: 16
         mark_threshold: 1
-        observation_sources: realsense zed OAKD
+        observation_sources: realsense zed oakd
         min_obstacle_height: 0.00
         max_obstacle_height: 2.0 
         realsense:
@@ -224,7 +224,7 @@ local_costmap:
           clearing: True
           marking: True
           data_type: "PointCloud2"
-        OAKD:
+        oakd:
           topic: /stereo/points
           raytrace_min_range: 0.5
           min_obstacle_height: 0.0
@@ -278,7 +278,7 @@ global_costmap:
         z_resolution: 0.05
         z_voxels: 16
         mark_threshold: 1
-        observation_sources: realsense zed OAKD
+        observation_sources: realsense zed oakd
         min_obstacle_height: 0.00
         max_obstacle_height: 2.0 
         realsense:
@@ -297,7 +297,7 @@ global_costmap:
           clearing: True
           marking: True
           data_type: "PointCloud2"
-        OAKD:
+        oakd:
           topic: /stereo/points
           raytrace_min_range: 0.5
           min_obstacle_height: 0.0

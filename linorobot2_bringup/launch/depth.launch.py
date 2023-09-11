@@ -30,12 +30,16 @@ def generate_launch_description():
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 0b263f0 (Update depth.launch.py add converter from lowercase non-hypen oak d names to uppercase oak d camera names)
     oakd_sensors = ['oakd', 'oakdlite', 'oakdpro']
     to_oakd_vars = {
         "oakd": "OAK-D",
         "oakdlite": "OAK-D-LITE",
         "oakdpro": "OAK-D-PRO"
     }
+<<<<<<< HEAD
 =======
     oakd_sensors = ['OAK-D', 'OAK-D-LITE']
 =======
@@ -43,6 +47,8 @@ def generate_launch_description():
 >>>>>>> a470539 (Update depth.launch.py add OAK D Pro)
     
 >>>>>>> e152283 (Update depth.launch.py)
+=======
+>>>>>>> 0b263f0 (Update depth.launch.py add converter from lowercase non-hypen oak d names to uppercase oak d camera names)
     return LaunchDescription([
         DeclareLaunchArgument(
             name='sensor', 
@@ -86,6 +92,7 @@ def generate_launch_description():
             condition=IfCondition(PythonExpression(['"', LaunchConfiguration('sensor'), '" in "', str(oakd_sensors), '"'])),
             launch_arguments={
                 'camera_model': to_oakd_vars[LaunchConfiguration('sensor')],                
+<<<<<<< HEAD
 =======
                 [FindPackageShare('depthai_examples'), 'launch/include', 'zed_camera.launch.py']
 =======
@@ -96,6 +103,8 @@ def generate_launch_description():
             launch_arguments={
                 'camera_model': LaunchConfiguration('sensor'),                
 >>>>>>> e152283 (Update depth.launch.py)
+=======
+>>>>>>> 0b263f0 (Update depth.launch.py add converter from lowercase non-hypen oak d names to uppercase oak d camera names)
             }.items()   
         ),
     ])

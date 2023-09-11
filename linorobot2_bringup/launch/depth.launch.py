@@ -28,8 +28,12 @@ def generate_launch_description():
         [FindPackageShare('linorobot2_bringup'), 'config', 'zed_common.yaml']
     )
 
-    oakd_sensors = ['OAK-D', 'OAK-D-LITE', 'OAK-D-PRO']
-    
+    oakd_sensors = ['oakd', 'oakdlite', 'oakdpro']
+    to_oakd_vars = {
+        "oakd": "OAK-D",
+        "oakdlite": "OAK-D-LITE",
+        "oakdpro": "OAK-D-PRO"
+    }
     return LaunchDescription([
         DeclareLaunchArgument(
             name='sensor', 
@@ -71,7 +75,7 @@ def generate_launch_description():
             )),
             condition=IfCondition(PythonExpression(['"', LaunchConfiguration('sensor'), '" in "', str(oakd_sensors), '"'])),
             launch_arguments={
-                'camera_model': LaunchConfiguration('sensor'),                
+                'camera_model': to_oakd_vars[LaunchConfiguration('sensor')],                
             }.items()   
         ),
     ])

@@ -215,10 +215,14 @@ local_costmap:
         z_voxels: 16
         mark_threshold: 1
 <<<<<<< HEAD
+<<<<<<< HEAD
         observation_sources: realsense zed oakd
 =======
         observation_sources: realsense zed OAKD
 >>>>>>> 1437ebe (Update navigation.yaml add OAKD topic for 3D voxel observation sources)
+=======
+        observation_sources: realsense zed oakd
+>>>>>>> 7189ad5 (Update navigation.yaml remove hypen and change the oak d camera names to lowercase)
         min_obstacle_height: 0.00
         max_obstacle_height: 2.0 
         realsense:
@@ -238,10 +242,14 @@ local_costmap:
           marking: True
           data_type: "PointCloud2"
 <<<<<<< HEAD
+<<<<<<< HEAD
         oakd:
 =======
         OAKD:
 >>>>>>> 1437ebe (Update navigation.yaml add OAKD topic for 3D voxel observation sources)
+=======
+        oakd:
+>>>>>>> 7189ad5 (Update navigation.yaml remove hypen and change the oak d camera names to lowercase)
           topic: /stereo/points
           raytrace_min_range: 0.5
           min_obstacle_height: 0.0
@@ -296,10 +304,14 @@ global_costmap:
         z_voxels: 16
         mark_threshold: 1
 <<<<<<< HEAD
+<<<<<<< HEAD
         observation_sources: realsense zed oakd
 =======
         observation_sources: realsense zed OAKD
 >>>>>>> e6bed8c (Update navigation.yaml add OAK D for global costmap voxel3d observation sources)
+=======
+        observation_sources: realsense zed oakd
+>>>>>>> 7189ad5 (Update navigation.yaml remove hypen and change the oak d camera names to lowercase)
         min_obstacle_height: 0.00
         max_obstacle_height: 2.0 
         realsense:
@@ -319,10 +331,14 @@ global_costmap:
           marking: True
           data_type: "PointCloud2"
 <<<<<<< HEAD
+<<<<<<< HEAD
         oakd:
 =======
         OAKD:
 >>>>>>> e6bed8c (Update navigation.yaml add OAK D for global costmap voxel3d observation sources)
+=======
+        oakd:
+>>>>>>> 7189ad5 (Update navigation.yaml remove hypen and change the oak d camera names to lowercase)
           topic: /stereo/points
           raytrace_min_range: 0.5
           min_obstacle_height: 0.0

@@ -52,6 +52,7 @@ depth_sensor:
 - `zed2i` - [Zed 2i](https://www.stereolabs.com/zed-2i)
 - `zedm` - [Zed Mini](https://www.stereolabs.com/zed-mini)
 <<<<<<< HEAD
+<<<<<<< HEAD
 - `oakd` - [OAK D](https://shop.luxonis.com/collections/oak-cameras-1/products/oak-d)
 - `oakdlite` - [OAK D Lite](https://shop.luxonis.com/collections/oak-cameras-1/products/oak-d-lite-1)
 - `oakdpro` - [OAK-D Pro](https://shop.luxonis.com/collections/oak-cameras-1/products/oak-d-pro)
@@ -60,6 +61,11 @@ depth_sensor:
 - `OAK-D-LITE` - [OAK D Lite](https://shop.luxonis.com/collections/oak-cameras-1/products/oak-d-lite-1)
 - `OAK-D-PRO` - [OAK-D Pro](https://shop.luxonis.com/collections/oak-cameras-1/products/oak-d-pro)
 >>>>>>> c54880d (Update README.md add OAK D Camera Series)
+=======
+- `oak-d` - [OAK D](https://shop.luxonis.com/collections/oak-cameras-1/products/oak-d)
+- `oak-d-lite` - [OAK D Lite](https://shop.luxonis.com/collections/oak-cameras-1/products/oak-d-lite-1)
+- `oak-d-pro` - [OAK-D Pro](https://shop.luxonis.com/collections/oak-cameras-1/products/oak-d-pro)
+>>>>>>> c4b9e26 (Update README.md OAK camera names to lowercase)
 
 
 Alternatively, follow this [guide](./ROBOT_INSTALLATION.md) to do the installation manually.

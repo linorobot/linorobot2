@@ -53,6 +53,7 @@ depth_sensor:
 - `zedm` - [Zed Mini](https://www.stereolabs.com/zed-mini)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 - `oakd` - [OAK D](https://shop.luxonis.com/collections/oak-cameras-1/products/oak-d)
 - `oakdlite` - [OAK D Lite](https://shop.luxonis.com/collections/oak-cameras-1/products/oak-d-lite-1)
 - `oakdpro` - [OAK-D Pro](https://shop.luxonis.com/collections/oak-cameras-1/products/oak-d-pro)
@@ -66,6 +67,11 @@ depth_sensor:
 - `oak-d-lite` - [OAK D Lite](https://shop.luxonis.com/collections/oak-cameras-1/products/oak-d-lite-1)
 - `oak-d-pro` - [OAK-D Pro](https://shop.luxonis.com/collections/oak-cameras-1/products/oak-d-pro)
 >>>>>>> c4b9e26 (Update README.md OAK camera names to lowercase)
+=======
+- `oakd` - [OAK D](https://shop.luxonis.com/collections/oak-cameras-1/products/oak-d)
+- `oakdlite` - [OAK D Lite](https://shop.luxonis.com/collections/oak-cameras-1/products/oak-d-lite-1)
+- `oakdpro` - [OAK-D Pro](https://shop.luxonis.com/collections/oak-cameras-1/products/oak-d-pro)
+>>>>>>> f4389f2 (Update README.md remove the hypen from oak d camera names)
 
 
 Alternatively, follow this [guide](./ROBOT_INSTALLATION.md) to do the installation manually.

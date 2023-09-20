@@ -152,7 +152,7 @@ function install_oakd{
     sudo apt install ros-$ROS_DISTRO-depthai-ros
 }
 
-function install_oakdlite{
+function install_oakdlite {
     install_oakd
 }
 

@@ -29,11 +29,7 @@ def generate_launch_description():
     )
 
     oakd_sensors = ['oakd', 'oakdlite', 'oakdpro']
-    to_oakd_vars = {
-        "oakd": "OAK-D",
-        "oakdlite": "OAK-D-LITE",
-        "oakdpro": "OAK-D-PRO"
-    }
+
     return LaunchDescription([
         DeclareLaunchArgument(
             name='sensor', 
@@ -48,7 +44,7 @@ def generate_launch_description():
             condition=LaunchConfigurationEquals('sensor', 'realsense'),
             launch_arguments={
                 'pointcloud.enable': 'true',
-                'ordered_pc': 'true', 
+                'pointcloud.ordered_pc': 'true', 
                 'initial_reset': 'true'
             }.items()   
         ),
@@ -74,8 +70,7 @@ def generate_launch_description():
             )),
             condition=IfCondition(PythonExpression(['"', LaunchConfiguration('sensor'), '" in "', str(oakd_sensors), '"'])),
             launch_arguments={
-                'camera_model': to_oakd_vars[LaunchConfiguration('sensor')],                
+                'camera_model': PythonExpression(["'OAK-D' if 'oakd' in ", LaunchConfiguration('sensor'), " else 'OAK-D-LITE' if 'oakdlite' in ", LaunchConfiguration('sensor'), " else 'OAK-D-PRO' if 'oakdpro' in ", LaunchConfiguration('sensor')," else 'UNKNOWN'"]),                
             }.items()   
-        ),
+        )
     ])
-

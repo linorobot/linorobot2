@@ -61,7 +61,7 @@ services:
     container_name: navigate
     extends: dev
     command: >
-      ros2 launch linorobot2_navigation navigate.launch.py
+      ros2 launch linorobot2_navigation navigation.launch.py
       map:=/root/linorobot2_ws/src/linorobot2/linorobot2_navigation/maps/map/playground.pgm
       rviz:=false
 

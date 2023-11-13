@@ -113,7 +113,7 @@ RUN apt-get update \
 COPY docker/entrypoint.sh /root
 ARG RUNTIME=
 RUN if [ ${RUNTIME} == "nvidia" ]; then \
-        sed -i 's/\$\@/vglrun +v -d \/dev\/dri\/card0 \$@/' /entrypoint.sh; \
+        sed -i 's/\$\@/vglrun +v -d \/dev\/dri\/card0 \$@/' /root/entrypoint.sh; \
     fi
 RUN sed -i "s/rosdistro/${ROS_DISTRO}/" /root/entrypoint.sh
 RUN chmod +x /root/entrypoint.sh

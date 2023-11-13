@@ -62,7 +62,7 @@ services:
     extends: dev
     command: >
       ros2 launch linorobot2_navigation navigation.launch.py
-      map:=/root/linorobot2_ws/src/linorobot2/linorobot2_navigation/maps/map/playground.pgm
+      map:=/root/linorobot2_ws/src/linorobot2/linorobot2_navigation/maps/playground.yaml
       rviz:=false
 
   save-map:
@@ -88,3 +88,16 @@ services:
     container_name: debug
     extends: dev
     command: sleep infinity
+
+  kasmvnc:
+    runtime: ${RUNTIME}
+    container_name: kasmvnc
+    image: ghcr.io/linuxserver/baseimage-kasmvnc:alpine318
+    privileged: true
+    ports:
+      - 3000:3000
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - $HOME/.Xauthority:/root/.Xauthority
+    environment:
+      - DISPLAY=:200

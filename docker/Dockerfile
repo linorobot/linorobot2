@@ -96,7 +96,7 @@ SHELL ["/bin/bash", "-c"]
 
 RUN wget -O /root/.shm_off.xml https://raw.githubusercontent.com/eProsima/Fast-DDS/107ea8d64942102696840cd7d3e4cf93fa7a143e/examples/cpp/dds/AdvancedConfigurationExample/shm_off.xml
 
-RUN mkdir -p /root/linorobot2_ws/src
+RUN mkdir -p /root/linorobot2_ws/src/linorobot2
 RUN mkdir -p /root/preinstall/base \
     /root/preinstall/description \
     /root/preinstall/navigation 
@@ -177,13 +177,13 @@ RUN apt-get update \
 from ${DEPLOY} as base
 SHELL ["/bin/bash", "-c"]
 
-COPY . /root/linorobot2_ws/src
+COPY . /root/linorobot2_ws/src/linorobot2
 
 ARG DEPLOY=
 RUN if [ ${DEPLOY} == "hardware" ]; then \
-        touch /root/linorobot2_ws/src/linorobot2_gazebo/COLCON_IGNORE; \
+        touch /root/linorobot2_ws/src/linorobot2/linorobot2_gazebo/COLCON_IGNORE; \
     elif [ ${DEPLOY} == "simulation" ]; then \
-        touch /root/linorobot2_ws/src/linorobot2_bringup/COLCON_IGNORE; \
+        touch /root/linorobot2_ws/src/linorobot2/linorobot2_bringup/COLCON_IGNORE; \
     fi
 
 WORKDIR /root/linorobot2_ws

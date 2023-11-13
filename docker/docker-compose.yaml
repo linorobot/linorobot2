@@ -37,11 +37,13 @@ services:
   gazebo:
     extends: dev
     command: ros2 launch linorobot2_gazebo gazebo.launch.py 
+    devices:
+      - /dev:/dev
 
   bringup:
     extends: dev
     command: ros2 launch linorobot2_bringup bringup.launch.py
-    volumes:
+    devices:
       - /dev:/dev
 
   slam:

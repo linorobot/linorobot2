@@ -6,15 +6,17 @@ services:
       context: ../
       dockerfile: docker/Dockerfile
       args:
-        DEPLOY: ${DEPLOY}
-        UBUNTU_VER: ${UBUNTU_VER}
-        USE_ROS_DISTRO: ${USE_ROS_DISTRO}
-        ROBOT_BASE: ${ROBOT_BASE}
-        LASER_SENSOR: ${LASER_SENSOR} 
-        DEPTH_SENSOR: ${DEPTH_SENSOR}
+        - RUNTIME=${RUNTIME}
+        - DEPLOY=${DEPLOY}
+        - UBUNTU_VER=${UBUNTU_VER}
+        - USE_ROS_DISTRO=${USE_ROS_DISTRO}
+        - ROBOT_BASE=${ROBOT_BASE}
+        - LASER_SENSOR=${LASER_SENSOR} 
+        - DEPTH_SENSOR=${DEPTH_SENSOR}
       target: base
 
   dev:
+    runtime: ${RUNTIME}
     image: linorobot2-${DEPLOY}:${USE_ROS_DISTRO}
     hostname: linorobot2-${USE_ROS_DISTRO}
     stdin_open: true

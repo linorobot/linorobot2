@@ -1,6 +1,6 @@
 ARG USE_ROS_DISTRO=
 ARG UBUNTU_VER=
-ARG ENABLE=
+ARG RUNTIME=
 ARG DEPLOY=
 
 FROM --platform=$BUILDPLATFORM ros:${USE_ROS_DISTRO}-ros-base as ros2
@@ -35,7 +35,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         curl \
     && rm -rf /var/lib/apt/lists/*
 
-FROM nvidia/opengl:1.0-glvnd-runtime-ubuntu${UBUNTU_VER} as ros2gpu
+FROM nvidia/opengl:1.0-glvnd-runtime-ubuntu${UBUNTU_VER} as ros2nvidia
 SHELL ["/bin/bash", "-c"]
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -91,7 +91,7 @@ RUN source /opt/ros/${USE_ROS_DISTRO}/setup.bash
 RUN rosdep init 
 ENV ROS_DISTRO=${USE_ROS_DISTRO}
 
-from ros2${ENABLE} as common
+from ros2${RUNTIME} as common
 SHELL ["/bin/bash", "-c"]
 
 RUN wget -O /root/.shm_off.xml https://raw.githubusercontent.com/eProsima/Fast-DDS/107ea8d64942102696840cd7d3e4cf93fa7a143e/examples/cpp/dds/AdvancedConfigurationExample/shm_off.xml
@@ -111,8 +111,8 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 COPY docker/entrypoint.sh /root
-ARG ENABLE=
-RUN if [ ${ENABLE} == "gpu" ]; then \
+ARG RUNTIME=
+RUN if [ ${RUNTIME} == "gpu" ]; then \
         sed -i 's/\$\@/vglrun +v -d \/dev\/dri\/card0 \$@/' /entrypoint.sh; \
     fi
 RUN sed -i "s/rosdistro/${ROS_DISTRO}/" /root/entrypoint.sh

@@ -34,7 +34,7 @@ services:
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - $HOME/.Xauthority:/root/.Xauthority
-      - ../linorobot2_navigation/maps:/root/linorobot2_ws/src/linorobot2/linorobot2_navigation/maps:rw)
+      - ../linorobot2_navigation/maps:/root/linorobot2_ws/src/linorobot2_navigation/maps:rw)
 
   gazebo:
     container_name: gazebo
@@ -62,7 +62,7 @@ services:
     extends: dev
     command: >
       ros2 launch linorobot2_navigation navigation.launch.py
-      map:=/root/linorobot2_ws/src/linorobot2/linorobot2_navigation/maps/map/playground.pgm
+      map:=/root/linorobot2_ws/src/linorobot2_navigation/maps/map/playground.pgm
       rviz:=false
 
   save-map:
@@ -70,14 +70,14 @@ services:
     extends: dev
     command: >
       ros2 run nav2_map_server map_saver_cli 
-      -f /root/linorobot2_ws/src/linorobot2/linorobot2_navigation/maps/map
+      -f /root/linorobot2_ws/src/linorobot2_navigation/maps/map
       --fmt png
       --ros-args -p save_map_timeout:=10000.
 
   rviz-nav:
     container_name: rviz-nav
     extends: dev
-    command: rviz2 -d /root/linorobot2_ws/src/linorobot2/linorobot2_navigation/rviz/linorobot2_navigation.rviz
+    command: rviz2 -d /root/linorobot2_ws/src/linorobot2_navigation/rviz/linorobot2_navigation.rviz
 
   rviz:
     container_name: rviz

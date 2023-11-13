@@ -37,24 +37,28 @@ services:
       - ../linorobot2_navigation/maps:/root/linorobot2_ws/src/linorobot2/linorobot2_navigation/maps:rw)
 
   gazebo:
+    container_name: gazebo
     extends: dev
     command: ros2 launch linorobot2_gazebo gazebo.launch.py 
     devices:
       - /dev:/dev
 
   bringup:
+    container_name: bringup
     extends: dev
     command: ros2 launch linorobot2_bringup bringup.launch.py
     devices:
       - /dev:/dev
 
   slam:
+    container_name: slam
     extends: dev
     command: >
       ros2 launch linorobot2_navigation slam.launch.py
       rviz:=false
 
   navigate:
+    container_name: navigate
     extends: dev
     command: >
       ros2 launch linorobot2_navigation navigate.launch.py
@@ -62,6 +66,7 @@ services:
       rviz:=false
 
   save-map:
+    container_name: save-map
     extends: dev
     command: >
       ros2 run nav2_map_server map_saver_cli 
@@ -70,13 +75,16 @@ services:
       --ros-args -p save_map_timeout:=10000.
 
   rviz-nav:
+    container_name: rviz-nav
     extends: dev
     command: rviz2 -d /root/linorobot2_ws/src/linorobot2/linorobot2_navigation/rviz/linorobot2_navigation.rviz
 
   rviz:
+    container_name: rviz
     extends: dev
     command: rviz2
 
   debug:
+    container_name: debug
     extends: dev
     command: sleep infinity

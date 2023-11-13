@@ -60,7 +60,7 @@ function install_xv11 {
 }
 
 function install_rplidar {
-    sudo apt install -y ros-$ROS_DISTRO-rplidar-ros
+    sudo apt-get install -y ros-$ROS_DISTRO-rplidar-ros
     cd /tmp
     wget https://raw.githubusercontent.com/allenh1/rplidar_ros/ros2/scripts/rplidar.rules
 }
@@ -88,14 +88,14 @@ function install_ydlidar {
 }
 
 function install_realsense {
-    sudo apt install -y ros-$ROS_DISTRO-realsense2-camera
+    sudo apt-get install -y ros-$ROS_DISTRO-realsense2-camera
     cd /tmp
     wget https://raw.githubusercontent.com/IntelRealSense/librealsense/master/config/99-realsense-libusb.rules
 }
 
 function install_astra {
     cd $WORKSPACE
-    sudo apt install -y libuvc-dev libopenni2-dev
+    sudo apt-get install -y libuvc-dev libopenni2-dev
     git clone https://github.com/linorobot/ros_astra_camera src/ros_astra_camera
     colcon build
     source $WORKSPACE/install/setup.bash
@@ -143,7 +143,7 @@ function install_zed2i {
 function install_oakd {
     echo 'SUBSYSTEM=="usb", ATTRS{idVendor}=="03e7", MODE="0666"' | sudo tee /etc/udev/rules.d/80-movidius.rules
     sudo udevadm control --reload-rules && sudo udevadm trigger
-    sudo apt install ros-$ROS_DISTRO-depthai-ros
+    sudo apt-get install ros-$ROS_DISTRO-depthai-ros
 }
 
 function install_oakdlite {
@@ -159,7 +159,7 @@ echo "INSTALLING SENSORS NOW ..."
 echo
 
 source /opt/ros/$ROS_DISTRO/setup.bash
-
+sudo apt-get update
 if (printf '%s\n' "${LASER_SENSOR_ARRAY[@]}" | grep -xq $LASER_SENSOR)
     then
         install_$LASER_SENSOR

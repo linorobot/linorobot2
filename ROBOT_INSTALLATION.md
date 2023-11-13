@@ -67,6 +67,10 @@ Zed Camera:
     colcon build --symlink-install --cmake-args=-DCMAKE_BUILD_TYPE=Release
     source <your_ws>/install/setup.bash
 
+OAK-D Camera:
+
+    sudo apt install ros-$ROS_DISTRO-depthai-ros
+    
 #### 1.4 Download and install micro-ROS:
 
     cd <your_ws>

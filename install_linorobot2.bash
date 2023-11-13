@@ -23,7 +23,7 @@ ARCH="$(uname -m)"
 WORKSPACE="$HOME/linorobot2_ws"
 
 ROBOT_TYPE_ARRAY=(2wd 4wd mecanum)
-DEPTH_SENSOR_ARRAY=(realsense zed zedm zed2 zed2i)
+DEPTH_SENSOR_ARRAY=(realsense zed zedm zed2 zed2i oakd oakdlite oakdpro)
 LASER_SENSOR_ARRAY=(rplidar ldlidar ydlidar xv11)
 LASER_SENSOR_ARRAY+=(${DEPTH_SENSOR_ARRAY[@]})
 
@@ -144,6 +144,20 @@ function install_zed2 {
 
 function install_zed2i {
     install_zed
+}
+
+function install_oakd {
+    echo 'SUBSYSTEM=="usb", ATTRS{idVendor}=="03e7", MODE="0666"' | sudo tee /etc/udev/rules.d/80-movidius.rules
+    sudo udevadm control --reload-rules && sudo udevadm trigger
+    sudo apt install ros-$ROS_DISTRO-depthai-ros
+}
+
+function install_oakdlite {
+    install_oakd
+}
+
+function install_oakdpro {
+    install_oakd
 }
 
 if [[ "$ROSDISTRO" == "" || "$ROSDISTRO" == "<unknown>" ]]

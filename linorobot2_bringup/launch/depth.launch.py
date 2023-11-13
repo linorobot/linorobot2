@@ -75,7 +75,7 @@ def generate_launch_description():
             )),
             condition=IfCondition(PythonExpression(['"', LaunchConfiguration('sensor'), '" in "', str(oakd_sensors), '"'])),
             launch_arguments={
-                'camera_model': to_oakd_vars.get(LaunchConfiguration('sensor')], None),              
+                'camera_model': to_oakd_vars.get(LaunchConfiguration('sensor'), None),              
             }.items()   
         ),
     ])

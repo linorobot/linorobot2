@@ -1,95 +1,193 @@
-ARG ROS_DISTRO=
+ARG USE_ROS_DISTRO=
+ARG UBUNTU_VER=
+ARG ENABLE=
+ARG DEPLOY=
 
-FROM --platform=$BUILDPLATFORM ros:${ROS_DISTRO}-ros-base as base
+FROM --platform=$BUILDPLATFORM ros:${USE_ROS_DISTRO}-ros-base as ros2
+SHELL ["/bin/bash", "-c"]
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install language
+RUN apt-get update && apt-get install -y \
+        locales \
+        && locale-gen en_US.UTF-8 \
+        && update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8 \
+    && rm -rf /var/lib/apt/lists/*
+ENV LANG en_US.UTF-8
+
+# Install timezone
+RUN ln -fs /usr/share/zoneinfo/UTC /etc/localtime \
+        && export DEBIAN_FRONTEND=noninteractive \
+        && apt-get update \
+        && apt-get install -y tzdata \
+        && dpkg-reconfigure --frontend noninteractive tzdata \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update && apt-get -y upgrade \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install common programs
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        gnupg2 \
+        lsb-release \
+        software-properties-common \
+        wget \
+        curl \
+    && rm -rf /var/lib/apt/lists/*
+
+FROM nvidia/opengl:1.0-glvnd-runtime-ubuntu${UBUNTU_VER} as ros2gpu
+SHELL ["/bin/bash", "-c"]
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install language
+RUN apt-get update && apt-get install -y \
+        locales \
+        && locale-gen en_US.UTF-8 \
+        && update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8 \
+    && rm -rf /var/lib/apt/lists/*
+ENV LANG en_US.UTF-8
+
+# Install timezone
+RUN ln -fs /usr/share/zoneinfo/UTC /etc/localtime \
+        && export DEBIAN_FRONTEND=noninteractive \
+        && apt-get update \
+        && apt-get install -y tzdata \
+        && dpkg-reconfigure --frontend noninteractive tzdata \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update && apt-get -y upgrade \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install common programs
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        gnupg2 \
+        lsb-release \
+        software-properties-common \
+        wget \
+        curl \
+        libegl1-mesa libglu1-mesa libxv1 libxtst6 \
+    && rm -rf /var/lib/apt/lists/*
+
+ARG VIRTUALGL_VER="3.1"
+RUN wget -O /tmp/virtualgl.deb https://zenlayer.dl.sourceforge.net/project/virtualgl/${VIRTUALGL_VER}/virtualgl_${VIRTUALGL_VER}_amd64.deb
+RUN dpkg -i /tmp/virtualgl.deb 
+
+# Install ROS2
+ARG USE_ROS_DISTRO=
+RUN sudo add-apt-repository universe \
+        && curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg \
+        && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null \
+        && apt-get update && apt-get install -y --no-install-recommends \
+            ros-${USE_ROS_DISTRO}-ros-base \
+            python3-argcomplete \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        ros-dev-tools \
+        ros-humble-ament-* \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN source /opt/ros/${USE_ROS_DISTRO}/setup.bash
+RUN rosdep init 
+ENV ROS_DISTRO=${USE_ROS_DISTRO}
+
+from ros2${ENABLE} as common
 SHELL ["/bin/bash", "-c"]
 
-#rviz fix https://github.com/ros2/rviz/issues/948
-RUN apt-get update -q \
-    && apt-get install -y software-properties-common \
-    && add-apt-repository ppa:kisak/kisak-mesa \
-    && apt-get install libegl-mesa0 libegl1-mesa-dev \
-    libgbm-dev libgbm1 libgl1-mesa-dev \
-    libgl1-mesa-dri libglapi-mesa libglx-mesa0 wget -y 
-
-RUN sudo apt-get update && rosdep update --rosdistro $ROS_DISTRO    
+RUN wget -O /root/.shm_off.xml https://raw.githubusercontent.com/eProsima/Fast-DDS/107ea8d64942102696840cd7d3e4cf93fa7a143e/examples/cpp/dds/AdvancedConfigurationExample/shm_off.xml
 
 RUN mkdir -p /root/linorobot2_ws/src
-WORKDIR /root/linorobot2_ws
+RUN mkdir -p /root/preinstall/base \
+    /root/preinstall/description \
+    /root/preinstall/navigation 
 
-RUN git clone -b docker https://github.com/linorobot/linorobot2.git src/linorobot2
-RUN touch src/linorobot2/linorobot2_gazebo/COLCON_IGNORE
-RUN rosdep install --from-path src --ignore-src -y --skip-keys micro_ros_agent
-RUN source /opt/ros/$ROS_DISTRO/setup.bash && \
-    colcon build
+COPY ./linorobot2_base/package.xml /root/preinstall/base
+COPY ./linorobot2_description/package.xml /root/preinstall/description
+COPY ./linorobot2_navigation/package.xml /root/preinstall/navigation
 
-#https://github.com/eProsima/Fast-DDS/issues/1698#issuecomment-778039676
-WORKDIR /root
-RUN wget -O .shm_off.xml https://raw.githubusercontent.com/eProsima/Fast-DDS/107ea8d64942102696840cd7d3e4cf93fa7a143e/examples/cpp/dds/AdvancedConfigurationExample/shm_off.xml
+RUN apt-get update \
+        && rosdep update --rosdistro=${ROS_DISTRO} \
+        && rosdep install --rosdistro=${ROS_DISTRO} --from-paths /root/preinstall -iry --os=ubuntu:$(lsb_release -sc) \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN echo "source /opt/ros/$ROS_DISTRO/setup.bash" >> /root/.bashrc
-RUN echo "source /root/linorobot2_ws/install/setup.bash" >> /root/.bashrc
+COPY docker/entrypoint.sh /root
+ARG ENABLE=
+RUN if [ ${ENABLE} == "gpu" ]; then \
+        sed -i 's/\$\@/vglrun +v -d \/dev\/dri\/card0 \$@/' /entrypoint.sh; \
+    fi
+RUN sed -i "s/rosdistro/${ROS_DISTRO}/" /root/entrypoint.sh
+RUN chmod +x /root/entrypoint.sh
 
-COPY docker/entrypoint.sh /
-RUN sed -i "s/rosdistro/$ROS_DISTRO/" /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
+from common as hardware
+SHELL ["/bin/bash", "-c"]
 
-FROM base AS simulation
+RUN mkdir -p /root/preinstall/bringup
+COPY ./linorobot2_bringup/package.xml /root/preinstall/bringup
 
-RUN sudo apt-get update && rosdep update --rosdistro $ROS_DISTRO    
+RUN apt-get update \
+        && rosdep update --rosdistro=${ROS_DISTRO} \
+        && rosdep install --rosdistro=${ROS_DISTRO} --from-paths /root/preinstall -iry --os=ubuntu:$(lsb_release -sc) \
+    && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /root/linorobot2_ws
-RUN rm src/linorobot2/linorobot2_gazebo/COLCON_IGNORE
-RUN rosdep install --from-path src --ignore-src -y --skip-keys micro_ros_agent
-RUN source /opt/ros/$ROS_DISTRO/setup.bash && \
-    source /root/linorobot2_ws/install/setup.bash && \
-    colcon build --packages-select linorobot2_gazebo
-
-WORKDIR /root/linorobot2_ws
-RUN rm -rf src/linorobot2/linorobot2_description/urdf
-RUN rm -rf src/linorobot2/linoroobot2_navigation/maps
-COPY linorobot2_description/urdf src/linorobot2/linorobot2_description/urdf
-RUN source /opt/ros/$ROS_DISTRO/setup.bash && \
-    source /root/linorobot2_ws/install/setup.bash && \
-    colcon build --packages-select linorobot2_description
-
-ENTRYPOINT ["/entrypoint.sh"]
-
-FROM base AS hardware
-
-RUN sudo apt-get update && rosdep update --rosdistro $ROS_DISTRO    
-RUN sudo apt-get install -y python3-vcstool build-essential
-
-WORKDIR /root/linorobot2_ws
-RUN git clone -b $ROS_DISTRO https://github.com/micro-ROS/micro_ros_setup.git src/micro_ros_setup
-RUN rosdep install --from-path src --ignore-src -y --skip-keys micro_ros_agent
-RUN source /opt/ros/$ROS_DISTRO/setup.bash && \
-    source /root/linorobot2_ws/install/setup.bash && \
-    colcon build --packages-select micro_ros_setup
-
-RUN source /opt/ros/$ROS_DISTRO/setup.bash && \
-    source /root/linorobot2_ws/install/setup.bash && \
-    ros2 run micro_ros_setup create_agent_ws.sh
-
-RUN source /opt/ros/$ROS_DISTRO/setup.bash && \
-    source /root/linorobot2_ws/install/setup.bash && \
-    ros2 run micro_ros_setup build_agent.sh
-
-RUN source /opt/ros/$ROS_DISTRO/setup.bash && \
-    colcon build
-
-#install sensors
-WORKDIR /root/linorobot2_ws/src/linorobot2/docker
 ARG ROBOT_BASE=2wd
 ARG LASER_SENSOR=
 ARG DEPTH_SENSOR=
-RUN /bin/bash install_sensors.bash $ROBOT_BASE $LASER_SENSOR $DEPTH_SENSOR $ROS_DISTRO
+COPY ./docker/install_sensors.bash /root
+RUN /bin/bash /root/install_sensors.bash $ROBOT_BASE $LASER_SENSOR $DEPTH_SENSOR $ROS_DISTRO
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        python3-vcstool \
+        build-essential \  
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /root/linorobot2_ws
-RUN rm -rf src/linorobot2/linorobot2_description/urdf
-RUN rm -rf src/linorobot2/linoroobot2_navigation/maps
-COPY linorobot2_description/urdf src/linorobot2/linorobot2_description/urdf
-RUN source /opt/ros/$ROS_DISTRO/setup.bash && \
-    source /root/linorobot2_ws/install/setup.bash && \
-    colcon build --packages-select linorobot2_description
-    
-ENTRYPOINT ["/entrypoint.sh"]
+RUN git clone -b $ROS_DISTRO https://github.com/micro-ROS/micro_ros_setup.git src/micro_ros_setup
+RUN apt-get update \
+        && rosdep update --rosdistro=${ROS_DISTRO} \
+        && rosdep install --rosdistro=${ROS_DISTRO} --from-paths src -iry --os=ubuntu:$(lsb_release -sc) --skip-keys micro_ros_agent \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN source /opt/ros/$ROS_DISTRO/setup.bash \
+    && colcon build --packages-select micro_ros_setup
+
+RUN source /opt/ros/$ROS_DISTRO/setup.bash  \
+    && source /root/linorobot2_ws/install/setup.bash \
+    && ros2 run micro_ros_setup create_agent_ws.sh
+
+RUN source /opt/ros/$ROS_DISTRO/setup.bash \
+    && source /root/linorobot2_ws/install/setup.bash \
+    && ros2 run micro_ros_setup build_agent.sh
+
+RUN source /opt/ros/$ROS_DISTRO/setup.bash \
+    && colcon build
+
+from common as simulation
+SHELL ["/bin/bash", "-c"]
+
+RUN git clone https://github.com/osrf/gazebo_models.git /root/.gazebo/models
+RUN rm -rf /root/.gazebo/models/.git
+
+RUN mkdir -p /root/preinstall/gazebo
+COPY ./linorobot2_gazebo/package.xml /root/preinstall/gazebo
+RUN apt-get update \
+        && rosdep update --rosdistro=${ROS_DISTRO} \
+        && rosdep install --rosdistro=${ROS_DISTRO} --from-paths /root/preinstall -iry --os=ubuntu:$(lsb_release -sc) \
+    && rm -rf /var/lib/apt/lists/*
+
+from ${DEPLOY} as base
+SHELL ["/bin/bash", "-c"]
+
+COPY . /root/linorobot2_ws/src
+
+ARG DEPLOY=
+RUN if [ ${DEPLOY} == "hardware" ]; then \
+        touch /root/linorobot2_ws/src/linorobot2_gazebo/COLCON_IGNORE; \
+    elif [ ${DEPLOY} == "simulation" ]; then \
+        touch /root/linorobot2_ws/src/linorobot2_bringup/COLCON_IGNORE; \
+    fi
+
+WORKDIR /root/linorobot2_ws
+RUN source /opt/ros/$ROS_DISTRO/setup.bash \
+    && colcon build
+
+ENTRYPOINT ["/root/entrypoint.sh"]

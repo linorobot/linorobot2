@@ -1,23 +1,29 @@
 version: "3.9"
 services:   
   base:
-    image: linorobot2-${DEPLOY}:${ROS_DISTRO}
+    image: linorobot2-${DEPLOY}:${USE_ROS_DISTRO}
     build:
       context: ../
       dockerfile: docker/Dockerfile
       args:
-        ROS_DISTRO: ${ROS_DISTRO}
+        DEPLOY: ${DEPLOY}
+        UBUNTU_VER: ${UBUNTU_VER}
+        USE_ROS_DISTRO: ${USE_ROS_DISTRO}
         ROBOT_BASE: ${ROBOT_BASE}
         LASER_SENSOR: ${LASER_SENSOR} 
         DEPTH_SENSOR: ${DEPTH_SENSOR}
-      target: ${DEPLOY}
-    hostname: linorobot2-${ROS_DISTRO}
+      target: base
+
+  dev:
+    image: linorobot2-${DEPLOY}:${USE_ROS_DISTRO}
+    hostname: linorobot2-${USE_ROS_DISTRO}
     stdin_open: true
     tty: true
     network_mode: host
     ipc: host
     privileged: true
     environment:
+      - ROS_DOMAIN_ID=${ROS_DOMAIN_ID}
       - LINOROBOT2_BASE=${ROBOT_BASE} 
       - LINOROBOT2_LASER_SENSOR=${LASER_SENSOR} 
       - LINOROBOT2_DEPTH_SENSOR=${DEPTH_SENSOR} 
@@ -29,30 +35,30 @@ services:
       - ../linorobot2_navigation/maps:/root/linorobot2_ws/src/linorobot2/linorobot2_navigation/maps:rw)
 
   gazebo:
-    extends: base
-    command: ros2 launch linorobot2_gazebo gazebo.launch.py
+    extends: dev
+    command: ros2 launch linorobot2_gazebo gazebo.launch.py 
 
   bringup:
-    extends: base
+    extends: dev
     command: ros2 launch linorobot2_bringup bringup.launch.py
     volumes:
       - /dev:/dev
 
   slam:
-    extends: base
+    extends: dev
     command: >
       ros2 launch linorobot2_navigation slam.launch.py
       rviz:=false
 
   navigate:
-    extends: base
+    extends: dev
     command: >
       ros2 launch linorobot2_navigation navigate.launch.py
       map:=/root/linorobot2_ws/src/linorobot2/linorobot2_navigation/maps/map/playground.pgm
       rviz:=false
 
   save-map:
-    extends: base
+    extends: dev
     command: >
       ros2 run nav2_map_server map_saver_cli 
       -f /root/linorobot2_ws/src/linorobot2/linorobot2_navigation/maps/map
@@ -60,9 +66,13 @@ services:
       --ros-args -p save_map_timeout:=10000.
 
   rviz-nav:
-    extends: base
+    extends: dev
     command: rviz2 -d /root/linorobot2_ws/src/linorobot2/linorobot2_navigation/rviz/linorobot2_navigation.rviz
 
   rviz:
-    extends: base
+    extends: dev
     command: rviz2
+
+  debug:
+    extends: dev
+    command: sleep infinity

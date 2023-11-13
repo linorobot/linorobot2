@@ -1,0 +1,103 @@
+version: "3.9"
+services:   
+  base:
+    image: linorobot2-${DEPLOY}:${USE_ROS_DISTRO}
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile
+      args:
+        - RUNTIME=${RUNTIME}
+        - DEPLOY=${DEPLOY}
+        - UBUNTU_VER=${UBUNTU_VER}
+        - USE_ROS_DISTRO=${USE_ROS_DISTRO}
+        - ROBOT_BASE=${ROBOT_BASE}
+        - LASER_SENSOR=${LASER_SENSOR} 
+        - DEPTH_SENSOR=${DEPTH_SENSOR}
+      target: base
+
+  dev:
+    runtime: ${RUNTIME}
+    image: linorobot2-${DEPLOY}:${USE_ROS_DISTRO}
+    hostname: linorobot2-${USE_ROS_DISTRO}
+    stdin_open: true
+    tty: true
+    network_mode: host
+    ipc: host
+    privileged: true
+    environment:
+      - ROS_DOMAIN_ID=${ROS_DOMAIN_ID}
+      - LINOROBOT2_BASE=${ROBOT_BASE} 
+      - LINOROBOT2_LASER_SENSOR=${LASER_SENSOR} 
+      - LINOROBOT2_DEPTH_SENSOR=${DEPTH_SENSOR} 
+      - DISPLAY=${DISPLAY} 
+      - QT_X11_NO_MITSHM=1
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - $HOME/.Xauthority:/root/.Xauthority
+      - ../linorobot2_navigation/maps:/root/linorobot2_ws/src/linorobot2/linorobot2_navigation/maps:rw)
+
+  gazebo:
+    container_name: gazebo
+    extends: dev
+    command: ros2 launch linorobot2_gazebo gazebo.launch.py 
+    devices:
+      - /dev:/dev
+
+  bringup:
+    container_name: bringup
+    extends: dev
+    command: ros2 launch linorobot2_bringup bringup.launch.py
+    devices:
+      - /dev:/dev
+
+  slam:
+    container_name: slam
+    extends: dev
+    command: >
+      ros2 launch linorobot2_navigation slam.launch.py
+      rviz:=false
+
+  navigate:
+    container_name: navigate
+    extends: dev
+    command: >
+      ros2 launch linorobot2_navigation navigation.launch.py
+      map:=/root/linorobot2_ws/src/linorobot2/linorobot2_navigation/maps/playground.yaml
+      rviz:=false
+
+  save-map:
+    container_name: save-map
+    extends: dev
+    command: >
+      ros2 run nav2_map_server map_saver_cli 
+      -f /root/linorobot2_ws/src/linorobot2/linorobot2_navigation/maps/map
+      --fmt png
+      --ros-args -p save_map_timeout:=10000.
+
+  rviz-nav:
+    container_name: rviz-nav
+    extends: dev
+    command: rviz2 -d /root/linorobot2_ws/src/linorobot2/linorobot2_navigation/rviz/linorobot2_navigation.rviz
+
+  rviz:
+    container_name: rviz
+    extends: dev
+    command: rviz2
+
+  debug:
+    container_name: debug
+    extends: dev
+    command: sleep infinity
+
+  kasmvnc:
+    runtime: ${RUNTIME}
+    container_name: kasmvnc
+    image: ghcr.io/linuxserver/baseimage-kasmvnc:alpine318
+    privileged: true
+    ports:
+      - 3000:3000
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - $HOME/.Xauthority:/root/.Xauthority
+    environment:
+      - DISPLAY=:200

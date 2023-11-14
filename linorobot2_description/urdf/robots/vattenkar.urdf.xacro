@@ -1,17 +1,17 @@
 <?xml version="1.0"?>
 <robot name="linorobot2_2wd" xmlns:xacro="http://ros.org/wiki/xacro">
-  <xacro:property name="base_length" value="0.25" />
-  <xacro:property name="base_width" value="0.25" />
-  <xacro:property name="base_height" value="0.003" />
-  <xacro:property name="base_mass" value="1" />
+  <xacro:property name="base_length" value="0.338" />
+  <xacro:property name="base_width" value="0.32" />
+  <xacro:property name="base_height" value="0.005" />
+  <xacro:property name="base_mass" value="5" />
 
-  <xacro:property name="wheel_radius" value="0.045" />
-  <xacro:property name="wheel_width" value="0.01" />
-  <xacro:property name="wheel_pos_x" value="0.08" />
-  <xacro:property name="wheel_pos_y" value="0.12" />
-  <xacro:property name="wheel_pos_z" value="-0.045" />
+  <xacro:property name="wheel_radius" value="0.0675" />
+  <xacro:property name="wheel_width" value="0.022" />
+  <xacro:property name="wheel_pos_x" value="0.1015" />
+  <xacro:property name="wheel_pos_y" value="0.18" />
+  <xacro:property name="wheel_pos_z" value="-0.0125" />
   <xacro:property name="wheel_mass" value=".1" />
-  <xacro:property name="wheel_torque" value="20" />
+  <xacro:property name="wheel_torque" value="40" />
   <xacro:property name="front_caster_wheel" value="false" />
   <xacro:property name="rear_caster_wheel" value="true" />
 
@@ -24,15 +24,15 @@
   <xacro:include filename="$(find linorobot2_description)/urdf/controllers/diff_drive.urdf.xacro" />
 
   <xacro:property name="laser_pose">
-    <origin xyz="0.0 0 0.325" rpy="-3.1416 0 0"/>
+    <origin xyz="0.126 0 0.25" rpy="0 0 -0.78539816339"/>
   </xacro:property>
 
   <xacro:property name="base_laser_pose">
-    <origin xyz="0.08 0 -0.05" rpy="-3.1416 0 0"/>
+    <origin xyz="0.179 0 -0.045" rpy="-3.1416 0 0"/>
   </xacro:property>
 
   <xacro:property name="depth_sensor_pose">
-    <origin xyz="0.14 0.0 0.23" rpy="0 0 0"/>
+    <origin xyz="0.194 0.0 0.185" rpy="0 0 0"/>
   </xacro:property>
 
   <xacro:base 

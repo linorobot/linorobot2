@@ -46,7 +46,7 @@ services:
   bringup:
     container_name: bringup
     extends: dev
-    command: ros2 launch linorobot2_bringup bringup.launch.py
+    command: ros2 launch linorobot2_bringup bringup.launch.py extra:=${LAUNCH_EXTRA} custom_robot:=${CUSTOM_ROBOT}
     devices:
       - /dev:/dev
 

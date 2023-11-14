@@ -16,6 +16,7 @@
   <exec_depend>teleop_twist_keyboard</exec_depend>
   <exec_depend>micro_ros_agent</exec_depend>
   <exec_depend>depthimage_to_laserscan</exec_depend>
+  <exec_depend>laser_filters</exec_depend>
   <export>
     <build_type>ament_cmake</build_type>
   </export>

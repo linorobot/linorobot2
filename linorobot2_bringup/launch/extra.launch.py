@@ -20,6 +20,10 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
 
+    laser_filter_config_path = PathJoinSubstitution(
+        [FindPackageShare('linorobot2_bringup'), 'config', 'box_laser_filter.yaml']
+    )
+
     return LaunchDescription([
     
         Node(
@@ -32,6 +36,18 @@ def generate_launch_description():
                 {'topic_name': '/base/scan/unfiltered'},
                 {'lidar_frame': 'base_laser'},
                 {'range_threshold': 0.005}
+            ]
+        ),
+
+        Node(
+            package="laser_filters",
+            executable="scan_to_scan_filter_chain",
+            parameters=[
+                laser_filter_config_path
+            ],
+            remappings=[
+                ('/scan', '/base/scan/unfiltered'),
+                ('/scan_filtered', '/base/scan')
             ]
         )
     ])

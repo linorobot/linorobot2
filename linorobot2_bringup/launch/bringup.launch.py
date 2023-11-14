@@ -46,11 +46,21 @@ def generate_launch_description():
         [FindPackageShare('linorobot2_bringup'), 'launch', 'custom_robot.launch.py']
     )
 
+    extra_launch_path = PathJoinSubstitution(
+        [FindPackageShare('linorobot2_bringup'), 'launch', 'extra.launch.py']
+    )
+
     return LaunchDescription([
         DeclareLaunchArgument(
             name='custom_robot', 
             default_value='false',
             description='Use custom robot'
+        ),
+
+        DeclareLaunchArgument(
+            name='extra', 
+            default_value='false',
+            description='Launch extra launch file'
         ),
 
         DeclareLaunchArgument(
@@ -82,6 +92,11 @@ def generate_launch_description():
             launch_arguments={
                 'base_serial_port': LaunchConfiguration("base_serial_port")
             }.items()
+        ),
+
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(extra_launch_path),
+            condition=IfCondition(LaunchConfiguration("extra")),
         ),
 
         IncludeLaunchDescription(

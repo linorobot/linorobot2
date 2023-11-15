@@ -266,15 +266,9 @@ global_costmap:
       voxel2d_layer:
         plugin: "nav2_costmap_2d::ObstacleLayer"
         enabled: True
-        observation_sources: scan base_scan
+        observation_sources: scan
         scan:
           topic: /scan
-          max_obstacle_height: 2.0
-          clearing: True
-          marking: True
-          data_type: "LaserScan"
-        base_scan:
-          topic: /base/scan
           max_obstacle_height: 2.0
           clearing: True
           marking: True

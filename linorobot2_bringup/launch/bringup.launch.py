@@ -70,6 +70,12 @@ def generate_launch_description():
         ),
 
         DeclareLaunchArgument(
+            name='odom_topic', 
+            default_value='/odom',
+            description='EKF out odometry topic'
+        ),
+        
+        DeclareLaunchArgument(
             name='joy', 
             default_value='false',
             description='Use Joystick'
@@ -83,7 +89,7 @@ def generate_launch_description():
             parameters=[
                 ekf_config_path
             ],
-            remappings=[("odometry/filtered", "odom")]
+            remappings=[("odometry/filtered", LaunchConfiguration("odom_topic"))]
         ),
 
         IncludeLaunchDescription(

@@ -84,7 +84,7 @@ RUN add-apt-repository universe \
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         ros-dev-tools \
-        ros-humble-ament-* \
+        ros-${USE_ROS_DISTRO}-ament-* \
     && rm -rf /var/lib/apt/lists/*
 
 RUN source /opt/ros/${USE_ROS_DISTRO}/setup.bash

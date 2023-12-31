@@ -45,7 +45,7 @@
     </joint>
 
     <gazebo reference="${frame_id}">
-      <sensor type="ray" name="${frame_id}_head_hokuyo_sensor">
+      <sensor type="gpu_ray" name="${frame_id}_lidar">
         <always_on>true</always_on>
         <update_rate>${update_rate}</update_rate>
         <pose>0 0 0 0 0 0</pose>
@@ -65,7 +65,7 @@
             <resolution>0.01</resolution>
           </range>
         </ray>
-        <plugin name="${frame_id}_gazebo_ros_head_hokuyo_controller" filename="libgazebo_ros_ray_sensor.so">
+        <plugin name="${frame_id}_lidar_controller" filename="libgazebo_ros_ray_sensor.so">
           <ros>
             <remapping>~/out:=${topic_name}</remapping>                                                                                                                           
           </ros>

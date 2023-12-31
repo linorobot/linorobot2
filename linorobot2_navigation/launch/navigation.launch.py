@@ -20,6 +20,8 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.conditions import IfCondition
 from launch_ros.substitutions import FindPackageShare
 from launch_ros.actions import Node
+from launch.conditions import IfCondition, UnlessCondition
+
 
 MAP_NAME='playground' #change to the name of your own map here
 
@@ -42,6 +44,11 @@ def generate_launch_description():
         [FindPackageShare('linorobot2_navigation'), 'config', 'navigation.yaml']
     )
 
+    nav2_sim_config_path = PathJoinSubstitution(
+        [FindPackageShare('linorobot2_navigation'), 'config', 'navigation_sim.yaml']
+    )
+
+
     return LaunchDescription([
         DeclareLaunchArgument(
             name='sim', 
@@ -63,10 +70,21 @@ def generate_launch_description():
 
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(nav2_launch_path),
+            condition=UnlessCondition(LaunchConfiguration("sim")),
             launch_arguments={
                 'map': LaunchConfiguration("map"),
                 'use_sim_time': LaunchConfiguration("sim"),
                 'params_file': nav2_config_path
+            }.items()
+        ),
+
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(nav2_launch_path),
+            condition=IfCondition(LaunchConfiguration("sim")),
+            launch_arguments={
+                'map': LaunchConfiguration("map"),
+                'use_sim_time': LaunchConfiguration("sim"),
+                'params_file': nav2_sim_config_path
             }.items()
         ),
 

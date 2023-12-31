@@ -79,6 +79,7 @@ def generate_launch_description():
         ),
         #Downsample depth data https://www.robotandchisel.com/2020/09/01/navigation2/
         ComposableNodeContainer(
+            condition=IfCondition(PythonExpression(['"" != "', depth_sensor_name, '"'])),
             name='image_container',
             namespace='',
             package='rclcpp_components',
@@ -93,8 +94,8 @@ def generate_launch_description():
                     remappings=[
                         ('in/image_raw', depth_sensors[depth_sensor_name][0]),
                         ('in/camera_info', depth_sensors[depth_sensor_name][1]),
-                        ('out/image_raw', '/camera/depth_downsample/image_raw'),
-                        ('out/camera_info', '/camera/depth_downsample/camera_info')
+                        ('out/image_raw', '/camera/downsampled/depth/image_raw'),
+                        ('out/camera_info', '/camera/downsampled/depth/camera_info')
                     ],
                 ),
                 # Downsampled XYZ point cloud (mainly for navigation)
@@ -103,9 +104,9 @@ def generate_launch_description():
                     plugin='depth_image_proc::PointCloudXyzNode',
                     name='points_downsample',
                     remappings=[
-                        ('image_rect', '/camera/depth_downsample/image_raw'),
-                        ('camera_info', '/camera/depth_downsample/camera_info'),
-                        ('points', '/pointcloud/downsampled')
+                        ('image_rect', '/camera/downsampled/depth/image_raw'),
+                        ('camera_info', '/camera/downsampled/depth/camera_info'),
+                        ('points', '/camera/downsampled/depth/pointcloud')
                     ],
                 )
             ],

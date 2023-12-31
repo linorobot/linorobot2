@@ -3,7 +3,7 @@
     <gazebo>
       <plugin name="differential_drive_controller" filename="libgazebo_ros_diff_drive.so">
         <ros>
-          <argument>odom:=odom/unfiltered</argument>
+          <remapping>odom:=odom/unfiltered</remapping>
         </ros>
 
         <num_wheel_pairs>2</num_wheel_pairs>

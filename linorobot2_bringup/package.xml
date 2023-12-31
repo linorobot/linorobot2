@@ -18,6 +18,8 @@
   <exec_depend>depthimage_to_laserscan</exec_depend>
   <exec_depend>laser_filters</exec_depend>
   <exec_depend>rqt_image_view</exec_depend>
+  <exec_depend>image_proc</exec_depend>
+  <exec_depend>depth_image_proc</exec_depend>
   <export>
     <build_type>ament_cmake</build_type>
   </export>

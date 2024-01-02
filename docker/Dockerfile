@@ -35,7 +35,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         curl \
     && rm -rf /var/lib/apt/lists/*
 
-FROM nvidia/opengl:1.0-glvnd-runtime-ubuntu${UBUNTU_VER} as ros2nvidia
+FROM nvidia/cuda:12.1.0-runtime-ubuntu${UBUNTU_VER} as ros2nvidia
 SHELL ["/bin/bash", "-c"]
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -65,12 +65,26 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         software-properties-common \
         wget \
         curl \
-        libegl1-mesa libglu1-mesa libxv1 libxtst6 \
+        libegl1-mesa \
+        libglu1-mesa \ 
+        libxv1 \
+        libxtst6 \
     && rm -rf /var/lib/apt/lists/*
 
+# Install VirtualGL
 ARG VIRTUALGL_VER="3.1"
 RUN wget -O /tmp/virtualgl.deb https://zenlayer.dl.sourceforge.net/project/virtualgl/${VIRTUALGL_VER}/virtualgl_${VIRTUALGL_VER}_amd64.deb
 RUN dpkg -i /tmp/virtualgl.deb 
+
+# Install glvnd
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        libglvnd0 \
+        libgl1 \
+        libglx0 \
+        libegl1 \
+        libxext6 \
+        libx11-6 \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install ROS2
 ARG USE_ROS_DISTRO=
@@ -90,6 +104,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN source /opt/ros/${USE_ROS_DISTRO}/setup.bash
 RUN rosdep init 
 ENV ROS_DISTRO=${USE_ROS_DISTRO}
+ENV NVIDIA_VISIBLE_DEVICES=all
+ENV NVIDIA_DRIVER_CAPABILITIES=graphics,utility,compute
+ENV QT_X11_NO_MITSHM=1
 
 from ros2${RUNTIME} as common
 SHELL ["/bin/bash", "-c"]

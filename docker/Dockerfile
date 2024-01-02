@@ -76,7 +76,8 @@ ARG VIRTUALGL_VER="3.1"
 RUN wget -O /tmp/virtualgl.deb https://zenlayer.dl.sourceforge.net/project/virtualgl/${VIRTUALGL_VER}/virtualgl_${VIRTUALGL_VER}_amd64.deb
 RUN dpkg -i /tmp/virtualgl.deb 
 
-# Install glvnd
+# Install glvnd 
+# Reference: https://github.com/athackst/dockerfiles/blob/main/ros2/humble-cuda.Dockerfile
 RUN apt-get update && apt-get install -y --no-install-recommends \
         libglvnd0 \
         libgl1 \

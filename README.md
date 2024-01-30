@@ -149,6 +149,14 @@ Optional parameters:
     ```
     ros2 launch linorobot2_bringup bringup.launch.py base_serial_port:=/dev/ttyACM1
     ```
+- **micro_ros_transport** - micro-ROS transport. default serial.
+- **micro_ros_port** - micro-ROS udp/tcp port number. default 8888.
+
+    ```
+    # use micro-ROS wifi transport
+    ros2 launch linorobot2_bringup bringup.launch.py micro_ros_transport:=udp4 micro_ros_port:=8888
+    ```
+
 - **joy** - Set to true to run the joystick node in the background. (Tested on Logitech F710).
 
 Always wait for the microROS agent to be connected before running any application (ie. creating a map or autonomous navigation). Once connected, the agent will print:

@@ -18,7 +18,7 @@ from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, Pyth
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
-from launch.conditions import IfCondition
+from launch.conditions import IfCondition, LaunchConfigurationEquals, LaunchConfigurationNotEquals
 
 
 def generate_launch_description():
@@ -36,13 +36,37 @@ def generate_launch_description():
             default_value='/dev/ttyACM0',
             description='Linorobot Base Serial Port'
         ),
+
+        DeclareLaunchArgument(
+            name='micro_ros_transport',
+            default_value='serial',
+            description='micro-ROS transport'
+        ),
+
+        DeclareLaunchArgument(
+            name='micro_ros_port',
+            default_value='8888',
+            description='micro-ROS udp/tcp port number'
+        ),
+
         Node(
+            condition=LaunchConfigurationEquals('micro_ros_transport', 'serial'),
             package='micro_ros_agent',
             executable='micro_ros_agent',
             name='micro_ros_agent',
             output='screen',
             arguments=['serial', '--dev', LaunchConfiguration("base_serial_port")]
         ),
+
+        Node(
+            condition=LaunchConfigurationEquals('micro_ros_transport', 'udp4'),
+            package='micro_ros_agent',
+            executable='micro_ros_agent',
+            name='micro_ros_agent',
+            output='screen',
+            arguments=[LaunchConfiguration('micro_ros_transport'), '--port', LaunchConfiguration('micro_ros_port')]
+        ),
+    
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(description_launch_path)
         ),

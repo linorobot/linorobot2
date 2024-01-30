@@ -70,6 +70,18 @@ def generate_launch_description():
         ),
 
         DeclareLaunchArgument(
+            name='micro_ros_transport',
+            default_value='serial',
+            description='micro-ROS transport'
+        ),
+
+        DeclareLaunchArgument(
+            name='micro_ros_port',
+            default_value='8888',
+            description='micro-ROS udp/tcp port number'
+        ),
+
+        DeclareLaunchArgument(
             name='odom_topic', 
             default_value='/odom',
             description='EKF out odometry topic'

@@ -48,6 +48,13 @@ XV11:
     colcon build
     source <your_ws>/install/setup.bash
 
+LD06 LD19 STL27L:
+
+    cd <your_ws>
+    git clone https://github.com/hippo5329/ldlidar_stl_ros2.git src/ldlidar_stl_ros2
+    colcon build
+    source <your_ws>/install/setup.bash
+
 #### 1.3 Install depth sensor drivers:
 Intel RealSense:
 
@@ -140,6 +147,9 @@ The launch files of the tested laser sensors have already been added in bringup.
 Tested Laser Sensors:
 - `rplidar` - [RP LIDAR A1](https://www.slamtec.com/en/Lidar/A1)
 - `ldlidar` - [LD06 LIDAR](https://www.inno-maker.com/product/lidar-ld06/)
+- `ld06` - [LD06 LIDAR](https://www.ldrobot.com/ProductDetails?sensor_name=STL-06P)
+- `ld19` - [LD19/LD300 LIDAR](https://www.ldrobot.com/ProductDetails?sensor_name=STL-19P)
+- `stl27l` - [STL27L LIDAR](https://www.ldrobot.com/ProductDetails?sensor_name=STL-27L)
 - `ydlidar` - [YDLIDAR](https://www.ydlidar.com/lidars.html)
 - `realsense` - [Intel RealSense](https://www.intelrealsense.com/stereo-depth/) D435, D435i
 - `astra` - [Orbec Astra](https://orbbec3d.com/product-astra-pro/)

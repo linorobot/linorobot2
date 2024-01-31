@@ -34,6 +34,9 @@ robot_type:
 laser_sensor:
 - `rplidar` - [RP LIDAR A1](https://www.slamtec.com/en/Lidar/A1)
 - `ldlidar` - [LD06 LIDAR](https://www.inno-maker.com/product/lidar-ld06/)
+- `ld06` - [LD06 LIDAR](https://www.ldrobot.com/ProductDetails?sensor_name=STL-06P)
+- `ld19` - [LD19/LD300 LIDAR](https://www.ldrobot.com/ProductDetails?sensor_name=STL-19P)
+- `stl27l` - [STL27L LIDAR](https://www.ldrobot.com/ProductDetails?sensor_name=STL-27L)
 - `ydlidar` - [YDLIDAR](https://www.ydlidar.com/lidars.html)
 - `xv11` - [XV11](http://xv11hacking.rohbotics.com/mainSpace/home.html)
 - `realsense` - * [Intel RealSense](https://www.intelrealsense.com/stereo-depth/) D435, D435i

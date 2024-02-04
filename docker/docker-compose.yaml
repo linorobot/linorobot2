@@ -100,10 +100,11 @@ services:
     container_name: kasmvnc
     image: ghcr.io/linuxserver/baseimage-kasmvnc:alpine318
     privileged: true
-    ports:
-      - 3000:3000
+    network_mode: host
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - $HOME/.Xauthority:/root/.Xauthority
     environment:
       - DISPLAY=:200
+    devices:
+      - /dev/dri:/dev/dri

@@ -25,7 +25,7 @@ WORKSPACE="/root/linorobot2_ws"
 
 ROBOT_TYPE_ARRAY=(2wd 4wd mecanum)
 DEPTH_SENSOR_ARRAY=(realsense zed zedm zed2 zed2i oakd oakdlite oakdpro)
-LASER_SENSOR_ARRAY=(rplidar ldlidar ydlidar xv11 ld06 ld19 stl27l)
+LASER_SENSOR_ARRAY=(ydlidar xv11 ld06 ld19 stl27l a1 a2 a3 c1 s1 s2 s3)
 LASER_SENSOR_ARRAY+=(${DEPTH_SENSOR_ARRAY[@]})
 
 if [ -z "$LASER_SENSOR" ]
@@ -55,19 +55,6 @@ function install_cuda_jetson {
 function install_xv11 {
     cd $WORKSPACE
     git clone https://github.com/mjstn/xv_11_driver src/xv_11_driver
-    colcon build
-    source $WORKSPACE/install/setup.bash
-}
-
-function install_rplidar {
-    sudo apt-get install -y ros-$ROS_DISTRO-rplidar-ros
-    cd /tmp
-    wget https://raw.githubusercontent.com/allenh1/rplidar_ros/ros2/scripts/rplidar.rules
-}
-
-function install_ldlidar {
-    cd $WORKSPACE
-    git clone https://github.com/linorobot/ldlidar src/ldlidar
     colcon build
     source $WORKSPACE/install/setup.bash
 }
@@ -104,6 +91,41 @@ function install_ld19 {
 
 function install_stl27l {
     install_ldlidar_stl_ros2
+}
+
+function install_sllidar_ros2 {
+    cd $WORKSPACE
+    git clone https://github.com/Slamtec/sllidar_ros2.git
+    colcon build
+    source $WORKSPACE/install/setup.bash
+}
+
+function install_a1 {
+    install_sllidar_ros2
+}
+
+function install_a2 {
+    install_sllidar_ros2
+}
+
+function install_a3 {
+    install_sllidar_ros2
+}
+
+function install_c1 {
+    install_sllidar_ros2
+}
+
+function install_s1 {
+    install_sllidar_ros2
+}
+
+function install_s2 {
+    install_sllidar_ros2
+}
+
+function install_s3 {
+    install_sllidar_ros2
 }
 
 function install_realsense {

@@ -230,7 +230,7 @@ global_costmap:
         observation_sources: pointcloud
         combination_method: 1
         pointcloud:  # no frame set, uses frame from message
-          topic: /camera/downsampled/depth/pointcloud
+          topic: /camera/depth/color/points
           max_obstacle_height: 2.0
           min_obstacle_height: 0.01
           obstacle_max_range: 2.5
@@ -316,7 +316,7 @@ local_costmap:
         observation_sources: pointcloud
         combination_method: 1
         pointcloud:  # no frame set, uses frame from message
-          topic: /camera/downsampled/depth/pointcloud
+          topic: /camera/depth/color/points
           max_obstacle_height: 2.0
           min_obstacle_height: 0.01
           obstacle_max_range: 2.5

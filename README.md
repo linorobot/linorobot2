@@ -32,8 +32,13 @@ robot_type:
 - `mecanum` - Mecanum drive robot.
 
 laser_sensor:
-- `rplidar` - [RP LIDAR A1](https://www.slamtec.com/en/Lidar/A1)
-- `ldlidar` - [LD06 LIDAR](https://www.inno-maker.com/product/lidar-ld06/)
+- `a1` - [RPLIDAR A1](https://www.slamtec.com/en/Lidar/A1)
+- `a2` - [RPLIDAR A2](https://www.slamtec.ai/product/slamtec-rplidar-a2/)
+- `a3` - [RPLIDAR A3](https://www.slamtec.ai/product/slamtec-rplidar-a3/)
+- `s1` - [RPLIDAR S1](https://www.slamtec.com/en/Lidar/S1)
+- `s2` - [RPLIDAR S2](https://www.slamtec.com/en/Lidar/S2)
+- `s3` - [RPLIDAR S3](https://www.slamtec.com/en/Lidar/S3)
+- `c1` - [RPLIDAR A3](https://www.slamtec.ai/product/slamtec-rplidar-a3/)
 - `ld06` - [LD06 LIDAR](https://www.ldrobot.com/ProductDetails?sensor_name=STL-06P)
 - `ld19` - [LD19/LD300 LIDAR](https://www.ldrobot.com/ProductDetails?sensor_name=STL-19P)
 - `stl27l` - [STL27L LIDAR](https://www.ldrobot.com/ProductDetails?sensor_name=STL-27L)

@@ -24,7 +24,7 @@ WORKSPACE="$HOME/linorobot2_ws"
 
 ROBOT_TYPE_ARRAY=(2wd 4wd mecanum)
 DEPTH_SENSOR_ARRAY=(realsense zed zedm zed2 zed2i oakd oakdlite oakdpro)
-LASER_SENSOR_ARRAY=(rplidar ldlidar ydlidar xv11 ld06 ld19 stl27l)
+LASER_SENSOR_ARRAY=(ydlidar xv11 ld06 ld19 stl27l a1 a2 a3 c1 s1 s2 s3)
 LASER_SENSOR_ARRAY+=(${DEPTH_SENSOR_ARRAY[@]})
 
 if [ -z "$LASER_SENSOR" ]
@@ -58,40 +58,6 @@ function install_xv11 {
     source $WORKSPACE/install/setup.bash
 }
 
-function install_rplidar {
-    sudo apt install -y ros-$ROS_DISTRO-rplidar-ros
-    cd /tmp
-    wget https://raw.githubusercontent.com/allenh1/rplidar_ros/ros2/scripts/rplidar.rules
-    sudo cp rplidar.rules /etc/udev/rules.d/
-}
-
-function install_ldlidar {
-    cd $WORKSPACE
-    git clone https://github.com/linorobot/ldlidar src/ldlidar
-    sudo cp src/ldlidar/ldlidar.rules /etc/udev/rules.d/
-    colcon build
-    source $WORKSPACE/install/setup.bash
-}
-
-function install_ldlidar_stl_ros2 {
-    cd $WORKSPACE
-    git clone https://github.com/hippo5329/ldlidar_stl_ros2.git src/ldlidar_stl_ros2
-    colcon build
-    source $WORKSPACE/install/setup.bash
-}
-
-function install_ld06 {
-    install_ldlidar_stl_ros2
-}
-
-function install_ld19 {
-    install_ldlidar_stl_ros2
-}
-
-function install_stl27l {
-    install_ldlidar_stl_ros2
-}
-
 function install_ydlidar {
     cd /tmp
     git clone https://github.com/YDLIDAR/YDLidar-SDK.git
@@ -108,6 +74,64 @@ function install_ydlidar {
     sudo echo  'KERNEL=="ttyUSB*", ATTRS{idVendor}=="067b", ATTRS{idProduct}=="2303", MODE:="0666", GROUP:="dialout",  SYMLINK+="ydlidar"' >/etc/udev/rules.d/ydlidar-2303.rules
     colcon build --symlink-install
     source $WORKSPACE/install/setup.bash
+}
+
+function install_ldlidar_stl_ros2 {
+    cd $WORKSPACE
+    git clone https://github.com/hippo5329/ldlidar_stl_ros2.git src/ldlidar_stl_ros2
+    colcon build
+    source $WORKSPACE/install/setup.bash
+    cd /tmp
+    wget https://raw.githubusercontent.com/linorobot/ldlidar/ros2/ldlidar.rules
+    sudo cp ldlidar.rules /etc/udev/rules.d
+}
+
+function install_ld06 {
+    install_ldlidar_stl_ros2
+}
+
+function install_ld19 {
+    install_ldlidar_stl_ros2
+}
+
+function install_stl27l {
+    install_ldlidar_stl_ros2
+}
+
+function install_sllidar_ros2 {
+    cd $WORKSPACE
+    git clone https://github.com/Slamtec/sllidar_ros2.git
+    colcon build
+    source $WORKSPACE/install/setup.bash
+    sudo cp sllidar_ros2/scripts/rplidar.rules /etc/udev/rules.d
+}
+
+function install_a1 {
+    install_sllidar_ros2
+}
+
+function install_a2 {
+    install_sllidar_ros2
+}
+
+function install_a3 {
+    install_sllidar_ros2
+}
+
+function install_c1 {
+    install_sllidar_ros2
+}
+
+function install_s1 {
+    install_sllidar_ros2
+}
+
+function install_s2 {
+    install_sllidar_ros2
+}
+
+function install_s3 {
+    install_sllidar_ros2
 }
 
 function install_realsense {
@@ -190,8 +214,8 @@ if [ "$*" == "" ]
     then
         echo "No arguments provided"
         echo
-        echo "Example: $ bash install_linorobot2.bash 2wd rplidar"
-        echo "Example: $ bash install_linorobot2.bash 2wd rplidar realsense"
+        echo "Example: $ bash install_linorobot2.bash 2wd a1"
+        echo "Example: $ bash install_linorobot2.bash 2wd a1 realsense"
         echo "Example: $ bash install_linorobot2.bash 2wd - realsense"
         echo "Example: $ bash install_linorobot2.bash 2wd"
 

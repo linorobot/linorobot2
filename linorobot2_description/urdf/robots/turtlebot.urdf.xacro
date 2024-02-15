@@ -1,0 +1,98 @@
+<?xml version="1.0"?>
+<robot name="linorobot2_2wd" xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:property name="base_length" value="0.34" />
+  <xacro:property name="base_width" value="0.34" />
+  <xacro:property name="base_height" value="0.07" />
+  <xacro:property name="base_mass" value="5" />
+
+  <xacro:property name="wheel_radius" value="0.05" />
+  <xacro:property name="wheel_width" value="0.01" />
+  <xacro:property name="wheel_pos_x" value="0.0" />
+  <xacro:property name="wheel_pos_y" value="0.175" />
+  <xacro:property name="wheel_pos_z" value="0.0" />
+  <xacro:property name="wheel_mass" value=".1" />
+  <xacro:property name="wheel_torque" value="40" />
+  <xacro:property name="front_caster_wheel" value="true" />
+  <xacro:property name="rear_caster_wheel" value="true" />
+
+  <xacro:include filename="$(find linorobot2_description)/urdf/mech/base.urdf.xacro" />
+  <xacro:include filename="$(find linorobot2_description)/urdf/mech/wheel.urdf.xacro" />
+  <xacro:include filename="$(find linorobot2_description)/urdf/mech/caster_wheel.urdf.xacro" />
+  <xacro:include filename="$(find linorobot2_description)/urdf/sensors/imu.urdf.xacro" />
+  <xacro:include filename="$(find linorobot2_description)/urdf/sensors/generic_laser.urdf.xacro" />
+  <xacro:include filename="$(find linorobot2_description)/urdf/sensors/depth_sensor.urdf.xacro" />
+  <xacro:include filename="$(find linorobot2_description)/urdf/controllers/diff_drive.urdf.xacro" />
+
+  <xacro:property name="laser_pose">
+    <origin xyz="0.055 0.02 0.41" rpy="0 0 0"/>
+  </xacro:property>
+  <!-- Real camera z value is around 17cm, real camera x value is 13-14cm , 0.050 , 34 angle yawlidar-->
+  <xacro:property name="depth_sensor_pose">
+    <origin xyz="0.14 0.0 0.12" rpy="0 0 0"/>
+  </xacro:property>
+
+  <xacro:base 
+    length="${base_length}" 
+    width="${base_width}" 
+    height="${base_height}" 
+    mass="${base_mass}"
+    wheel_radius="${wheel_radius}"
+    wheel_pos_z="${wheel_pos_z}"
+  />
+
+  <xacro:wheel 
+    side="left"
+    radius="${wheel_radius}" 
+    width="${wheel_width}" 
+    pos_x="${wheel_pos_x}" 
+    pos_y="${wheel_pos_y}" 
+    pos_z="${wheel_pos_z}" 
+    mass="${wheel_mass}"
+  />
+
+  <xacro:wheel 
+    side="right"
+    radius="${wheel_radius}" 
+    width="${wheel_width}" 
+    pos_x="${wheel_pos_x}" 
+    pos_y="${-wheel_pos_y}" 
+    pos_z="${wheel_pos_z}" 
+    mass="${wheel_mass}"
+  />
+
+  <xacro:if value="${front_caster_wheel}">
+    <xacro:caster_wheel 
+      side="front"
+      mass="0.01"
+      base_length="${base_length}" 
+      wheel_radius="${wheel_radius}" 
+      wheel_pos_z="${wheel_pos_z}" 
+    />
+  </xacro:if>
+
+  <xacro:if value="${rear_caster_wheel}">
+    <xacro:caster_wheel 
+      side="rear"
+      mass="0.01"
+      base_length="${base_length}" 
+      wheel_radius="${wheel_radius}" 
+      wheel_pos_z="${wheel_pos_z}" 
+    />
+  </xacro:if>
+
+  <xacro:imu/>
+
+  <xacro:generic_laser>
+    <xacro:insert_block name="laser_pose" />
+  </xacro:generic_laser>
+  
+  <xacro:depth_sensor>
+    <xacro:insert_block name="depth_sensor_pose" />
+  </xacro:depth_sensor>
+
+  <xacro:diff_drive_controller
+    wheel_separation="${wheel_pos_y * 2}"
+    wheel_radius="${wheel_radius}"
+    wheel_torque="${wheel_torque}"
+  />
+</robot>

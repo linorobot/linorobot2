@@ -24,7 +24,7 @@ WORKSPACE="$HOME/linorobot2_ws"
 
 ROBOT_TYPE_ARRAY=(2wd 4wd mecanum)
 DEPTH_SENSOR_ARRAY=(realsense zed zedm zed2 zed2i oakd oakdlite oakdpro)
-LASER_SENSOR_ARRAY=(rplidar ldlidar ydlidar xv11)
+LASER_SENSOR_ARRAY=(rplidar ldlidar ydlidar xv11 ld06 ld19 stl27l)
 LASER_SENSOR_ARRAY+=(${DEPTH_SENSOR_ARRAY[@]})
 
 if [ -z "$LASER_SENSOR" ]
@@ -71,6 +71,25 @@ function install_ldlidar {
     sudo cp src/ldlidar/ldlidar.rules /etc/udev/rules.d/
     colcon build
     source $WORKSPACE/install/setup.bash
+}
+
+function install_ldlidar_stl_ros2 {
+    cd $WORKSPACE
+    git clone https://github.com/hippo5329/ldlidar_stl_ros2.git src/ldlidar_stl_ros2
+    colcon build
+    source $WORKSPACE/install/setup.bash
+}
+
+function install_ld06 {
+    install_ldlidar_stl_ros2
+}
+
+function install_ld19 {
+    install_ldlidar_stl_ros2
+}
+
+function install_stl27l {
+    install_ldlidar_stl_ros2
 }
 
 function install_ydlidar {

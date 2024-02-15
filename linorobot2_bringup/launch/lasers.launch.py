@@ -44,6 +44,30 @@ def generate_launch_description():
             description='Laser Frame ID'
         ),
 
+        DeclareLaunchArgument(
+            name='lidar_transport',
+            default_value='serial',
+            description='Lidar transport: serial, udp_server, udp_client, tcp_server, tcp_client'
+        ),
+
+        DeclareLaunchArgument(
+            name='lidar_serial_port',
+            default_value='/dev/ttyUSB0',
+            description='Lidar serial port device name'
+        ),
+
+        DeclareLaunchArgument(
+            name='lidar_server_ip',
+            default_value='0.0.0.0',
+            description='Lidar server ip'
+        ),
+
+        DeclareLaunchArgument(
+            name='lidar_server_port',
+            default_value='8889',
+            description='Lidar server port number'
+        ),
+
         Node(
             condition=LaunchConfigurationEquals('sensor', 'ydlidar'),
             package='ydlidar_ros2_driver',
@@ -119,6 +143,75 @@ def generate_launch_description():
                 {'topic_name': LaunchConfiguration('topic_name')},
                 {'lidar_frame': LaunchConfiguration('frame_id')},
                 {'range_threshold': 0.005}
+            ]
+        ),
+
+        Node(
+            condition=LaunchConfigurationEquals('sensor', 'ld06'),
+            package='ldlidar_stl_ros2',
+            executable='ldlidar_stl_ros2_node',
+            name='ld06',
+            output='screen',
+            parameters=[
+                {'product_name': 'LDLiDAR_LD06'},
+                {'topic_name': LaunchConfiguration('topic_name')},
+                {'frame_id': LaunchConfiguration('frame_id')},
+                {'comm_mode': LaunchConfiguration('lidar_transport')},
+                {'port_name': LaunchConfiguration('lidar_serial_port')},
+                {'port_baudrate': 230400},
+                {'server_ip': LaunchConfiguration('lidar_server_ip')},
+                {'server_port': LaunchConfiguration('lidar_server_port')},
+                {'laser_scan_dir': True},
+                {'bins': 456},
+                {'enable_angle_crop_func': False},
+                {'angle_crop_min': 135.0},
+                {'angle_crop_max': 225.0}
+            ]
+        ),
+
+        Node(
+            condition=LaunchConfigurationEquals('sensor', 'ld19'),
+            package='ldlidar_stl_ros2',
+            executable='ldlidar_stl_ros2_node',
+            name='ld19',
+            output='screen',
+            parameters=[
+                {'product_name': 'LDLiDAR_LD19'},
+                {'topic_name': LaunchConfiguration('topic_name')},
+                {'frame_id': LaunchConfiguration('frame_id')},
+                {'comm_mode': LaunchConfiguration('lidar_transport')},
+                {'port_name': LaunchConfiguration('lidar_serial_port')},
+                {'port_baudrate': 230400},
+                {'server_ip': LaunchConfiguration('lidar_server_ip')},
+                {'server_port': LaunchConfiguration('lidar_server_port')},
+                {'laser_scan_dir': True},
+                {'bins': 456},
+                {'enable_angle_crop_func': False},
+                {'angle_crop_min': 135.0},
+                {'angle_crop_max': 225.0}
+            ]
+        ),
+
+        Node(
+            condition=LaunchConfigurationEquals('sensor', 'stl27l'),
+            package='ldlidar_stl_ros2',
+            executable='ldlidar_stl_ros2_node',
+            name='stl27l',
+            output='screen',
+            parameters=[
+                {'product_name': 'LDLiDAR_STL27L'},
+                {'topic_name': LaunchConfiguration('topic_name')},
+                {'frame_id': LaunchConfiguration('frame_id')},
+                {'comm_mode': LaunchConfiguration('lidar_transport')},
+                {'port_name': LaunchConfiguration('lidar_serial_port')},
+                {'port_baudrate': 921600},
+                {'server_ip': LaunchConfiguration('lidar_server_ip')},
+                {'server_port': LaunchConfiguration('lidar_server_port')},
+                {'laser_scan_dir': True},
+                {'bins': 2160},
+                {'enable_angle_crop_func': False},
+                {'angle_crop_min': 135.0},
+                {'angle_crop_max': 225.0}
             ]
         )
     ])

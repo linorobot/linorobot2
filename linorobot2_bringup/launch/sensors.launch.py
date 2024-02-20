@@ -72,27 +72,27 @@ def generate_launch_description():
             actions=[
                 SetRemap(src=point_cloud_topics[depth_sensor_name], dst='/camera/depth/color/points'),
                 IncludeLaunchDescription(
-                    PythonLaunchDescriptionSource(laser_launch_path),
-                    condition=IfCondition(PythonExpression(['"" != "', laser_sensor_name, '"'])),
-                    launch_arguments={
-                        'sensor': laser_sensor_name
-                    }.items()   
-                ),
-                IncludeLaunchDescription(
                     PythonLaunchDescriptionSource(depth_launch_path),
                     condition=IfCondition(PythonExpression(['"" != "', depth_sensor_name, '"'])),
                     launch_arguments={'sensor': depth_sensor_name}.items()   
-                ),
-                Node(
-                    condition=IfCondition(PythonExpression(['"" != "', laser_sensor_name, '" and ', '"', laser_sensor_name, '" in "', str(list(depth_topics.keys())[1:]), '"'])),
-                    package='depthimage_to_laserscan',
-                    executable='depthimage_to_laserscan_node',
-                    remappings=[('depth', depth_topics[depth_sensor_name][0]),
-                                ('depth_camera_info', depth_topics[depth_sensor_name][1])],
-                    parameters=[fake_laser_config_path]
-                ) 
+                )
             ]
-        )
+        ),
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(laser_launch_path),
+            condition=IfCondition(PythonExpression(['"" != "', laser_sensor_name, '"'])),
+            launch_arguments={
+                'sensor': laser_sensor_name
+            }.items()   
+        ),
+        Node(
+            condition=IfCondition(PythonExpression(['"" != "', laser_sensor_name, '" and ', '"', laser_sensor_name, '" in "', str(list(depth_topics.keys())[1:]), '"'])),
+            package='depthimage_to_laserscan',
+            executable='depthimage_to_laserscan_node',
+            remappings=[('depth', depth_topics[depth_sensor_name][0]),
+                        ('depth_camera_info', depth_topics[depth_sensor_name][1])],
+            parameters=[fake_laser_config_path]
+        ) 
     ])
 
    

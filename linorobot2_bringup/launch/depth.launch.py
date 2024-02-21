@@ -49,7 +49,8 @@ def generate_launch_description():
             launch_arguments={
                 'pointcloud.enable': 'true',
                 'ordered_pc': 'true', 
-                'initial_reset': 'true'
+                'initial_reset': 'true',
+                'depth_qos': 'BEST_EFFORT'
             }.items()   
         ),
 

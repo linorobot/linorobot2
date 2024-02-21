@@ -72,6 +72,13 @@
             <remapping>/camera/image_raw:=/camera/color/image_raw</remapping>
             <remapping>/camera/points:=/camera/depth/color/points</remapping>
             <remapping>/camera/depth/image_raw:=/camera/depth/image_rect_raw</remapping>
+            <qos>
+              <topic name="/camera/depth/color/points">
+                <publisher>
+                  <reliability>best_effort</reliability>
+                </publisher>
+              </topic>
+            </qos>
           </ros>
           <min_depth>0.015</min_depth>
           <max_depth>3.0</max_depth>
@@ -88,4 +95,3 @@
     </gazebo>
   </xacro:macro>
 </robot>
-  

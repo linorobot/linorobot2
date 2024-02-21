@@ -1,6 +1,6 @@
 amcl:
   ros__parameters:
-    use_sim_time: False
+    use_sim_time: false
     alpha1: 0.2
     alpha2: 0.2
     alpha3: 0.2
@@ -41,21 +41,21 @@ amcl:
 
 amcl_map_client:
   ros__parameters:
-    use_sim_time: False
+    use_sim_time: false
 
 amcl_rclcpp_node:
   ros__parameters:
-    use_sim_time: False
+    use_sim_time: false
 
 bt_navigator:
   ros__parameters:
-    use_sim_time: False
+    use_sim_time: false
     global_frame: map
     robot_base_frame: base_link
     odom_topic: /odom
     bt_loop_duration: 10
     default_server_timeout: 20
-    enable_groot_monitoring: True
+    enable_groot_monitoring: true
     groot_zmq_publisher_port: 1666
     groot_zmq_server_port: 1667
     plugin_lib_names:
@@ -93,11 +93,11 @@ bt_navigator:
 
 bt_navigator_rclcpp_node:
   ros__parameters:
-    use_sim_time: False
+    use_sim_time: false
 
 controller_server:
   ros__parameters:
-    use_sim_time: False
+    use_sim_time: false
     controller_frequency: 20.0
     min_x_velocity_threshold: 0.001
     min_y_velocity_threshold: 0.5
@@ -115,7 +115,7 @@ controller_server:
 
     # Goal checker parameters
     general_goal_checker:
-      stateful: True
+      stateful: true
       plugin: "nav2_controller::SimpleGoalChecker"
       xy_goal_tolerance: 0.25
       yaw_goal_tolerance: 0.25
@@ -128,7 +128,7 @@ controller_server:
       max_angular_accel: 3.2
       simulate_ahead_time: 1.0
       plugin: "dwb_core::DWBLocalPlanner"
-      debug_trajectory_details: True
+      debug_trajectory_details: true
       min_vel_x: 0.0
       min_vel_y: 0.0
       max_vel_x: 0.4
@@ -154,8 +154,8 @@ controller_server:
       transform_tolerance: 0.2
       xy_goal_tolerance: 0.25
       trans_stopped_velocity: 0.25
-      short_circuit_trajectory_evaluation: True
-      stateful: True
+      short_circuit_trajectory_evaluation: true
+      stateful: true
       critics: ["RotateToGoal", "Oscillation", "BaseObstacle", "GoalAlign", "PathAlign", "PathDist", "GoalDist"]
       BaseObstacle.scale: 0.02
       PathAlign.scale: 32.0
@@ -170,12 +170,12 @@ controller_server:
       
 controller_server_rclcpp_node:
   ros__parameters:
-    use_sim_time: False
+    use_sim_time: false
 
 global_costmap:
   global_costmap:
     ros__parameters:
-      use_sim_time: False
+      use_sim_time: false
       footprint_padding: 0.03
       update_frequency: 1.0
       publish_frequency: 1.0
@@ -186,7 +186,7 @@ global_costmap:
       plugins: ["static_layer", "obstacle_layer", "voxel_layer", "inflation_layer"]
       obstacle_layer:
         plugin: "nav2_costmap_2d::ObstacleLayer"
-        enabled: True
+        enabled: true
         observation_sources: scan base_scan
         footprint_clearing_enabled: true
         max_obstacle_height: 2.0
@@ -199,8 +199,8 @@ global_costmap:
           raytrace_min_range: 0.0
           max_obstacle_height: 2.0
           min_obstacle_height: 0.0
-          clearing: True
-          marking: True
+          clearing: true
+          marking: true
           data_type: "LaserScan"
           inf_is_valid: false
         base_scan:
@@ -211,16 +211,16 @@ global_costmap:
           raytrace_min_range: 0.0
           max_obstacle_height: 2.0
           min_obstacle_height: 0.0
-          clearing: True
-          marking: True
+          clearing: true
+          marking: true
           data_type: "LaserScan"
           inf_is_valid: false
       voxel_layer:
         plugin: "nav2_costmap_2d::VoxelLayer"
-        enabled: True
+        enabled: true
         footprint_clearing_enabled: true
         max_obstacle_height: 2.0
-        publish_voxel_map: True
+        publish_voxel_map: true
         origin_z: 0.0
         z_resolution: 0.05
         z_voxels: 16
@@ -230,19 +230,19 @@ global_costmap:
         observation_sources: pointcloud
         combination_method: 1
         pointcloud:  # no frame set, uses frame from message
-          topic: /camera/downsampled/depth/pointcloud
+          topic: /camera/depth/color/points
           max_obstacle_height: 2.0
           min_obstacle_height: 0.01
           obstacle_max_range: 2.5
           obstacle_min_range: 0.0
           raytrace_max_range: 3.0
           raytrace_min_range: 0.0
-          clearing: True
-          marking: True
+          clearing: true
+          marking: true
           data_type: "PointCloud2"
       static_layer:
         plugin: "nav2_costmap_2d::StaticLayer"
-        map_subscribe_transient_local: True
+        map_subscribe_transient_local: true
         enabled: true
         subscribe_to_updates: true
         transform_tolerance: 0.1
@@ -253,12 +253,12 @@ global_costmap:
         cost_scaling_factor: 1.0
         inflate_unknown: false
         inflate_around_unknown: true
-      always_send_full_costmap: True
+      always_send_full_costmap: true
 
 local_costmap:
   local_costmap:
     ros__parameters:
-      use_sim_time: False
+      use_sim_time: false
       update_frequency: 5.0
       publish_frequency: 2.0
       global_frame: odom
@@ -272,7 +272,7 @@ local_costmap:
       plugins: ["obstacle_layer", "voxel_layer", "inflation_layer"]
       obstacle_layer:
         plugin: "nav2_costmap_2d::ObstacleLayer"
-        enabled: True
+        enabled: true
         observation_sources: scan base_scan
         footprint_clearing_enabled: true
         max_obstacle_height: 2.0
@@ -285,8 +285,8 @@ local_costmap:
           raytrace_min_range: 0.0
           max_obstacle_height: 2.0
           min_obstacle_height: 0.0
-          clearing: False
-          marking: True
+          clearing: false
+          marking: true
           data_type: "LaserScan"
           inf_is_valid: false
         base_scan:
@@ -297,16 +297,16 @@ local_costmap:
           raytrace_min_range: 0.0
           max_obstacle_height: 2.0
           min_obstacle_height: 0.0
-          clearing: False
-          marking: True
+          clearing: false
+          marking: true
           data_type: "LaserScan"
           inf_is_valid: false
       voxel_layer:
         plugin: "nav2_costmap_2d::VoxelLayer"
-        enabled: True
+        enabled: true
         footprint_clearing_enabled: true
         max_obstacle_height: 2.0
-        publish_voxel_map: True
+        publish_voxel_map: true
         origin_z: 0.0
         z_resolution: 0.05
         z_voxels: 16
@@ -316,19 +316,19 @@ local_costmap:
         observation_sources: pointcloud
         combination_method: 1
         pointcloud:  # no frame set, uses frame from message
-          topic: /camera/downsampled/depth/pointcloud
+          topic: /camera/depth/color/points
           max_obstacle_height: 2.0
           min_obstacle_height: 0.01
           obstacle_max_range: 2.5
           obstacle_min_range: 0.0
           raytrace_max_range: 3.0
           raytrace_min_range: 0.0
-          clearing: True
-          marking: True
+          clearing: true
+          marking: true
           data_type: "PointCloud2"
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
-        enabled: True
+        enabled: true
         inflation_radius: 0.55
         cost_scaling_factor: 1.0
         inflate_unknown: false
@@ -336,21 +336,21 @@ local_costmap:
 
 map_server:
   ros__parameters:
-    use_sim_time: False
+    use_sim_time: false
     yaml_filename: "turtlebot3_world.yaml"
 
 map_saver:
   ros__parameters:
-    use_sim_time: False
+    use_sim_time: false
     save_map_timeout: 5.0
     free_thresh_default: 0.25
     occupied_thresh_default: 0.65
-    map_subscribe_transient_local: True
+    map_subscribe_transient_local: true
 
 planner_server:
   ros__parameters:
     expected_planner_frequency: 20.0
-    use_sim_time: False
+    use_sim_time: false
     planner_plugins: ["GridBased"]
     GridBased:
       plugin: "nav2_navfn_planner/NavfnPlanner"
@@ -360,7 +360,7 @@ planner_server:
 
 planner_server_rclcpp_node:
   ros__parameters:
-    use_sim_time: False
+    use_sim_time: false
 
 recoveries_server:
   ros__parameters:
@@ -377,7 +377,7 @@ recoveries_server:
     global_frame: odom
     robot_base_frame: base_link
     transform_timeout: 0.1
-    use_sim_time: False
+    use_sim_time: false
     simulate_ahead_time: 2.0
     max_rotational_vel: 1.0
     min_rotational_vel: 0.4
@@ -385,7 +385,7 @@ recoveries_server:
 
 robot_state_publisher:
   ros__parameters:
-    use_sim_time: False
+    use_sim_time: false
 
 waypoint_follower:
   ros__parameters:
@@ -394,5 +394,5 @@ waypoint_follower:
     waypoint_task_executor_plugin: "wait_at_waypoint"   
     wait_at_waypoint:
       plugin: "nav2_waypoint_follower::WaitAtWaypoint"
-      enabled: True
+      enabled: true
       waypoint_pause_duration: 200

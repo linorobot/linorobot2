@@ -113,39 +113,6 @@ def generate_launch_description():
                 'use_sim_time': str(use_sim_time),
                 'publish_joints': 'false',
             }.items()
-        ),
-        ComposableNodeContainer(
-            name='image_container',
-            namespace='',
-            package='rclcpp_components',
-            executable='component_container',
-            composable_node_descriptions=[
-                # Decimate cloud to 160x120
-                ComposableNode(
-                    package='image_proc',
-                    plugin='image_proc::CropDecimateNode',
-                    name='depth_downsample',
-                    parameters=[{'decimation_x': 4, 'decimation_y': 4}],
-                    remappings=[
-                        ('in/image_raw', '/camera/depth/image_rect_raw'),
-                        ('in/camera_info', '/camera/depth/camera_info'),
-                        ('out/image_raw', '/camera/downsampled/depth/image_raw'),
-                        ('out/camera_info', '/camera/downsampled/depth/camera_info')
-                    ],
-                ),
-                # Downsampled XYZ point cloud (mainly for navigation)
-                ComposableNode(
-                    package='depth_image_proc',
-                    plugin='depth_image_proc::PointCloudXyzNode',
-                    name='points_downsample',
-                    remappings=[
-                        ('image_rect', '/camera/downsampled/depth/image_raw'),
-                        ('camera_info', '/camera/downsampled/depth/camera_info'),
-                        ('points', '/camera/downsampled/depth/pointcloud')
-                    ],
-                )
-            ],
-            output='both',
         )
     ])
 

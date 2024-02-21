@@ -13,6 +13,7 @@ services:
         - ROBOT_BASE=${ROBOT_BASE}
         - LASER_SENSOR=${LASER_SENSOR} 
         - DEPTH_SENSOR=${DEPTH_SENSOR}
+        - RMW=${RMW}
       target: base
 
   dev:
@@ -63,6 +64,14 @@ services:
       ros2 launch linorobot2_navigation slam.launch.py
       rviz:=false
 
+  slam-sim:
+    container_name: slam-sim
+    extends: dev
+    command: >
+      ros2 launch linorobot2_navigation slam.launch.py
+      rviz:=true
+      sim:=true
+
   navigate:
     container_name: navigate
     extends: dev
@@ -70,6 +79,16 @@ services:
       ros2 launch linorobot2_navigation navigation.launch.py
       map:=/root/linorobot2_ws/src/linorobot2/linorobot2_navigation/maps/playground.yaml
       rviz:=false
+      sim:=false
+
+  navigate-sim:
+    container_name: navigate-sim
+    extends: dev
+    command: >
+      ros2 launch linorobot2_navigation navigation.launch.py
+      map:=/root/linorobot2_ws/src/linorobot2/linorobot2_navigation/maps/playground.yaml
+      rviz:=true
+      sim:=true
 
   save-map:
     container_name: save-map

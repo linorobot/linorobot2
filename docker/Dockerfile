@@ -2,6 +2,7 @@ ARG USE_ROS_DISTRO=
 ARG UBUNTU_VER=
 ARG RUNTIME=
 ARG DEPLOY=
+ARG RMW=
 
 FROM --platform=$BUILDPLATFORM ros:${USE_ROS_DISTRO}-ros-base as ros2
 SHELL ["/bin/bash", "-c"]
@@ -112,7 +113,17 @@ ENV QT_X11_NO_MITSHM=1
 from ros2${RUNTIME} as common
 SHELL ["/bin/bash", "-c"]
 
-RUN wget -O /root/.shm_off.xml https://raw.githubusercontent.com/eProsima/Fast-DDS/107ea8d64942102696840cd7d3e4cf93fa7a143e/examples/cpp/dds/AdvancedConfigurationExample/shm_off.xml
+ARG RMW=
+RUN if [ "${RMW}" == "cyclonedds" ]; then \
+        apt-get update && apt-get install -y --no-install-recommends \
+        ros-${ROS_DISTRO}-rmw-cyclonedds-cpp \
+        && rm -rf /var/lib/apt/lists/* ; \
+    fi
+
+COPY docker/.${RMW}.xml /root
+ENV RMW_IMPLEMENTATION=rmw_${RMW}_cpp
+ENV CYCLONEDDS_URI=/root/.cyclonedds.xml
+ENV FASTRTPS_DEFAULT_PROFILES_FILE=/root/.fastrtps.xml
 
 RUN mkdir -p /root/linorobot2_ws/src/linorobot2
 RUN mkdir -p /root/preinstall/base \

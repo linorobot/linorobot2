@@ -11,21 +11,6 @@ If it's your first time using ROS2 and haven't created your ROS2 workspace yet, 
     source install/setup.bash
 
 #### 1.2 Install LIDAR ROS2 drivers:
-RPLIDAR:
-
-    sudo apt install -y ros-$ROS_DISTRO-rplidar-ros
-    cd /tmp
-    wget https://raw.githubusercontent.com/allenh1/rplidar_ros/ros2/scripts/rplidar.rules
-    sudo cp rplidar.rules /etc/udev/rules.d/
-
-LDLIDAR:
-
-    cd <your_ws>
-    git clone https://github.com/linorobot/ldlidar src/ldlidar
-    sudo cp src/ldlidar/ldlidar.rules /etc/udev/rules.d/
-    colcon build
-    source <your_ws>/install/setup.bash
-
 YDLIDAR:
 
     cd /tmp
@@ -54,6 +39,17 @@ LD06 LD19 STL27L:
     git clone https://github.com/hippo5329/ldlidar_stl_ros2.git src/ldlidar_stl_ros2
     colcon build
     source <your_ws>/install/setup.bash
+    cd /tmp
+    wget https://raw.githubusercontent.com/linorobot/ldlidar/ros2/ldlidar.rules
+    sudo cp ldlidar.rules /etc/udev/rules.d
+
+RPLIDAR (A1 A2 A3 C1 S1 S2 S3):
+
+    cd <your_ws>
+    git clone https://github.com/Slamtec/sllidar_ros2.git
+    colcon build
+    source  <your_ws>/install/setup.bash
+    sudo cp sllidar_ros2/scripts/rplidar.rules /etc/udev/rules.d
 
 #### 1.3 Install depth sensor drivers:
 Intel RealSense:

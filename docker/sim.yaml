@@ -1,0 +1,14 @@
+name: linorobot2-sim-demo
+on_project_start: export DISPLAY=:200
+on_project_exit: 
+- docker compose down
+tmux_options: -f $HOME/.config/tmuxinator/eztmux/.tmux.conf
+windows:
+  - main:
+      panes:
+      - docker compose up kasmvnc
+      - docker compose up gazebo
+      - docker compose up navigate-sim
+
+      - # This is not limited to this line only
+      - # You can add as much panes as you want.

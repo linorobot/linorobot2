@@ -13,6 +13,7 @@ services:
         - ROBOT_BASE=${ROBOT_BASE}
         - LASER_SENSOR=${LASER_SENSOR} 
         - DEPTH_SENSOR=${DEPTH_SENSOR}
+        - RMW=${RMW}
       target: base
 
   dev:

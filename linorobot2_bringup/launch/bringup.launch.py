@@ -14,7 +14,7 @@
 
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, PythonExpression
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
@@ -22,16 +22,8 @@ from launch.conditions import IfCondition, UnlessCondition
 
 
 def generate_launch_description():
-    sensors_launch_path = PathJoinSubstitution(
-        [FindPackageShare('linorobot2_bringup'), 'launch', 'sensors.launch.py']
-    )
-
     joy_launch_path = PathJoinSubstitution(
         [FindPackageShare('linorobot2_bringup'), 'launch', 'joy_teleop.launch.py']
-    )
-
-    description_launch_path = PathJoinSubstitution(
-        [FindPackageShare('linorobot2_description'), 'launch', 'description.launch.py']
     )
 
     ekf_config_path = PathJoinSubstitution(
@@ -52,19 +44,19 @@ def generate_launch_description():
 
     return LaunchDescription([
         DeclareLaunchArgument(
-            name='custom_robot', 
+            name='custom_robot',
             default_value='false',
             description='Use custom robot'
         ),
 
         DeclareLaunchArgument(
-            name='extra', 
+            name='extra',
             default_value='false',
             description='Launch extra launch file'
         ),
 
         DeclareLaunchArgument(
-            name='base_serial_port', 
+            name='base_serial_port',
             default_value='/dev/ttyACM0',
             description='Linorobot Base Serial Port'
         ),
@@ -82,13 +74,13 @@ def generate_launch_description():
         ),
 
         DeclareLaunchArgument(
-            name='odom_topic', 
+            name='odom_topic',
             default_value='/odom',
             description='EKF out odometry topic'
         ),
-        
+
         DeclareLaunchArgument(
-            name='joy', 
+            name='joy',
             default_value='false',
             description='Use Joystick'
         ),
@@ -120,5 +112,10 @@ def generate_launch_description():
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(custom_robot_launch_path),
             condition=IfCondition(LaunchConfiguration("custom_robot")),
-        )
+        ),
+
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(joy_launch_path),
+            condition=IfCondition(LaunchConfiguration("joy")),
+        ),
     ])

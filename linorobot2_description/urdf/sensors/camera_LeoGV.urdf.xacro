@@ -1,0 +1,112 @@
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:property name="M_PI" value="3.1415926535897931" />
+  <xacro:macro name="camera_LeoGV" params="*origin">
+    <!-- camera_link describes the camera at the end of the arm -->
+    <!-- - It has multiple visual elements, which ultimately get combined together -->
+    <!-- - Even if we specify different materials, RViz will just colour them all the same as the first -->
+    <!-- - Although we could also specify multiple collision geometries, instead we just use a single box that encompasses the whole camera -->
+    <link name="camera_link">
+        <visual>
+            <origin xyz="-0.03 0 0" rpy="0 0 0"/>
+            <geometry>
+                <box size="0.06 0.15 0.15" />
+            </geometry>
+            <material name="white" />
+        </visual>
+        <visual>
+            <origin xyz="0.03 0 0" rpy="0 ${pi/2} 0"/>
+            <geometry>
+                <cylinder length="0.06" radius="0.04" />
+            </geometry>
+            <material name="blue" />
+        </visual>
+
+        <collision>
+            <origin xyz="0.0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <box size="0.12 0.15 0.15" />
+            </geometry>
+        </collision>
+        
+        <inertial>
+          <origin xyz="0 0 0" rpy="0 0 0"/>
+          <mass value="0.135"/>
+          <inertia ixx="${(1/12) * 0.135 * ((0.124  * 0.124)  + (0.030 * 0.030))}" ixy="0.0" ixz="0.0"
+                  iyy="${(1/12) * 0.135 * ((0.030 * 0.030) + (0.030 * 0.030))}" iyz="0.0"
+                  izz="${(1/12) * 0.135 * ((0.030 * 0.030) + (0.124  * 0.124))}"/>
+        </inertial>
+    </link>
+
+    <!-- camera_joint describes where the camera is relative to the arm -->
+    <!-- - Even though the camera isn't moving relative to the arm, it will probably be helpful to have its own link/frame rather than just adding more visuals to the arm -->
+    <!-- - For this example, the camera_link origin will be at the centre of the camera's "sensor" -->
+    <joint name="camera_to_base_joint" type="fixed">
+      <parent link="base_link"/>
+      <child link="camera_link"/>
+      <xacro:insert_block name="origin" />
+    </joint>
+
+    <joint name="camera_optical_joint" type="fixed">
+        <origin xyz="0 0 0" rpy="-1.571 0 -1.571" />
+        <parent link="camera_link" />
+        <child link="camera_link_optical" />
+    </joint>
+    <link name="camera_link_optical"></link>
+    <!-- Add a gazebo tag for the ORIGINAL camera_link (but in the plugin we reference the optical frame so that ROS can orient things correctly) -->
+    <!-- Within the gazebo tag we have the sensor tag, and inside that there is (among other things) the camera tag with the camera parameters, 
+            and the plugin tag with some extra parameters the plugin needs. -->
+    <!-- Note that although visualise is set to true, it won't actually visualise the depth camera in gazebo. To see the preview, 
+            try swapping "depth" to "camera"-->
+    <!-- https://github.com/ros-simulation/gazebo_ros_pkgs/wiki/ROS-2-Migration:-Camera#gazebo_ros_camera -->
+    <gazebo reference="camera_link">
+      <sensor name="camera" type="camera">
+        <always_on>true</always_on>
+        <visualize>true</visualize>
+        <update_rate>5</update_rate>
+        <camera name="camera">
+          <horizontal_fov>1.50098</horizontal_fov>
+          <image>
+            <width>640</width>
+            <height>480</height>
+            <format>R8G8B8</format>
+          </image>
+          <clip>
+              <near>0.02</near>
+              <far>300</far>
+          </clip>
+          <noise>
+              <type>gaussian</type>
+              <mean>0.0</mean>
+              <stddev>0.007</stddev>
+          </noise>          
+        </camera>
+        <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+          <ros>
+            <remapping>/camera/camera_info:=/camera/color/camera_info</remapping>
+            <remapping>/camera/image_raw:=/camera/color/image_raw</remapping>
+            <remapping>/camera/points:=/camera/depth/color/points</remapping>
+            <remapping>/camera/depth/image_raw:=/camera/depth/image_rect_raw</remapping>
+            <qos>
+              <topic name="/camera/depth/color/points">
+                <publisher>
+                  <reliability>best_effort</reliability>
+                </publisher>
+              </topic>
+            </qos>
+          </ros>
+          <min_depth>0.015</min_depth>
+          <max_depth>3.0</max_depth>
+          <hack_baseline>0.07</hack_baseline>
+          <frame_name>camera_link_optical</frame_name>
+          <distortion_k1>0.00000001</distortion_k1>
+          <distortion_k2>0.00000001</distortion_k2>
+          <distortion_k3>0.00000001</distortion_k3>
+          <distortion_t1>0.00000001</distortion_t1>
+          <distortion_t2>0.00000001</distortion_t2>
+        </plugin>
+      </sensor>
+
+    </gazebo>
+
+  </xacro:macro>
+</robot>

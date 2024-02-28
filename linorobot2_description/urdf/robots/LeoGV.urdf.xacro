@@ -1,0 +1,141 @@
+<?xml version="1.0"?>
+<robot name="LeoGV" xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:include filename="$(find linorobot2_description)/urdf/2wd_properties.urdf.xacro" />
+  <xacro:include filename="$(find linorobot2_description)/urdf/mech/base.urdf.xacro" />
+
+  <xacro:include filename="$(find linorobot2_description)/urdf/mech/lift_plate_LeoGV.urdf.xacro" />
+
+  <xacro:include filename="$(find linorobot2_description)/urdf/mech/wheel.urdf.xacro" />
+  <xacro:include filename="$(find linorobot2_description)/urdf/mech/caster_wheel_LeoGV.urdf.xacro" />
+  <xacro:include filename="$(find linorobot2_description)/urdf/sensors/imu.urdf.xacro" />
+  <xacro:include filename="$(find linorobot2_description)/urdf/sensors/generic_laser.urdf.xacro" />
+  <xacro:include filename="$(find linorobot2_description)/urdf/sensors/depth_sensor.urdf.xacro" />
+
+  <xacro:include filename="$(find linorobot2_description)/urdf/sensors/camera_LeoGV.urdf.xacro" />
+
+  <xacro:include filename="$(find linorobot2_description)/urdf/controllers/diff_drive.urdf.xacro" />
+
+  <xacro:base 
+    length="${base_length}" 
+    width="${base_width}" 
+    height="${base_height}" 
+    mass="${base_mass}"
+    wheel_radius="${wheel_radius}"
+    wheel_pos_z="${wheel_pos_z}"
+  />
+  <xacro:lift_plate_LeoGV 
+    lift_plate_length="${lift_plate_length}" 
+    lift_plate_width="${lift_plate_width}" 
+    lift_plate_height="${lift_plate_height}" 
+    lift_plate_mass="${lift_plate_mass}"
+    lift_plate_wheel_pos_x="${lift_plate_wheel_pos_x}"
+    lift_plate_wheel_pos_y="${lift_plate_wheel_pos_y}"
+    lift_plate_wheel_pos_z="${lift_plate_wheel_pos_z}"
+  />
+
+  <xacro:wheel 
+    side="left"
+    radius="${wheel_radius}" 
+    width="${wheel_width}" 
+    pos_x="${wheel_pos_x}" 
+    pos_y="${wheel_pos_y}" 
+    pos_z="${wheel_pos_z}" 
+    mass="${wheel_mass}"
+  />
+
+  <xacro:wheel 
+    side="right"
+    radius="${wheel_radius}" 
+    width="${wheel_width}" 
+    pos_x="${wheel_pos_x}" 
+    pos_y="${-wheel_pos_y}" 
+    pos_z="${wheel_pos_z}" 
+    mass="${wheel_mass}"
+  />
+
+  <xacro:caster_wheel_LeoGV 
+    side="left"
+    wheel_radius="${wheel_radius}"  
+    wheel_pos_z="${wheel_pos_z}" 
+    caster_wheel_x="${caster_wheel_x}" 
+    caster_wheel_y="${caster_wheel_y}" 
+    mass="${wheel_mass}"
+  />
+
+  <xacro:caster_wheel_LeoGV 
+    side="right"
+    wheel_radius="${wheel_radius}"  
+    wheel_pos_z="${wheel_pos_z}" 
+    caster_wheel_x="${caster_wheel_x}" 
+    caster_wheel_y="${-caster_wheel_y}" 
+    mass="${wheel_mass}"
+  />
+  
+  <!-- <xacro:if value="${front_caster_wheel}">
+    <xacro:caster_wheel 
+      side="front"
+      mass="0.01"
+      base_length="${base_length}" 
+      wheel_radius="${wheel_radius}" 
+      wheel_pos_z="${wheel_pos_z}" 
+    />
+  </xacro:if>
+
+  <xacro:if value="${rear_caster_wheel}">
+    <xacro:caster_wheel 
+      side="rear"
+      mass="0.01"
+      base_length="${base_length}" 
+      wheel_radius="${wheel_radius}" 
+      wheel_pos_z="${wheel_pos_z}" 
+    />
+  </xacro:if> -->
+
+  <!-- <xacro:imu/> -->
+
+  <xacro:generic_laser>
+    <xacro:insert_block name="laser_pose" />
+  </xacro:generic_laser>
+  
+  <!-- <xacro:depth_sensor>
+    <xacro:insert_block name="depth_sensor_pose" />
+  </xacro:depth_sensor> -->
+
+  <xacro:camera_LeoGV>
+    <xacro:insert_block name="depth_sensor_pose" />
+  </xacro:camera_LeoGV>
+
+  <xacro:diff_drive_controller
+    wheel_separation="${wheel_pos_y * 2}"
+    wheel_radius="${wheel_radius}"
+    wheel_torque="${wheel_torque}"
+  />
+
+
+   <!-- This plugin will publish the joint_states for the selected joints 
+          (which robot_state_publisher can then use to broadcast the approprate tf). -->    
+  <gazebo>
+      <plugin name="gazebo_ros_joint_state_publisher"
+          filename="libgazebo_ros_joint_state_publisher.so">
+          <update_rate>20</update_rate>
+          <joint_name>lift_plate_to_base_joint</joint_name>
+          <joint_name>left_wheel_joint</joint_name>
+          <joint_name>right_wheel_joint</joint_name>
+          <joint_name>lift_plate_to_base_joint</joint_name>
+      </plugin>
+  </gazebo>
+  
+  <!-- This plugin will read a JointTrajectory message from the /set_joint_trajectory topic 
+          and move the machine accordingly. It's a bit clunky but it works. -->
+  <!-- You'll probably want to add damping to the joints to stop them it flopping around. 
+          e.g. <dynamics damping="10.0" friction="10.0"/> -->
+  
+  <gazebo>
+      <plugin name="gazebo_ros_joint_pose_trajectory"
+          filename="libgazebo_ros_joint_pose_trajectory.so">
+          <update_rate>2</update_rate>
+      </plugin>
+  </gazebo>
+
+</robot>

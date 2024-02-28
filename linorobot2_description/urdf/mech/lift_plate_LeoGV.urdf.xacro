@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:macro name="lift_plate_LeoGV" params="lift_plate_mass lift_plate_length lift_plate_width lift_plate_height lift_plate_wheel_pos_x lift_plate_wheel_pos_y lift_plate_wheel_pos_z">    
+    <link name="lift_plate_LeoGV">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="${lift_plate_length} ${lift_plate_width} ${lift_plate_height}"/>     
+        </geometry>
+        <material name="red">
+          <color rgba="0.8509 0.1764 0.1764 1.0"/>
+        </material>
+      </visual>
+      
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="${lift_plate_length} ${lift_plate_width} ${lift_plate_height}"/>
+        </geometry>
+      </collision>
+
+      <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <mass value="${lift_plate_mass}"/>
+        <inertia ixx="${(1/12) * lift_plate_mass * ((lift_plate_width  * lift_plate_width)  + (lift_plate_height * lift_plate_height))}" ixy="0.0" ixz="0.0"
+                 iyy="${(1/12) * lift_plate_mass * ((lift_plate_length * lift_plate_length) + (lift_plate_height * lift_plate_height))}" iyz="0.0"
+                 izz="${(1/12) * lift_plate_mass * ((lift_plate_length * lift_plate_length) + (lift_plate_width  * lift_plate_width))}"/>
+      </inertial>
+    </link>
+
+    <gazebo reference="lift_plate_LeoGV">  
+      <visual>  
+        <material>
+          <ambient>0.8392 0.6314 0.0 1.0</ambient>  
+          <diffuse>0.8392 0.6314 0.0 1.0</diffuse>  
+          <specular>0.99 0.99 0.99 1.0</specular>  
+          <emissive>0.0 0.0 0.0 0.0</emissive>  
+        </material>
+      </visual> 
+    </gazebo>
+
+    <joint name="lift_plate_to_base_joint" type="prismatic">
+      <!-- <origin xyz="-1.25 0 0.1" rpy="0 0 0"/> -->
+      <parent link="base_footprint"/>
+      <child link="lift_plate_LeoGV"/>
+      <origin xyz="${lift_plate_wheel_pos_x} ${lift_plate_wheel_pos_y} ${lift_plate_wheel_pos_z}" rpy="0 0 0"/>
+      <axis xyz="0 0 1"/>
+      <limit lower="0" upper="2" velocity="100" effort="100"/>     
+    </joint>  
+
+  </xacro:macro>
+</robot>

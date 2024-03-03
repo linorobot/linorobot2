@@ -2,15 +2,16 @@
 <robot name="LeoGV" xmlns:xacro="http://ros.org/wiki/xacro">
 
   <xacro:include filename="$(find linorobot2_description)/urdf/2wd_properties.urdf.xacro" />
+  <!-- <xacro:include filename="$(find linorobot2_description)/urdf/inertial_macros.xacro" /> -->
   <xacro:include filename="$(find linorobot2_description)/urdf/mech/base.urdf.xacro" />
 
   <xacro:include filename="$(find linorobot2_description)/urdf/mech/lift_plate_LeoGV.urdf.xacro" />
 
   <xacro:include filename="$(find linorobot2_description)/urdf/mech/wheel.urdf.xacro" />
   <xacro:include filename="$(find linorobot2_description)/urdf/mech/caster_wheel_LeoGV.urdf.xacro" />
-  <xacro:include filename="$(find linorobot2_description)/urdf/sensors/imu.urdf.xacro" />
+  <!-- <xacro:include filename="$(find linorobot2_description)/urdf/sensors/imu.urdf.xacro" /> -->
   <xacro:include filename="$(find linorobot2_description)/urdf/sensors/generic_laser.urdf.xacro" />
-  <xacro:include filename="$(find linorobot2_description)/urdf/sensors/depth_sensor.urdf.xacro" />
+  <!-- <xacro:include filename="$(find linorobot2_description)/urdf/sensors/depth_sensor.urdf.xacro" /> -->
 
   <xacro:include filename="$(find linorobot2_description)/urdf/sensors/camera_LeoGV.urdf.xacro" />
 

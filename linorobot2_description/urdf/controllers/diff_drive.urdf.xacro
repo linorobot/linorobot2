@@ -5,17 +5,25 @@
         <ros>
           <remapping>odom:=odom/unfiltered</remapping>
         </ros>
+
         <updateRate>100</updateRate>
+
         <left_joint>left_wheel_joint</left_joint>
         <right_joint>right_wheel_joint</right_joint>
+        <robot_base_frame>base_footprint</robot_base_frame>
+        
         <wheel_separation>${wheel_separation}</wheel_separation>
         <wheel_diameter>${wheel_radius * 2}</wheel_diameter>
+        
+        !-- Limits -->
+        <!-- <max_wheel_torque>200</max_wheel_torque> -->
         <max_wheel_acceleration>1.0</max_wheel_acceleration>
-        <robot_base_frame>base_footprint</robot_base_frame>
-        <publish_odom>true</publish_odom>
-        <publish_odom_tf>false</publish_odom_tf>
-        <publish_wheel_tf>true</publish_wheel_tf>
+
         <odometry_frame>odom</odometry_frame>
+
+        <publish_odom>true</publish_odom>
+        <publish_odom_tf>true</publish_odom_tf>
+        <publish_wheel_tf>true</publish_wheel_tf>
       </plugin>
     </gazebo>
   </xacro:macro>

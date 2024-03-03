@@ -4,7 +4,7 @@ project(linorobot2_gazebo)
 find_package(ament_cmake REQUIRED)
 find_package(ament_cmake_python REQUIRED)
 find_package(rclpy REQUIRED)
-ament_python_install_package(scripts)
+ament_python_install_package(Scripts)
 
 install(
   DIRECTORY launch rviz worlds
@@ -12,7 +12,7 @@ install(
 )
 
 install(PROGRAMS
-  scripts/command_timeout.py
+  Scripts/command_timeout.py
   DESTINATION lib/${PROJECT_NAME}
 )
 ament_package()

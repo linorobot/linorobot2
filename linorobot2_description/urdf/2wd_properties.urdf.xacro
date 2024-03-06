@@ -9,7 +9,7 @@
   <xacro:property name="wheel_width" value="0.058" />
   <xacro:property name="wheel_pos_x" value="0.15" />
   <xacro:property name="wheel_pos_y" value="0.25" />
-  <xacro:property name="wheel_pos_z" value="-0.08255" />
+  <xacro:property name="wheel_pos_z" value="0.08255" />
   <xacro:property name="wheel_mass" value="3" />
   <xacro:property name="wheel_torque" value="20" />
   <!-- <xacro:property name="front_caster_wheel" value="true" />

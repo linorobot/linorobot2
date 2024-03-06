@@ -41,7 +41,7 @@
     width="${wheel_width}" 
     pos_x="${wheel_pos_x}" 
     pos_y="${wheel_pos_y}" 
-    pos_z="${wheel_pos_z}" 
+    pos_z="${-base_height/2}" 
     mass="${wheel_mass}"
   />
 
@@ -51,14 +51,14 @@
     width="${wheel_width}" 
     pos_x="${wheel_pos_x}" 
     pos_y="${-wheel_pos_y}" 
-    pos_z="${wheel_pos_z}" 
+    pos_z="${-base_height/2}" 
     mass="${wheel_mass}"
   />
 
   <xacro:caster_wheel_LeoGV 
     side="left"
     wheel_radius="${wheel_radius}"  
-    wheel_pos_z="${wheel_pos_z}" 
+    wheel_pos_z="${base_height/2}" 
     caster_wheel_x="${caster_wheel_x}" 
     caster_wheel_y="${caster_wheel_y}" 
     mass="${wheel_mass}"
@@ -67,7 +67,7 @@
   <xacro:caster_wheel_LeoGV 
     side="right"
     wheel_radius="${wheel_radius}"  
-    wheel_pos_z="${wheel_pos_z}" 
+    wheel_pos_z="${base_height/2}" 
     caster_wheel_x="${caster_wheel_x}" 
     caster_wheel_y="${-caster_wheel_y}" 
     mass="${wheel_mass}"

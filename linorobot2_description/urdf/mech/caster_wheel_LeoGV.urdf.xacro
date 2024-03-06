@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
   <xacro:macro name="caster_wheel_LeoGV" params="side mass wheel_radius wheel_pos_z caster_wheel_x caster_wheel_y">
-    <xacro:property name="caster_wheel_radius" value="${(wheel_radius - wheel_pos_z) / 2}" />
+    <!-- <xacro:property name="caster_wheel_radius" value="${(wheel_radius - wheel_pos_z) / 2}" /> -->
+    <xacro:property name="caster_wheel_radius" value="${wheel_radius}" />
     
     <link name="${side}_caster_wheel_link">
       <visual>
@@ -31,14 +32,16 @@
     </link>
 
     <gazebo reference="${side}_caster_wheel_link">
-        <mu1>0.01</mu1>
-        <mu2>0.01</mu2>
+        <material>Gazebo/Red</material>
+        <mu1 value="0.001"/>
+        <mu2 value="0.001"/>
     </gazebo>
 
     <joint name="${side}_caster_wheel_joint" type="fixed">
       <parent link="base_link"/>
       <child link="${side}_caster_wheel_link"/>
-      <origin xyz="${caster_wheel_x} ${caster_wheel_y} -${caster_wheel_radius}" rpy="0 0 0"/>
+      <origin xyz="${caster_wheel_x} ${caster_wheel_y} ${-wheel_pos_z}" rpy="0 0 0"/>
     </joint>
+
   </xacro:macro>
 </robot>

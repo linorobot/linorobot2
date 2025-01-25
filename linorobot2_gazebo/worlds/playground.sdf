@@ -8,19 +8,32 @@
     ros2 topic echo /model/diff_drive/odometry
 -->
 <sdf version="1.8">
-  <world name="demo">
+  <world name="playground">
+
+    <gravity>0 0 -9.8</gravity>
+    <physics default="0" name="default_physics" type="ode">
+      <max_step_size>0.01</max_step_size>
+      <real_time_factor>1</real_time_factor>
+      <real_time_update_rate>100</real_time_update_rate>
+    </physics>
+
     <plugin
-      filename="ignition-gazebo-physics-system"
-      name="ignition::gazebo::systems::Physics">
+      filename="gz-sim-physics-system"
+      name="gz::sim::systems::Physics">
     </plugin>
     <plugin
-      filename="ignition-gazebo-scene-broadcaster-system"
-      name="ignition::gazebo::systems::SceneBroadcaster">
+      filename="gz-sim-user-commands-system"
+      name="gz::sim::systems::UserCommands">
     </plugin>
     <plugin
-      filename="ignition-gazebo-user-commands-system"
-      name="ignition::gazebo::systems::UserCommands">
+      filename="gz-sim-scene-broadcaster-system"
+      name="gz::sim::systems::SceneBroadcaster">
     </plugin>
+    
+    <include>
+      <pose>0 0 0 0 0 1.57</pose>
+      <uri>https://fuel.gazebosim.org/1.0/openrobotics/models/Playground</uri>
+    </include>
 
     <light name="sun" type="directional">
       <cast_shadows>true</cast_shadows>

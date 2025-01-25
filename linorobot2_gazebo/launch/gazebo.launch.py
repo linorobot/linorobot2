@@ -24,6 +24,10 @@ from launch_ros.substitutions import FindPackageShare
 def generate_launch_description():
     use_sim_time = True
 
+    # Launch configuration variables specific to simulation
+    x_pose = LaunchConfiguration('x_pose', default='0.5')
+    y_pose = LaunchConfiguration('y_pose', default='0.0')
+
     gazebo_launch_path = PathJoinSubstitution(
         [FindPackageShare('ros_gz_sim'), 'launch', 'gz_sim.launch.py']
     )
@@ -37,6 +41,7 @@ def generate_launch_description():
     )
 
     world_path = PathJoinSubstitution(
+        # [FindPackageShare("linorobot2_gazebo"), "worlds", "industrial-warehouse.sdf"]
         [FindPackageShare("linorobot2_gazebo"), "worlds", "playground.sdf"]
     )
 
@@ -51,10 +56,21 @@ def generate_launch_description():
             description='Gazebo world'
         ),
 
+        # separated gzserver (backend) and gzclient (gui) for better control
+        # gzserver
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(gazebo_launch_path),
             launch_arguments={
-                'gz_args': world_path
+                'gz_args': ['-r -s -v4 ', world_path],
+                'on_exit_shutdown': 'true'
+            }.items()
+        ),
+        
+        # gzclient
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(gazebo_launch_path),
+            launch_arguments={
+                'gz_args': ['-g -v4 ', world_path],
             }.items()
         ),
 
@@ -62,22 +78,23 @@ def generate_launch_description():
             package='ros_gz_sim',
             executable='create',
             output='screen',
-            arguments=['-topic', 'robot_description', '-name', "linorobot2",],
+            arguments=['-topic', 'robot_description', '-name', "linorobot2", 
+                '-x', x_pose, '-y', y_pose, '-z', '0.01'],
         ),
-
         Node(
             package="ros_gz_bridge",
             executable="parameter_bridge",
             arguments=[
-                "/clock@rosgraph_msgs/msg/Clock[ignition.msgs.Clock",
-                "/cmd_vel@geometry_msgs/msg/Twist@ignition.msgs.Twist",
-                "/odom/unfiltered@nav_msgs/msg/Odometry[ignition.msgs.Odometry",
-                "/imu/data@sensor_msgs/msg/Imu[ignition.msgs.IMU",
-                "/scan@sensor_msgs/msg/LaserScan[ignition.msgs.LaserScan",
-                "/camera/camera_info@sensor_msgs/msg/CameraInfo[ignition.msgs.CameraInfo",
-                "/camera/image@sensor_msgs/msg/Image[ignition.msgs.Image",
-                "/camera/depth_image@sensor_msgs/msg/Image[ignition.msgs.Image",
-                "/camera/points@sensor_msgs/msg/PointCloud2[ignition.msgs.PointCloudPacked",
+                "/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock",
+                "/cmd_vel@geometry_msgs/msg/Twist@gz.msgs.Twist",
+                "/odom/unfiltered@nav_msgs/msg/Odometry[gz.msgs.Odometry",
+                "/imu/data@sensor_msgs/msg/Imu[gz.msgs.IMU",
+                "/joint_states@sensor_msgs/msg/JointState[gz.msgs.Model",
+                "/scan@sensor_msgs/msg/LaserScan[gz.msgs.LaserScan",
+                "/camera/camera_info@sensor_msgs/msg/CameraInfo[gz.msgs.CameraInfo",
+                "/camera/image@sensor_msgs/msg/Image[gz.msgs.Image",
+                "/camera/depth_image@sensor_msgs/msg/Image[gz.msgs.Image",
+                "/camera/points@sensor_msgs/msg/PointCloud2[gz.msgs.PointCloudPacked",
             ],
             remappings=[
                 ('/camera/camera_info', '/camera/color/camera_info'),
@@ -85,12 +102,6 @@ def generate_launch_description():
                 ('/camera/depth_image', '/camera/depth/image_rect_raw'),
                 ('/camera/points', '/camera/depth/color/points'),
             ]
-        ),
-
-        Node(
-            package="tf2_ros", 
-            executable = "static_transform_publisher",
-            arguments = ["0.", "0.", "0.", "0.", "0.", "0.", "camera_bottom_screw_frame", "linorobot2/base_footprint/camera"]
         ),
 
         Node(

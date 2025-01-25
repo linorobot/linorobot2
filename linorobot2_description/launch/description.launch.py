@@ -46,6 +46,14 @@ def generate_launch_description():
         ),
 
         DeclareLaunchArgument(
+            'x_pose', default_value='0.0',
+            description='Specify namespace of the robot'),
+
+        DeclareLaunchArgument(
+            'y_pose', default_value='0.0',
+            description='Specify namespace of the robot'),
+
+        DeclareLaunchArgument(
             name='rviz', 
             default_value='false',
             description='Run rviz'
@@ -57,15 +65,6 @@ def generate_launch_description():
             description='Use simulation time'
         ),
 
-        Node(
-            package='joint_state_publisher',
-            executable='joint_state_publisher',
-            name='joint_state_publisher',
-            condition=IfCondition(LaunchConfiguration("publish_joints"))
-            # parameters=[
-            #     {'use_sim_time': LaunchConfiguration('use_sim_time')}
-            # ] #since galactic use_sim_time gets passed somewhere and rejects this when defined from launch file
-        ),
 
         Node(
             package='robot_state_publisher',

@@ -7,17 +7,16 @@
       <child link="imu_link"/>
       <origin xyz="0 0 0" rpy="0 0 0"/>
     </joint>
-    
+  
     <gazebo>
-      <plugin filename="ignition-gazebo-imu-system"
-          name="ignition::gazebo::systems::Imu">
+      <plugin filename="gz-sim-imu-system" name="gz::sim::systems::Imu">
       </plugin>
     </gazebo>
 
     <gazebo reference="imu_link">
       <sensor name="imu_sensor" type="imu">
         <topic>imu/data</topic>
-        <ignition_frame_id>imu_link</ignition_frame_id>
+        <gz_frame_id>imu_link</gz_frame_id>
         <update_rate>50</update_rate>
         <always_on>true</always_on>
         <visualize>true</visualize>

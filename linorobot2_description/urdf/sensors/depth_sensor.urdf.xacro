@@ -157,7 +157,7 @@
     <gazebo reference="${name}_link">
       <sensor name="${name}" type="rgbd_camera">
         <topic>camera</topic>
-        <ignition_frame_id>${name}_link</ignition_frame_id>
+        <gz_frame_id>${name}_link</gz_frame_id>
         <update_rate>${update_rate}</update_rate>
         <always_on>true</always_on>
         <visualize>true</visualize>

@@ -46,8 +46,8 @@
 
     <gazebo reference="${frame_id}">
       <sensor name="gpu_lidar" type="gpu_lidar">
-        <topic>scan</topic>
-        <ignition_frame_id>${frame_id}</ignition_frame_id>
+        <topic>${topic_name}</topic>
+        <gz_frame_id>${frame_id}</gz_frame_id>
         <update_rate>${update_rate}</update_rate>
         <always_on>true</always_on>
         <visualize>true</visualize>

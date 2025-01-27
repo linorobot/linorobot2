@@ -8,6 +8,7 @@
         <frame_id>odom</frame_id>
         <child_frame_id>base_footprint</child_frame_id>
         <odom_topic>odom/unfiltered</odom_topic>
+        <tf_topic>/tf</tf_topic>
         <front_left_joint>front_left_wheel_joint</front_left_joint>
         <front_right_joint>front_right_wheel_joint</front_right_joint>
         <back_left_joint>rear_left_wheel_joint</back_left_joint>
@@ -16,7 +17,20 @@
         <wheelbase>${wheel_base}</wheelbase>
         <wheel_radius>${wheel_radius}</wheel_radius>
         <odom_publish_frequency>50</odom_publish_frequency>
+        <min_acceleration>-5</min_acceleration>
+        <max_acceleration>5</max_acceleration>
       </plugin>
-  </gazebo>
+    </gazebo>
+    <gazebo>
+      <plugin filename="gz-sim-joint-state-publisher-system"
+        name="gz::sim::systems::JointStatePublisher">
+        <topic>joint_states</topic>
+        <update_rate>30</update_rate>
+        <joint_name>front_left_wheel_joint</joint_name>
+        <joint_name>front_right_wheel_joint</joint_name>
+        <joint_name>rear_left_wheel_joint</joint_name>
+        <joint_name>rear_right_wheel_joint</joint_name>
+      </plugin>    
+    </gazebo>
   </xacro:macro>
 </robot>

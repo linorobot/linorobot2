@@ -18,7 +18,8 @@
     mass="${base_mass}"
     wheel_radius="${wheel_radius}"
     wheel_pos_z="${wheel_pos_z}"
-/>
+    mesh_file="${base_mesh_file}"
+  />
 
   <xacro:wheel 
     side="left"
@@ -28,6 +29,7 @@
     pos_y="${wheel_pos_y}" 
     pos_z="${wheel_pos_z}" 
     mass="${wheel_mass}"
+    mesh_file="${wheel_mesh_file}"
   />
 
   <xacro:wheel 
@@ -38,6 +40,7 @@
     pos_y="${-wheel_pos_y}" 
     pos_z="${wheel_pos_z}" 
     mass="${wheel_mass}"
+    mesh_file="${wheel_mesh_file}"
   />
 
   <xacro:if value="${front_caster_wheel}">

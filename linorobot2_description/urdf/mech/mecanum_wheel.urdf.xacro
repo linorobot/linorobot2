@@ -1,11 +1,16 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
-  <xacro:macro name="mecanum_wheel" params="side radius width pos_x pos_y pos_z mass">
+  <xacro:macro name="mecanum_wheel" params="side radius width pos_x pos_y pos_z mass mesh_file">
     <link name="${side}_wheel_link">
       <visual>
         <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
         <geometry>
-          <cylinder radius="${radius}" length="${width}"/>
+          <xacro:if value="${mesh_file == ''}">
+            <cylinder radius="${radius}" length="${width}"/>
+          </xacro:if>
+          <xacro:unless value="${mesh_file == ''}">
+            <mesh filename="${mesh_file}" scale="1 1 1"/>
+          </xacro:unless>
         </geometry>
         <material name="blue">
             <color rgba="0.1764 0.4588 0.8509 1.0"/>
@@ -14,7 +19,8 @@
       <collision>
         <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
         <geometry>
-          <cylinder radius="${radius}" length="${width}"/>
+          <sphere radius="${radius}"/>
+          <!-- <cylinder radius="${radius}" length="${width}"/> -->
         </geometry>
       </collision>
 

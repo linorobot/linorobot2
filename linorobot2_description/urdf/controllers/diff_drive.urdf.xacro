@@ -1,6 +1,9 @@
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
   <xacro:macro name="diff_drive_controller" params="wheel_separation wheel_radius">
     <gazebo>
+      <!-- <plugin
+        filename="ignition-gazebo-diff-drive-system"
+        name="ignition::gazebo::systems::DiffDrive"> -->
       <plugin
         filename="gz-sim-diff-drive-system"
         name="gz::sim::systems::DiffDrive">

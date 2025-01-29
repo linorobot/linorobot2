@@ -46,14 +46,6 @@ def generate_launch_description():
         ),
 
         DeclareLaunchArgument(
-            'x_pose', default_value='0.0',
-            description='Specify namespace of the robot'),
-
-        DeclareLaunchArgument(
-            'y_pose', default_value='0.0',
-            description='Specify namespace of the robot'),
-
-        DeclareLaunchArgument(
             name='rviz', 
             default_value='false',
             description='Run rviz'
@@ -74,7 +66,7 @@ def generate_launch_description():
             parameters=[
                 {
                     'use_sim_time': LaunchConfiguration('use_sim_time'),
-                    'robot_description': Command(['xacro ', LaunchConfiguration('urdf'), ' sim:=', LaunchConfiguration('use_sim_time')])
+                    'robot_description': Command(['xacro ', LaunchConfiguration('urdf')])
                 }
             ]
         ),

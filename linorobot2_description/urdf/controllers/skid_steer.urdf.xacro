@@ -15,7 +15,7 @@
           <right_joint>rear_right_wheel_joint</right_joint>
           <wheel_separation>${wheel_separation}</wheel_separation>
           <wheel_radius>${wheel_radius}</wheel_radius>
-          <odom_publish_frequency>100</odom_publish_frequency>
+          <odom_publish_frequency>50</odom_publish_frequency>
       </plugin>
     </gazebo>
 
@@ -23,7 +23,7 @@
       <plugin filename="gz-sim-joint-state-publisher-system"
         name="gz::sim::systems::JointStatePublisher">
         <topic>joint_states</topic>
-        <update_rate>100</update_rate>
+        <update_rate>50</update_rate>
         <joint_name>front_left_wheel_joint</joint_name>
         <joint_name>front_right_wheel_joint</joint_name>
         <joint_name>rear_left_wheel_joint</joint_name>

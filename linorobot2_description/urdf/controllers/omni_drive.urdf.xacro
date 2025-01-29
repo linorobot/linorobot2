@@ -16,7 +16,7 @@
         <wheel_separation>${wheel_separation}</wheel_separation>
         <wheelbase>${wheel_base}</wheelbase>
         <wheel_radius>${wheel_radius}</wheel_radius>
-        <odom_publish_frequency>100</odom_publish_frequency>
+        <odom_publish_frequency>50</odom_publish_frequency>
       </plugin>
     </gazebo>
 
@@ -29,7 +29,7 @@
           <robot_base_frame>base_footprint</robot_base_frame>
           <publish_tf>true</publish_tf>
           <!-- <tf_topic>tf</tf_topic> -->
-          <odom_publish_frequency>100</odom_publish_frequency>
+          <odom_publish_frequency>50</odom_publish_frequency>
           <xyz_offset>0 0 0</xyz_offset>
           <rpy_offset>0 0 0</rpy_offset>
       </plugin>

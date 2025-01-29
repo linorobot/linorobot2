@@ -2,8 +2,8 @@
   <xacro:macro name="omni_drive_controller" params="wheel_separation wheel_base wheel_radius">
     <gazebo>
       <plugin
-        filename="ignition-gazebo-mecanum-drive-system"
-        name="ignition::gazebo::systems::MecanumDrive">
+        filename="gz-sim-mecanum-drive-system"
+        name="gz::sim::systems::MecanumDrive">
         <topic>/cmd_vel</topic>
         <frame_id>odom</frame_id>
         <child_frame_id>base_footprint</child_frame_id>
@@ -17,10 +17,24 @@
         <wheelbase>${wheel_base}</wheelbase>
         <wheel_radius>${wheel_radius}</wheel_radius>
         <odom_publish_frequency>50</odom_publish_frequency>
-        <min_acceleration>-5</min_acceleration>
-        <max_acceleration>5</max_acceleration>
       </plugin>
     </gazebo>
+
+    <gazebo>
+      <plugin 
+        filename="gz-sim-odometry-publisher-system"
+        name="gz::sim::systems::OdometryPublisher" >
+          <odom_topic>odom/unfiltered</odom_topic>
+          <odom_frame>odom</odom_frame>
+          <robot_base_frame>base_footprint</robot_base_frame>
+          <publish_tf>true</publish_tf>
+          <tf_topic>tf</tf_topic>
+          <odom_publish_frequency>30</odom_publish_frequency>
+          <xyz_offset>0 0 0</xyz_offset>
+          <rpy_offset>0 0 0</rpy_offset>
+      </plugin>
+    </gazebo>
+
     <gazebo>
       <plugin filename="gz-sim-joint-state-publisher-system"
         name="gz::sim::systems::JointStatePublisher">

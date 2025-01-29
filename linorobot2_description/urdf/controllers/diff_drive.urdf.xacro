@@ -5,25 +5,25 @@
         filename="gz-sim-diff-drive-system"
         name="gz::sim::systems::DiffDrive">
         <topic>/cmd_vel</topic>
-        <frame_id>odom</frame_id>
+        <!-- <frame_id>odom</frame_id> -->
         <child_frame_id>base_footprint</child_frame_id>
         <odom_topic>odom/unfiltered</odom_topic>
-        <tf_topic>/tf</tf_topic>
+        <!-- <tf_topic>/tf</tf_topic> -->
         <left_joint>left_wheel_joint</left_joint>
         <right_joint>right_wheel_joint</right_joint>
         <wheel_separation>${wheel_separation}</wheel_separation>
         <wheel_radius>${wheel_radius}</wheel_radius>
-        <odom_publish_frequency>50</odom_publish_frequency>
+        <odom_publish_frequency>100</odom_publish_frequency>
       </plugin>
     </gazebo>
     <gazebo>
       <plugin filename="gz-sim-joint-state-publisher-system"
         name="gz::sim::systems::JointStatePublisher">
         <topic>joint_states</topic>
-        <update_rate>30</update_rate>
+        <update_rate>100</update_rate>
         <joint_name>left_wheel_joint</joint_name>
         <joint_name>right_wheel_joint</joint_name>
       </plugin>    
     </gazebo>
   </xacro:macro>
-</robot>
+</robot> 

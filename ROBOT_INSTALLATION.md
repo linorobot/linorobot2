@@ -11,21 +11,6 @@ If it's your first time using ROS2 and haven't created your ROS2 workspace yet, 
     source install/setup.bash
 
 #### 1.2 Install LIDAR ROS2 drivers:
-RPLIDAR:
-
-    sudo apt install -y ros-$ROS_DISTRO-rplidar-ros
-    cd /tmp
-    wget https://raw.githubusercontent.com/allenh1/rplidar_ros/ros2/scripts/rplidar.rules
-    sudo cp rplidar.rules /etc/udev/rules.d/
-
-LDLIDAR:
-
-    cd <your_ws>
-    git clone https://github.com/linorobot/ldlidar src/ldlidar
-    sudo cp src/ldlidar/ldlidar.rules /etc/udev/rules.d/
-    colcon build
-    source <your_ws>/install/setup.bash
-
 YDLIDAR:
 
     cd /tmp
@@ -48,6 +33,24 @@ XV11:
     colcon build
     source <your_ws>/install/setup.bash
 
+LD06 LD19 STL27L:
+
+    cd <your_ws>
+    git clone https://github.com/hippo5329/ldlidar_stl_ros2.git src/ldlidar_stl_ros2
+    colcon build
+    source <your_ws>/install/setup.bash
+    cd /tmp
+    wget https://raw.githubusercontent.com/linorobot/ldlidar/ros2/ldlidar.rules
+    sudo cp ldlidar.rules /etc/udev/rules.d
+
+RPLIDAR (A1 A2 A3 C1 S1 S2 S3):
+
+    cd <your_ws>
+    git clone https://github.com/Slamtec/sllidar_ros2.git
+    colcon build
+    source  <your_ws>/install/setup.bash
+    sudo cp sllidar_ros2/scripts/rplidar.rules /etc/udev/rules.d
+
 #### 1.3 Install depth sensor drivers:
 Intel RealSense:
 
@@ -67,6 +70,10 @@ Zed Camera:
     colcon build --symlink-install --cmake-args=-DCMAKE_BUILD_TYPE=Release
     source <your_ws>/install/setup.bash
 
+OAK-D Camera:
+
+    sudo apt install ros-$ROS_DISTRO-depthai-ros
+    
 #### 1.4 Download and install micro-ROS:
 
     cd <your_ws>
@@ -136,6 +143,9 @@ The launch files of the tested laser sensors have already been added in bringup.
 Tested Laser Sensors:
 - `rplidar` - [RP LIDAR A1](https://www.slamtec.com/en/Lidar/A1)
 - `ldlidar` - [LD06 LIDAR](https://www.inno-maker.com/product/lidar-ld06/)
+- `ld06` - [LD06 LIDAR](https://www.ldrobot.com/ProductDetails?sensor_name=STL-06P)
+- `ld19` - [LD19/LD300 LIDAR](https://www.ldrobot.com/ProductDetails?sensor_name=STL-19P)
+- `stl27l` - [STL27L LIDAR](https://www.ldrobot.com/ProductDetails?sensor_name=STL-27L)
 - `ydlidar` - [YDLIDAR](https://www.ydlidar.com/lidars.html)
 - `realsense` - [Intel RealSense](https://www.intelrealsense.com/stereo-depth/) D435, D435i
 - `astra` - [Orbec Astra](https://orbbec3d.com/product-astra-pro/)

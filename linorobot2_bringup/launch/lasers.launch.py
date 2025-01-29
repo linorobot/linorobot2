@@ -13,23 +13,64 @@
 # limitations under the License.
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, OpaqueFunction
+from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.substitutions import FindPackageShare
-from launch.conditions import IfCondition, LaunchConfigurationEquals
+from launch.conditions import LaunchConfigurationEquals
 from launch_ros.actions import Node
 
 
+def launch_rplidar(context, *args, **kwargs):
+    lidar_str = context.perform_substitution(LaunchConfiguration('sensor'))
+    rplidar_sensors = [
+        'a1',
+        'a2',
+        'a3',
+        'c1',
+        's1',
+        's2',
+        's3',
+    ]
+    
+    if lidar_str in rplidar_sensors:
+        launch_file = f'sllidar_{lidar_str}_launch.py'
+        return [IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(PathJoinSubstitution(
+                [FindPackageShare('sllidar_ros2'), 'launch', launch_file]
+            )),
+            launch_arguments={
+                'serial_port': '/dev/rplidar', 
+                'frame_id': LaunchConfiguration('frame_id'),
+            }.items()   
+        )]
+    else:
+        return []
+
 def generate_launch_description():
-    ydlidar_config_path = PathJoinSubstitution(
-        [FindPackageShare("linorobot2_bringup"), "config", "ydlidar.yaml"]
-    )
+    lidar_options =[
+        'rplidar', 
+        'ldlidar',
+        'ld06',
+        'ld19',
+        'stl27l',
+        'ydlidar',
+        'xv11',
+        'a1',
+        'a2',
+        'a3',
+        'c1',
+        's1',
+        's2',
+        's3',
+    ]
 
     return LaunchDescription([
         DeclareLaunchArgument(
             name='sensor', 
             default_value='ydlidar',
-            description='Sensor to launch'
+            description='Sensor to launch',
+            choices=lidar_options
         ),
 
         DeclareLaunchArgument(
@@ -42,6 +83,30 @@ def generate_launch_description():
             name='frame_id', 
             default_value='laser',
             description='Laser Frame ID'
+        ),
+
+        DeclareLaunchArgument(
+            name='lidar_transport',
+            default_value='serial',
+            description='Lidar transport: serial, udp_server, udp_client, tcp_server, tcp_client'
+        ),
+
+        DeclareLaunchArgument(
+            name='lidar_serial_port',
+            default_value='/dev/ttyUSB0',
+            description='Lidar serial port device name'
+        ),
+
+        DeclareLaunchArgument(
+            name='lidar_server_ip',
+            default_value='0.0.0.0',
+            description='Lidar server ip'
+        ),
+
+        DeclareLaunchArgument(
+            name='lidar_server_port',
+            default_value='8889',
+            description='Lidar server port number'
         ),
 
         Node(
@@ -77,21 +142,21 @@ def generate_launch_description():
             }]
         ),
 
-        Node(
-            condition=LaunchConfigurationEquals('sensor', 'rplidar'),
-            name='rplidar_composition',
-            package='rplidar_ros',
-            executable='rplidar_composition',
-            output='screen',
-            remappings=[('scan', LaunchConfiguration('topic_name'))],
-            parameters=[{
-                'serial_port': '/dev/ttyUSB0',
-                'serial_baudrate': 115200,  # A1 / A2
-                'frame_id': LaunchConfiguration('frame_id'),
-                'inverted': False,
-                'angle_compensate': True,
-            }],
-        ),
+        # Node(
+        #     condition=LaunchConfigurationEquals('sensor', 'rplidar'),
+        #     name='rplidar_composition',
+        #     package='rplidar_ros',
+        #     executable='rplidar_composition',
+        #     output='screen',
+        #     remappings=[('scan', LaunchConfiguration('topic_name'))],
+        #     parameters=[{
+        #         'serial_port': '/dev/ttyUSB0',
+        #         'serial_baudrate': 115200,  # A1 / A2
+        #         'frame_id': LaunchConfiguration('frame_id'),
+        #         'inverted': False,
+        #         'angle_compensate': True,
+        #     }],
+        # ),
 
         Node( 
             condition=LaunchConfigurationEquals('sensor', 'xv11'),
@@ -115,11 +180,81 @@ def generate_launch_description():
             name='ldlidar',
             output='screen',
             parameters=[
-                {'serial_port': ''},
+                {'serial_port': '/dev/ttyUSB0'},
                 {'topic_name': LaunchConfiguration('topic_name')},
                 {'lidar_frame': LaunchConfiguration('frame_id')},
                 {'range_threshold': 0.005}
             ]
-        )
+        ),
+
+        Node(
+            condition=LaunchConfigurationEquals('sensor', 'ld06'),
+            package='ldlidar_stl_ros2',
+            executable='ldlidar_stl_ros2_node',
+            name='ld06',
+            output='screen',
+            parameters=[
+                {'product_name': 'LDLiDAR_LD06'},
+                {'topic_name': LaunchConfiguration('topic_name')},
+                {'frame_id': LaunchConfiguration('frame_id')},
+                {'comm_mode': LaunchConfiguration('lidar_transport')},
+                {'port_name': LaunchConfiguration('lidar_serial_port')},
+                {'port_baudrate': 230400},
+                {'server_ip': LaunchConfiguration('lidar_server_ip')},
+                {'server_port': LaunchConfiguration('lidar_server_port')},
+                {'laser_scan_dir': True},
+                {'bins': 456},
+                {'enable_angle_crop_func': False},
+                {'angle_crop_min': 135.0},
+                {'angle_crop_max': 225.0}
+            ]
+        ),
+
+        Node(
+            condition=LaunchConfigurationEquals('sensor', 'ld19'),
+            package='ldlidar_stl_ros2',
+            executable='ldlidar_stl_ros2_node',
+            name='ld19',
+            output='screen',
+            parameters=[
+                {'product_name': 'LDLiDAR_LD19'},
+                {'topic_name': LaunchConfiguration('topic_name')},
+                {'frame_id': LaunchConfiguration('frame_id')},
+                {'comm_mode': LaunchConfiguration('lidar_transport')},
+                {'port_name': LaunchConfiguration('lidar_serial_port')},
+                {'port_baudrate': 230400},
+                {'server_ip': LaunchConfiguration('lidar_server_ip')},
+                {'server_port': LaunchConfiguration('lidar_server_port')},
+                {'laser_scan_dir': True},
+                {'bins': 456},
+                {'enable_angle_crop_func': False},
+                {'angle_crop_min': 135.0},
+                {'angle_crop_max': 225.0}
+            ]
+        ),
+
+        Node(
+            condition=LaunchConfigurationEquals('sensor', 'stl27l'),
+            package='ldlidar_stl_ros2',
+            executable='ldlidar_stl_ros2_node',
+            name='stl27l',
+            output='screen',
+            parameters=[
+                {'product_name': 'LDLiDAR_STL27L'},
+                {'topic_name': LaunchConfiguration('topic_name')},
+                {'frame_id': LaunchConfiguration('frame_id')},
+                {'comm_mode': LaunchConfiguration('lidar_transport')},
+                {'port_name': LaunchConfiguration('lidar_serial_port')},
+                {'port_baudrate': 921600},
+                {'server_ip': LaunchConfiguration('lidar_server_ip')},
+                {'server_port': LaunchConfiguration('lidar_server_port')},
+                {'laser_scan_dir': True},
+                {'bins': 2160},
+                {'enable_angle_crop_func': False},
+                {'angle_crop_min': 135.0},
+                {'angle_crop_max': 225.0}
+            ]
+        ),
+        OpaqueFunction(function=launch_rplidar)
     ])
 

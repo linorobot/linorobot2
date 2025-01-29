@@ -1,6 +1,6 @@
 amcl:
   ros__parameters:
-    use_sim_time: false
+    use_sim_time: true
     alpha1: 0.2
     alpha2: 0.2
     alpha3: 0.2
@@ -41,15 +41,15 @@ amcl:
 
 amcl_map_client:
   ros__parameters:
-    use_sim_time: false
+    use_sim_time: true
 
 amcl_rclcpp_node:
   ros__parameters:
-    use_sim_time: false
+    use_sim_time: true
 
 bt_navigator:
   ros__parameters:
-    use_sim_time: false
+    use_sim_time: true
     global_frame: map
     robot_base_frame: base_link
     odom_topic: /odom
@@ -93,11 +93,11 @@ bt_navigator:
 
 bt_navigator_rclcpp_node:
   ros__parameters:
-    use_sim_time: false
+    use_sim_time: true
 
 controller_server:
   ros__parameters:
-    use_sim_time: false
+    use_sim_time: true
     controller_frequency: 20.0
     min_x_velocity_threshold: 0.001
     min_y_velocity_threshold: 0.5
@@ -170,12 +170,12 @@ controller_server:
       
 controller_server_rclcpp_node:
   ros__parameters:
-    use_sim_time: false
+    use_sim_time: true
 
 global_costmap:
   global_costmap:
     ros__parameters:
-      use_sim_time: false
+      use_sim_time: true
       footprint_padding: 0.03
       update_frequency: 1.0
       publish_frequency: 1.0
@@ -258,7 +258,7 @@ global_costmap:
 local_costmap:
   local_costmap:
     ros__parameters:
-      use_sim_time: false
+      use_sim_time: true
       update_frequency: 5.0
       publish_frequency: 2.0
       global_frame: odom
@@ -336,12 +336,12 @@ local_costmap:
 
 map_server:
   ros__parameters:
-    use_sim_time: false
+    use_sim_time: true
     yaml_filename: "turtlebot3_world.yaml"
 
 map_saver:
   ros__parameters:
-    use_sim_time: false
+    use_sim_time: true
     save_map_timeout: 5.0
     free_thresh_default: 0.25
     occupied_thresh_default: 0.65
@@ -350,7 +350,7 @@ map_saver:
 planner_server:
   ros__parameters:
     expected_planner_frequency: 20.0
-    use_sim_time: false
+    use_sim_time: true
     planner_plugins: ["GridBased"]
     GridBased:
       plugin: "nav2_navfn_planner/NavfnPlanner"
@@ -360,7 +360,7 @@ planner_server:
 
 planner_server_rclcpp_node:
   ros__parameters:
-    use_sim_time: false
+    use_sim_time: true
 
 recoveries_server:
   ros__parameters:
@@ -377,7 +377,7 @@ recoveries_server:
     global_frame: odom
     robot_base_frame: base_link
     transform_timeout: 0.1
-    use_sim_time: false
+    use_sim_time: true
     simulate_ahead_time: 2.0
     max_rotational_vel: 1.0
     min_rotational_vel: 0.4
@@ -385,7 +385,7 @@ recoveries_server:
 
 robot_state_publisher:
   ros__parameters:
-    use_sim_time: false
+    use_sim_time: true
 
 waypoint_follower:
   ros__parameters:

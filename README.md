@@ -32,8 +32,16 @@ robot_type:
 - `mecanum` - Mecanum drive robot.
 
 laser_sensor:
-- `rplidar` - [RP LIDAR A1](https://www.slamtec.com/en/Lidar/A1)
-- `ldlidar` - [LD06 LIDAR](https://www.inno-maker.com/product/lidar-ld06/)
+- `a1` - [RPLIDAR A1](https://www.slamtec.com/en/Lidar/A1)
+- `a2` - [RPLIDAR A2](https://www.slamtec.ai/product/slamtec-rplidar-a2/)
+- `a3` - [RPLIDAR A3](https://www.slamtec.ai/product/slamtec-rplidar-a3/)
+- `s1` - [RPLIDAR S1](https://www.slamtec.com/en/Lidar/S1)
+- `s2` - [RPLIDAR S2](https://www.slamtec.com/en/Lidar/S2)
+- `s3` - [RPLIDAR S3](https://www.slamtec.com/en/Lidar/S3)
+- `c1` - [RPLIDAR A3](https://www.slamtec.ai/product/slamtec-rplidar-a3/)
+- `ld06` - [LD06 LIDAR](https://www.ldrobot.com/ProductDetails?sensor_name=STL-06P)
+- `ld19` - [LD19/LD300 LIDAR](https://www.ldrobot.com/ProductDetails?sensor_name=STL-19P)
+- `stl27l` - [STL27L LIDAR](https://www.ldrobot.com/ProductDetails?sensor_name=STL-27L)
 - `ydlidar` - [YDLIDAR](https://www.ydlidar.com/lidars.html)
 - `xv11` - [XV11](http://xv11hacking.rohbotics.com/mainSpace/home.html)
 - `realsense` - * [Intel RealSense](https://www.intelrealsense.com/stereo-depth/) D435, D435i
@@ -51,6 +59,9 @@ depth_sensor:
 - `zed2` - [Zed 2](https://www.stereolabs.com/zed-2)
 - `zed2i` - [Zed 2i](https://www.stereolabs.com/zed-2i)
 - `zedm` - [Zed Mini](https://www.stereolabs.com/zed-mini)
+- `oakd` - [OAK D](https://shop.luxonis.com/collections/oak-cameras-1/products/oak-d)
+- `oakdlite` - [OAK D Lite](https://shop.luxonis.com/collections/oak-cameras-1/products/oak-d-lite-1)
+- `oakdpro` - [OAK-D Pro](https://shop.luxonis.com/collections/oak-cameras-1/products/oak-d-pro)
 
 
 Alternatively, follow this [guide](./ROBOT_INSTALLATION.md) to do the installation manually.
@@ -146,6 +157,36 @@ Optional parameters:
     ```
     ros2 launch linorobot2_bringup bringup.launch.py base_serial_port:=/dev/ttyACM1
     ```
+
+- **micro_ros_baudrate** - micro-ROS serial baudrate. default 115200.
+
+    ```
+    ros2 launch linorobot2_bringup bringup.launch.py base_serial_port:=/dev/ttyUSB0 micro_ros_baudrate:=921600
+    ```
+
+- **micro_ros_transport** - micro-ROS transport. default serial.
+- **micro_ros_port** - micro-ROS udp/tcp port number. default 8888.
+
+    ```
+    # use micro-ROS wifi transport
+    ros2 launch linorobot2_bringup bringup.launch.py micro_ros_transport:=udp4 micro_ros_port:=8888
+    ```
+
+- **madgwick** - Set to true to enable magnetometer support. The madgwick filter will fuse imu/data_raw and imu/mag to imu/data. You may visualize the IMU and manetometer by [enable the IMU and magetometer plug-ins](https://automaticaddison.com/how-to-publish-imu-data-using-ros-and-the-bno055-imu-sensor/) in RVIZ2. The ekf filter configuration will need update, as only 'vyaw' is enabled in the default configuration. Both IMU and magnetometer must be calibrated, otherwise the robot's pose will rotate.
+
+    ```
+    # enable magnetometer support
+    ros2 launch linorobot2_bringup bringup.launch.py madgwick:=true orientation_stddev:=0.01
+
+    linorobot2_ws/src/linorobot2/linorobot2_base/config/ekf.yaml
+        imu0: imu/data
+        imu0_config: [false, false, false,
+                      false, false, true,
+                      false, false, false,
+                      false, false, true,
+                      true, true, false]
+   ```
+
 - **joy** - Set to true to run the joystick node in the background. (Tested on Logitech F710).
 
 Always wait for the microROS agent to be connected before running any application (ie. creating a map or autonomous navigation). Once connected, the agent will print:

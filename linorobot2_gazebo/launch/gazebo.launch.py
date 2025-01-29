@@ -19,6 +19,8 @@ from launch.substitutions import LaunchConfiguration, Command, PathJoinSubstitut
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
+from launch_ros.actions import ComposableNodeContainer
+from launch_ros.descriptions import ComposableNode
 
 
 def generate_launch_description():
@@ -26,10 +28,6 @@ def generate_launch_description():
 
     gazebo_launch_path = PathJoinSubstitution(
         [FindPackageShare('ros_gz_sim'), 'launch', 'gz_sim.launch.py']
-    )
-
-    joy_launch_path = PathJoinSubstitution(
-        [FindPackageShare('linorobot2_bringup'), 'launch', 'joy_teleop.launch.py']
     )
 
     ekf_config_path = PathJoinSubstitution(
@@ -51,6 +49,30 @@ def generate_launch_description():
             description='Gazebo world'
         ),
 
+        DeclareLaunchArgument(
+            name='spawn_x', 
+            default_value='0.0',
+            description='Robot spawn position in X axis'
+        ),
+
+        DeclareLaunchArgument(
+            name='spawn_y', 
+            default_value='0.0',
+            description='Robot spawn position in Y axis'
+        ),
+
+        DeclareLaunchArgument(
+            name='spawn_z', 
+            default_value='0.0',
+            description='Robot spawn position in Z axis'
+        ),
+            
+        DeclareLaunchArgument(
+            name='spawn_yaw', 
+            default_value='0.0',
+            description='Robot spawn heading'
+        ),
+
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(gazebo_launch_path),
             launch_arguments={
@@ -62,7 +84,14 @@ def generate_launch_description():
             package='ros_gz_sim',
             executable='create',
             output='screen',
-            arguments=['-topic', 'robot_description', '-name', "linorobot2",],
+            arguments=[
+                '-topic', 'robot_description', 
+                '-entity', 'linorobot2', 
+                '-x', LaunchConfiguration('spawn_x'),
+                '-y', LaunchConfiguration('spawn_y'),
+                '-z', LaunchConfiguration('spawn_z'),
+                '-Y', LaunchConfiguration('spawn_yaw'),
+            ]
         ),
 
         Node(
@@ -112,10 +141,6 @@ def generate_launch_description():
                 'use_sim_time': str(use_sim_time),
                 'publish_joints': 'false',
             }.items()
-        ),
-
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(joy_launch_path),
         )
     ])
 

@@ -46,11 +46,21 @@ def generate_launch_description():
         [FindPackageShare('linorobot2_bringup'), 'launch', 'custom_robot.launch.py']
     )
 
+    extra_launch_path = PathJoinSubstitution(
+        [FindPackageShare('linorobot2_bringup'), 'launch', 'extra.launch.py']
+    )
+
     return LaunchDescription([
         DeclareLaunchArgument(
             name='custom_robot', 
             default_value='false',
             description='Use custom robot'
+        ),
+
+        DeclareLaunchArgument(
+            name='extra', 
+            default_value='false',
+            description='Launch extra launch file'
         ),
 
         DeclareLaunchArgument(
@@ -60,9 +70,50 @@ def generate_launch_description():
         ),
 
         DeclareLaunchArgument(
+            name='micro_ros_transport',
+            default_value='serial',
+            description='micro-ROS transport'
+        ),
+
+        DeclareLaunchArgument(
+            name='micro_ros_port',
+            default_value='8888',
+            description='micro-ROS udp/tcp port number'
+        ),
+
+        DeclareLaunchArgument(
+            name='odom_topic', 
+            default_value='/odom',
+            description='EKF out odometry topic'
+        ),
+
+        DeclareLaunchArgument(
+            name='madgwick',
+            default_value='false',
+            description='Use madgwick to fuse imu and magnetometer'
+        ),
+
+        DeclareLaunchArgument(
+            name='orientation_stddev',
+            default_value='0.003162278',
+            description='Madgwick orientation stddev'
+        ),
+
+        DeclareLaunchArgument(
             name='joy', 
             default_value='false',
             description='Use Joystick'
+        ),
+
+        Node(
+            condition=IfCondition(LaunchConfiguration("madgwick")),
+            package='imu_filter_madgwick',
+            executable='imu_filter_madgwick_node',
+            name='madgwick_filter_node',
+            output='screen',
+            parameters=[
+                {'orientation_stddev' : LaunchConfiguration('orientation_stddev')}
+            ]
         ),
 
         Node(
@@ -73,7 +124,7 @@ def generate_launch_description():
             parameters=[
                 ekf_config_path
             ],
-            remappings=[("odometry/filtered", "odom")]
+            remappings=[("odometry/filtered", LaunchConfiguration("odom_topic"))]
         ),
 
         IncludeLaunchDescription(
@@ -82,6 +133,11 @@ def generate_launch_description():
             launch_arguments={
                 'base_serial_port': LaunchConfiguration("base_serial_port")
             }.items()
+        ),
+
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(extra_launch_path),
+            condition=IfCondition(LaunchConfiguration("extra")),
         ),
 
         IncludeLaunchDescription(

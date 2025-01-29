@@ -24,10 +24,6 @@ from launch_ros.substitutions import FindPackageShare
 def generate_launch_description():
     use_sim_time = True
 
-    # Launch configuration variables specific to simulation
-    x_pose = LaunchConfiguration('x_pose', default='0.5')
-    y_pose = LaunchConfiguration('y_pose', default='0.0')
-
     gazebo_launch_path = PathJoinSubstitution(
         [FindPackageShare('ros_gz_sim'), 'launch', 'gz_sim.launch.py']
     )
@@ -41,7 +37,6 @@ def generate_launch_description():
     )
 
     world_path = PathJoinSubstitution(
-        # [FindPackageShare("linorobot2_gazebo"), "worlds", "industrial-warehouse.sdf"]
         [FindPackageShare("linorobot2_gazebo"), "worlds", "playground.sdf"]
     )
 
@@ -56,21 +51,10 @@ def generate_launch_description():
             description='Gazebo world'
         ),
 
-        # separated gzserver (backend) and gzclient (gui) for better control
-        # gzserver
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(gazebo_launch_path),
             launch_arguments={
-                'gz_args': ['-r -s -v4 ', world_path],
-                'on_exit_shutdown': 'true'
-            }.items()
-        ),
-        
-        # gzclient
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(gazebo_launch_path),
-            launch_arguments={
-                'gz_args': ['-g -v4 ', world_path],
+                'gz_args': world_path
             }.items()
         ),
 
@@ -78,9 +62,9 @@ def generate_launch_description():
             package='ros_gz_sim',
             executable='create',
             output='screen',
-            arguments=['-topic', 'robot_description', '-name', "linorobot2", 
-                '-x', x_pose, '-y', y_pose, '-z', '0.01'],
+            arguments=['-topic', 'robot_description', '-name', "linorobot2",],
         ),
+
         Node(
             package="ros_gz_bridge",
             executable="parameter_bridge",

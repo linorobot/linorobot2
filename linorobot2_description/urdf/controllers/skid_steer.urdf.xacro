@@ -4,7 +4,7 @@
       <plugin
         filename="gz-sim-diff-drive-system"
         name="gz::sim::systems::DiffDrive">
-          <topic>/cmd_vel</topic>
+          <topic>cmd_vel</topic>
           <!-- <frame_id>odom</frame_id> -->
           <child_frame_id>base_footprint</child_frame_id>
           <odom_topic>odom/unfiltered</odom_topic>

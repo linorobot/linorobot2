@@ -9,7 +9,8 @@
     <url type="website">linorobot.org</url>
     <url type="repository">https://github.com/linorobot/linorobot2</url>
     <url type="bugtracker">https://github.com/linorobot/linorobot2/issues</url>
-    <exec_depend>ros_gz</exec_depend>
+    <!-- Uncommented because ros_gz is for fortress by default, we are using harmonic -->
+    <!-- <exec_depend>ros_gz</exec_depend> -->
     <exec_depend>tf2_ros</exec_depend>
     <exec_depend>rclpy</exec_depend>
     <exec_depend>robot_localization</exec_depend>

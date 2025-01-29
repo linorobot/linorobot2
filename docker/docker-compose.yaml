@@ -37,24 +37,10 @@ services:
       - $HOME/.Xauthority:/root/.Xauthority
       - ../linorobot2_navigation/maps:/root/linorobot2_ws/src/linorobot2/linorobot2_navigation/maps:rw)
 
-  dev:
-    container_name: dev-container
-    image: linorobot2-dev
-    build:
-      context: ../
-      dockerfile: docker/Dockerfile
-      args:
-        DEPLOY: ${DEPLOY} 
-      target: dev  
-    volumes:
-      - ../../../:/root/linorobot2_ws
-    extends: base
-    command: sleep infinity
-
   gazebo:
     container_name: gazebo
     extends: dev
-    command: ros2 launch linorobot2_gazebo gazebo.launch.py
+    command: ros2 launch linorobot2_gazebo gazebo.launch.py world:=/root/linorobot2_ws/install/linorobot2_gazebo/share/linorobot2_gazebo/worlds/${WORLD:-playground}.sdf
     devices:
       - /dev:/dev
 

@@ -45,12 +45,13 @@
     </joint>
 
     <gazebo reference="${frame_id}">
-      <sensor type="gpu_ray" name="${frame_id}_lidar">
-        <always_on>true</always_on>
+      <sensor name="gpu_lidar" type="gpu_lidar">
+        <topic>${topic_name}</topic>
+        <gz_frame_id>${frame_id}</gz_frame_id>
         <update_rate>${update_rate}</update_rate>
-        <pose>0 0 0 0 0 0</pose>
-        <visualize>false</visualize>
-        <ray>
+        <always_on>true</always_on>
+        <visualize>true</visualize>
+        <lidar>
           <scan>
             <horizontal>
               <samples>${ray_count}</samples>
@@ -58,24 +59,19 @@
               <min_angle>${min_angle}</min_angle>
               <max_angle>${max_angle}</max_angle>
             </horizontal>
+            <vertical>
+              <samples>1</samples>
+              <resolution>1</resolution>
+              <min_angle>0.0</min_angle>
+              <max_angle>0.0</max_angle>
+            </vertical>
           </scan>
           <range>
             <min>${min_range}</min>
             <max>${max_range}</max>
             <resolution>0.01</resolution>
           </range>
-        </ray>
-        <plugin name="${frame_id}_lidar_controller" filename="libgazebo_ros_ray_sensor.so">
-          <ros>
-            <remapping>~/out:=${topic_name}</remapping>                                                                                                                           
-          </ros>
-          <output_type>sensor_msgs/LaserScan</output_type>
-          <alwaysOn>true</alwaysOn>
-          <updateRate>${update_rate}</updateRate>
-          <topicName>${topic_name}</topicName>
-          <frame_name>${frame_id}</frame_name>
-          <output_type>sensor_msgs/LaserScan</output_type>
-        </plugin>
+        </lidar>
       </sensor>
     </gazebo>
   </xacro:macro>

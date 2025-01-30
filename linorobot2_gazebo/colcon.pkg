@@ -1,0 +1,4 @@
+{
+    "name": "linorobot2_gazebo",
+    "hooks": ["share/linorobot2_gazebo/hook/linorobot2_gazebo.sh"]    
+} 

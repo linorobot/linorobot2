@@ -1,18 +1,50 @@
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
-  <xacro:macro name="omni_drive_controller">
+  <xacro:macro name="omni_drive_controller" params="wheel_separation wheel_base wheel_radius">
     <gazebo>
-    <plugin name="object_controller" filename="libgazebo_ros_planar_move.so">
-      <ros>
-        <remapping>odom:=odom/unfiltered</remapping>
-      </ros>
-      <command_topic>cmd_vel</command_topic>
-      <odometry_topic>odom/unfiltered</odometry_topic>
-      <odometry_frame>odom</odometry_frame>
-      <odometry_rate>20.0</odometry_rate>
-      <robot_base_frame>base_footprint</robot_base_frame>
-      <publish_odom>true</publish_odom>
-      <publish_odom_tf>false</publish_odom_tf>
-    </plugin>
-  </gazebo>
+      <plugin
+        filename="gz-sim-mecanum-drive-system"
+        name="gz::sim::systems::MecanumDrive">
+        <topic>cmd_vel</topic>
+        <!-- <frame_id>odom</frame_id> -->
+        <child_frame_id>base_footprint</child_frame_id>
+        <odom_topic>odom/unfiltered</odom_topic>
+        <!-- <tf_topic>/tf</tf_topic> -->
+        <front_left_joint>front_left_wheel_joint</front_left_joint>
+        <front_right_joint>front_right_wheel_joint</front_right_joint>
+        <back_left_joint>rear_left_wheel_joint</back_left_joint>
+        <back_right_joint>rear_right_wheel_joint</back_right_joint>
+        <wheel_separation>${wheel_separation}</wheel_separation>
+        <wheelbase>${wheel_base}</wheelbase>
+        <wheel_radius>${wheel_radius}</wheel_radius>
+        <odom_publish_frequency>50</odom_publish_frequency>
+      </plugin>
+    </gazebo>
+
+    <gazebo>
+      <plugin 
+        filename="gz-sim-odometry-publisher-system"
+        name="gz::sim::systems::OdometryPublisher" >
+          <odom_topic>odom/unfiltered</odom_topic>
+          <!-- <odom_frame>odom</odom_frame> -->
+          <robot_base_frame>base_footprint</robot_base_frame>
+          <publish_tf>true</publish_tf>
+          <!-- <tf_topic>tf</tf_topic> -->
+          <odom_publish_frequency>50</odom_publish_frequency>
+          <xyz_offset>0 0 0</xyz_offset>
+          <rpy_offset>0 0 0</rpy_offset>
+      </plugin>
+    </gazebo>
+
+    <gazebo>
+      <plugin filename="gz-sim-joint-state-publisher-system"
+        name="gz::sim::systems::JointStatePublisher">
+        <topic>joint_states</topic>
+        <update_rate>100</update_rate>
+        <joint_name>front_left_wheel_joint</joint_name>
+        <joint_name>front_right_wheel_joint</joint_name>
+        <joint_name>rear_left_wheel_joint</joint_name>
+        <joint_name>rear_right_wheel_joint</joint_name>
+      </plugin>    
+    </gazebo>
   </xacro:macro>
 </robot>

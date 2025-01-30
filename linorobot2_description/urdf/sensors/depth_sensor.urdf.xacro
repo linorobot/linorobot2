@@ -48,50 +48,32 @@
 
     <link name="camera_depth_link"/>
     <joint name="camera_depth_joint" type="fixed">
-      <origin xyz="0 0 0" rpy="-1.57 0 -1.57"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
       <parent link="camera_link"/>
       <child link="camera_depth_link"/>
     </joint>
 
-    <!-- https://github.com/ros-simulation/gazebo_ros_pkgs/wiki/ROS-2-Migration:-Camera#gazebo_ros_camera -->
     <gazebo reference="camera_link">
-      <sensor name="camera" type="depth">
-        <always_on>true</always_on>
+      <sensor name="camera" type="rgbd_camera">
+        <topic>camera</topic>
+        <gz_frame_id>camera_link</gz_frame_id>
         <update_rate>30.0</update_rate>
-        <camera name="camera">
+        <always_on>true</always_on>
+        <visualize>true</visualize>
+        <camera>
+          <optical_frame_id>camera_depth_link</optical_frame_id>
           <horizontal_fov>1.50098</horizontal_fov>
           <image>
             <width>640</width>
             <height>480</height>
             <format>R8G8B8</format>
           </image>
+          <clip>
+            <near>0.3</near>
+            <far>100</far>
+          </clip>
         </camera>
-        <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
-          <ros>
-            <remapping>/camera/camera_info:=/camera/color/camera_info</remapping>
-            <remapping>/camera/image_raw:=/camera/color/image_raw</remapping>
-            <remapping>/camera/points:=/camera/depth/color/points</remapping>
-            <remapping>/camera/depth/image_raw:=/camera/depth/image_rect_raw</remapping>
-            <qos>
-              <topic name="/camera/depth/color/points">
-                <publisher>
-                  <reliability>best_effort</reliability>
-                </publisher>
-              </topic>
-            </qos>
-          </ros>
-          <min_depth>0.015</min_depth>
-          <max_depth>3.0</max_depth>
-          <hack_baseline>0.07</hack_baseline>
-          <frame_name>camera_depth_link</frame_name>
-          <distortion_k1>0.00000001</distortion_k1>
-          <distortion_k2>0.00000001</distortion_k2>
-          <distortion_k3>0.00000001</distortion_k3>
-          <distortion_t1>0.00000001</distortion_t1>
-          <distortion_t2>0.00000001</distortion_t2>
-        </plugin>
       </sensor>
-
     </gazebo>
   </xacro:macro>
 </robot>

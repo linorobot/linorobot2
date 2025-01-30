@@ -1,10 +1,11 @@
 <?xml version="1.0"?>
 <robot name="linorobot2_2wd" xmlns:xacro="http://ros.org/wiki/xacro">
-
+  <xacro:arg name="sim" default="false" />
   <xacro:include filename="$(find linorobot2_description)/urdf/2wd_properties.urdf.xacro" />
   <xacro:include filename="$(find linorobot2_description)/urdf/mech/base.urdf.xacro" />
   <xacro:include filename="$(find linorobot2_description)/urdf/mech/wheel.urdf.xacro" />
   <xacro:include filename="$(find linorobot2_description)/urdf/mech/caster_wheel.urdf.xacro" />
+  <xacro:include filename="$(find linorobot2_description)/urdf/sensors/plugins.urdf.xacro" />
   <xacro:include filename="$(find linorobot2_description)/urdf/sensors/imu.urdf.xacro" />
   <xacro:include filename="$(find linorobot2_description)/urdf/sensors/generic_laser.urdf.xacro" />
   <xacro:include filename="$(find linorobot2_description)/urdf/sensors/depth_sensor.urdf.xacro" />
@@ -17,7 +18,8 @@
     mass="${base_mass}"
     wheel_radius="${wheel_radius}"
     wheel_pos_z="${wheel_pos_z}"
-/>
+    mesh_file="${base_mesh_file}"
+  />
 
   <xacro:wheel 
     side="left"
@@ -27,6 +29,7 @@
     pos_y="${wheel_pos_y}" 
     pos_z="${wheel_pos_z}" 
     mass="${wheel_mass}"
+    mesh_file="${wheel_mesh_file}"
   />
 
   <xacro:wheel 
@@ -37,6 +40,7 @@
     pos_y="${-wheel_pos_y}" 
     pos_z="${wheel_pos_z}" 
     mass="${wheel_mass}"
+    mesh_file="${wheel_mesh_file}"
   />
 
   <xacro:if value="${front_caster_wheel}">
@@ -72,6 +76,5 @@
   <xacro:diff_drive_controller
     wheel_separation="${wheel_pos_y * 2}"
     wheel_radius="${wheel_radius}"
-    wheel_torque="${wheel_torque}"
   />
 </robot>

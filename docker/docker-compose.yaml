@@ -40,7 +40,7 @@ services:
   gazebo:
     container_name: gazebo
     extends: dev
-    command: ros2 launch linorobot2_gazebo gazebo.launch.py world:=/root/linorobot2_ws/install/linorobot2_gazebo/share/linorobot2_gazebo/worlds/${WORLD:-playground}.world
+    command: ros2 launch linorobot2_gazebo gazebo.launch.py world:=/root/linorobot2_ws/install/linorobot2_gazebo/share/linorobot2_gazebo/worlds/${WORLD:-playground}.sdf
     devices:
       - /dev:/dev
 

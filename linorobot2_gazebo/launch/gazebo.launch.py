@@ -26,12 +26,16 @@ from launch_ros.descriptions import ComposableNode
 def generate_launch_description():
     use_sim_time = True
 
+    gazebo_launch_path = PathJoinSubstitution(
+        [FindPackageShare('ros_gz_sim'), 'launch', 'gz_sim.launch.py']
+    )
+
     ekf_config_path = PathJoinSubstitution(
         [FindPackageShare("linorobot2_base"), "config", "ekf.yaml"]
     )
 
     world_path = PathJoinSubstitution(
-        [FindPackageShare("linorobot2_gazebo"), "worlds", "playground.world"]
+        [FindPackageShare("linorobot2_gazebo"), "worlds", "playground.sdf"]
     )
 
     description_launch_path = PathJoinSubstitution(
@@ -69,15 +73,16 @@ def generate_launch_description():
             description='Robot spawn heading'
         ),
 
-        ExecuteProcess(
-            cmd=['gazebo', '--verbose', '-s', 'libgazebo_ros_factory.so',  '-s', 'libgazebo_ros_init.so', LaunchConfiguration('world')],
-            output='screen'
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(gazebo_launch_path),
+            launch_arguments={
+                'gz_args': LaunchConfiguration('world')
+            }.items()
         ),
 
         Node(
-            package='gazebo_ros',
-            executable='spawn_entity.py',
-            name='urdf_spawner',
+            package='ros_gz_sim',
+            executable='create',
             output='screen',
             arguments=[
                 '-topic', 'robot_description', 
@@ -90,8 +95,31 @@ def generate_launch_description():
         ),
 
         Node(
+            package="ros_gz_bridge",
+            executable="parameter_bridge",
+            arguments=[
+                "/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock",
+                "/cmd_vel@geometry_msgs/msg/Twist@gz.msgs.Twist",
+                "/odom/unfiltered@nav_msgs/msg/Odometry[gz.msgs.Odometry",
+                "/imu/data@sensor_msgs/msg/Imu[gz.msgs.IMU",
+                "/joint_states@sensor_msgs/msg/JointState[gz.msgs.Model",
+                "/scan@sensor_msgs/msg/LaserScan[gz.msgs.LaserScan",
+                "/camera/camera_info@sensor_msgs/msg/CameraInfo[gz.msgs.CameraInfo",
+                "/camera/image@sensor_msgs/msg/Image[gz.msgs.Image",
+                "/camera/depth_image@sensor_msgs/msg/Image[gz.msgs.Image",
+                "/camera/points@sensor_msgs/msg/PointCloud2[gz.msgs.PointCloudPacked",
+            ],
+            remappings=[
+                ('/camera/camera_info', '/camera/color/camera_info'),
+                ('/camera/image', '/camera/color/image_raw'),
+                ('/camera/depth_image', '/camera/depth/image_rect_raw'),
+                ('/camera/points', '/camera/depth/color/points'),
+            ]
+        ),
+
+        Node(
             package='linorobot2_gazebo',
-            executable='command_timeout.py',
+            executable='command_timeout',
             name='command_timeout'
         ),
 

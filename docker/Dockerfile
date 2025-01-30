@@ -62,6 +62,7 @@ RUN apt-get update && apt-get -y upgrade \
 
 # Install common programs
 RUN apt-get update && apt-get install -y --no-install-recommends \
+        gnupg \
         gnupg2 \
         lsb-release \
         software-properties-common \
@@ -195,15 +196,22 @@ RUN source /opt/ros/$ROS_DISTRO/setup.bash \
 FROM common AS simulation
 SHELL ["/bin/bash", "-c"]
 
-RUN git clone https://github.com/osrf/gazebo_models.git /root/.gazebo/models
-RUN rm -rf /root/.gazebo/models/.git
+# Install Gazebo Sim Harmonic
+RUN curl https://packages.osrfoundation.org/gazebo.gpg --output /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg;
+RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] http://packages.osrfoundation.org/gazebo/ubuntu-stable $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/gazebo-stable.list > /dev/null;
+RUN apt-get update 
+RUN apt-get install -y gz-harmonic ros-humble-ros-gzharmonic
 
-RUN mkdir -p /root/preinstall/gazebo
-COPY ./linorobot2_gazebo/package.xml /root/preinstall/gazebo
-RUN apt-get update \
-        && rosdep update --rosdistro=${ROS_DISTRO} \
-        && rosdep install --rosdistro=${ROS_DISTRO} --from-paths /root/preinstall -iry --os=ubuntu:$(lsb_release -sc) \
-    && rm -rf /var/lib/apt/lists/*
+# Classic Gazebo
+# RUN git clone https://github.com/osrf/gazebo_models.git /root/.gazebo/models
+# RUN rm -rf /root/.gazebo/models/.git
+
+# RUN mkdir -p /root/preinstall/gazebo
+# COPY ./linorobot2_gazebo/package.xml /root/preinstall/gazebo
+# RUN apt-get update \
+#         && rosdep update --rosdistro=${ROS_DISTRO} \
+#         && rosdep install --rosdistro=${ROS_DISTRO} --from-paths /root/preinstall -iry --os=ubuntu:$(lsb_release -sc) \
+#     && rm -rf /var/lib/apt/lists/*
 
 FROM ${DEPLOY} AS base
 SHELL ["/bin/bash", "-c"]

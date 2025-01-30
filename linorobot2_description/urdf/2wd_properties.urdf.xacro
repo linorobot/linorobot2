@@ -4,6 +4,9 @@
   <xacro:property name="base_width" value="0.275" />
   <xacro:property name="base_height" value="0.003" />
   <xacro:property name="base_mass" value="1" />
+  <!-- set empty on the wheel_mesh_file to use geometry instead of mesh -->
+  <xacro:property name="base_mesh_file" value="" />
+  <!-- <xacro:property name="base_mesh_file" value="file://$(find linorobot2_description)/meshes/base.dae" /> -->
 
   <xacro:property name="wheel_radius" value="0.045" />
   <xacro:property name="wheel_width" value="0.01" />
@@ -15,6 +18,10 @@
   <xacro:property name="front_caster_wheel" value="true" />
   <xacro:property name="rear_caster_wheel" value="true" />
 
+  <!-- set empty on the wheel_mesh_file to use geometry instead of mesh -->
+  <xacro:property name="wheel_mesh_file" value="" />
+  <!-- <xacro:property name="wheel_mesh_file" value="file://$(find linorobot2_description)/meshes/tire.dae" /> -->
+  
   <xacro:property name="laser_pose">
     <origin xyz="0.12 0 0.33" rpy="0 0 0"/>
   </xacro:property>

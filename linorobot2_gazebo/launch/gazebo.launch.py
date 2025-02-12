@@ -93,7 +93,7 @@ def generate_launch_description():
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(gazebo_launch_path),
             launch_arguments={
-                'gz_args': LaunchConfiguration('world')
+                'gz_args': [' -r ', LaunchConfiguration('world')]
             }.items()
         ),
 

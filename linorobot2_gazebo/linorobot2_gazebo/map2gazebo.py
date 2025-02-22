@@ -22,44 +22,44 @@ XML_MODEL_CONFIG_TEMPLATE = """
 """
 
 XML_MODEL_TEMPLATE = """
-<model name="{name}">
-  <link name="link">
-    <inertial>
-      <mass>15</mass>
-      <inertia>
-        <ixx>0.0</ixx>
-        <ixy>0.0</ixy>
-        <ixz>0.0</ixz>
-        <iyy>0.0</iyy>
-        <iyz>0.0</iyz>
-        <izz>0.0</izz>
-      </inertia>
-    </inertial>
-    <collision name="collision">
-      <pose>0 0 0 0 0 0</pose>
-      <geometry>
-        <mesh>
-          <uri>model://{name}/meshes/{name}.stl</uri>
-        </mesh>
-      </geometry>
-    </collision>
-    <visual name="visual">
-      <pose>0 0 0 0 0 0</pose>
-      <geometry>
-        <mesh>
-          <uri>model://{name}/meshes/{name}.stl</uri>
-        </mesh>
-      </geometry>
-      <material>
-        <ambient>1 1 1 1</ambient>
-        <diffuse>1 1 1 1</diffuse>
-        <specular>0.5 0.5 0.5 1</specular>
-        <emissive>0 0 0 1</emissive>
-      </material>
-    </visual>
-  </link>
-  <static>1</static>
-</model>
+    <model name="{name}">
+      <link name="link">
+        <inertial>
+          <mass>15</mass>
+          <inertia>
+            <ixx>0.0</ixx>
+            <ixy>0.0</ixy>
+            <ixz>0.0</ixz>
+            <iyy>0.0</iyy>
+            <iyz>0.0</iyz>
+            <izz>0.0</izz>
+          </inertia>
+        </inertial>
+        <collision name="collision">
+          <pose>0 0 0 0 0 0</pose>
+          <geometry>
+            <mesh>
+              <uri>model://{name}/meshes/{name}.stl</uri>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <pose>0 0 0 0 0 0</pose>
+          <geometry>
+            <mesh>
+              <uri>model://{name}/meshes/{name}.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0.5 0.5 0.5 1</specular>
+            <emissive>0 0 0 1</emissive>
+          </material>
+        </visual>
+      </link>
+      <static>1</static>
+    </model>
 """
 
 XML_SDF_TEMPLATE = """
@@ -215,10 +215,11 @@ def process_map(map_info, export_dir, world_dir, height=1.5):
     except cv2.error as err:
         print(err, "Conversion failed: Invalid image input, please check your file path")    
         return False
-    
+
     # Set all -1 (unknown) values to 255 (white/unoccupied)
-    map_array[map_array < 0] = 255
-    
+    # map_array[map_array < 0] = 255
+    map_array[map_array < 253] = 0
+    map_array[map_array >= 253] = 255
     print('Processing...')
     mesh = create_mesh_from_map(map_array, map_info, height)
 

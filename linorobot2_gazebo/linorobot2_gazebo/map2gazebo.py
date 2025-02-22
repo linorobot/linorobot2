@@ -1,7 +1,6 @@
 import cv2
 import numpy as np
 import trimesh
-from matplotlib.tri import Triangulation
 import yaml
 import argparse
 import os
@@ -142,157 +141,209 @@ XML_WORLD_TEMPLATE="""
 </sdf>
 """
 
-class MapConverter:
-    def __init__(self, map_dir, export_dir, world_dir, height=1.5):
-        self.height = height
-        self.export_dir = export_dir
-        self.world_dir = world_dir
-        self.map_dir = map_dir
+def create_mesh_from_map(map_array, metadata, height=1.5):
+    height_vector = np.array([0, 0, height])
+    vertices = []
+    faces = []
+    vertex_count = 0
 
-    def map_callback(self):
-        all_maps = self._extract_maps(self.map_dir)
-        for key, value in all_maps.items():
-            map_file_dir = value[0] if ".pgm" in value[0] or ".png" in value[0] else value[1]
-            info_dir = value[0] if ".yaml" in value[0] else value[1]
-            map_array = cv2.imread(map_file_dir)
-            map_array = cv2.flip(map_array, 0)
-            print(f'loading map file: {map_file_dir}')
-            try:
-                map_array = cv2.cvtColor(map_array, cv2.COLOR_BGR2GRAY)
-            except cv2.error as err:
-                print(err, "Conversion failed: Invalid image input, please check your file path")    
-                sys.exit()
+    thresh_map = map_array.copy()
 
-            with open(info_dir, 'r') as stream:
-                map_info = yaml.safe_load(stream)
-            
-            # set all -1 (unknown) values to 255 (white/unoccupied)
-            map_array[map_array < 0] = 255
-            
-            print('Processing...')
-            mesh = self.create_mesh_from_map(map_array, map_info)
+    # Apply the thresholds
+    thresh_map[map_array >= metadata["occupied_thresh"] * 255] = 255  # Occupied cells
+    thresh_map[map_array <= metadata["free_thresh"] * 255] = 0  # Free cells
+    thresh_map[(map_array > metadata["free_thresh"] * 255) & (map_array < metadata["occupied_thresh"] * 255)] = 127  # Unknown cells
 
-            if not self.export_dir.endswith('/'):
-                self.export_dir = self.export_dir + '/'
+    # Reduce resolution to simplify the mesh
+    step = 1  # Adjust this value to change the simplification level
 
-            if not self.world_dir.endswith('/'):
-                self.world_dir = self.world_dir + '/'
-            
-            if not os.path.exists(self.export_dir + f'{key}/meshes/'):
-                os.makedirs(self.export_dir + f'{key}/meshes/')
+    for y in range(0, thresh_map.shape[0] - 1, step):
+        for x in range(0, thresh_map.shape[1] - 1, step):
+            if thresh_map[y, x] == 0:  # If the pixel is black (occupied)
+                new_vertices = [
+                    coords_to_loc((x, y), metadata),
+                    coords_to_loc((x, y+step), metadata),
+                    coords_to_loc((x+step, y), metadata),
+                    coords_to_loc((x+step, y+step), metadata)
+                ]
+                vertices.extend(new_vertices)
+                vertices.extend([v + height_vector for v in new_vertices])
 
-            if not os.path.exists(self.world_dir):
-                os.makedirs(self.world_dir)
+                new_faces = [
+                    [vertex_count + i for i in face]
+                    for face in [[0, 2, 4], [4, 2, 6], [1, 2, 0], [3, 2, 1],
+                                [5, 0, 4], [1, 0, 5], [3, 7, 2], [7, 6, 2],
+                                [7, 4, 6], [5, 4, 7], [1, 5, 3], [7, 3, 5]]
+                ]
+                faces.extend(new_faces)
+                vertex_count += 8
 
-            stl_dir = self.export_dir + f'{key}/meshes/' + f'{key}.stl'
-            sdf_dir = self.export_dir + f'{key}/' + f'{key}.sdf'
-            config_dir = self.export_dir + f'{key}/model.config'
+    mesh = trimesh.Trimesh(vertices=vertices, faces=faces)
+    if not mesh.is_volume:
+        mesh.fix_normals()
+    
+    mesh.update_faces(mesh.unique_faces())
+    
+    return mesh
 
-            model_template = XML_MODEL_TEMPLATE.format(name=key)
-            sdf_data = XML_SDF_TEMPLATE.format(model_template=model_template)
-            config_data = XML_MODEL_CONFIG_TEMPLATE.format(name=key)
-            print(f'export file: {stl_dir}')
-            
-            with open(stl_dir, 'wb') as f:
-                mesh.export(f, "stl")
+def coords_to_loc(coords, metadata):
+    x, y = coords
+    loc_x = x * metadata['resolution'] + metadata['origin'][0]
+    loc_y = y * metadata['resolution'] + metadata['origin'][1]
+    return np.array([loc_x, loc_y, 0.0])
 
-            with open(sdf_dir, 'w') as f:
-                f.write(sdf_data)
-
-            with open(config_dir, 'w') as f:
-                f.write(config_data)
-
-            # create world file
-            world_data = XML_WORLD_TEMPLATE.format(model_template=model_template)
-
-            world_dir = self.world_dir + f'{key}.sdf'
-            with open(world_dir, 'w') as f:
-                f.write(world_data)
-
-    def _extract_maps(self, directory_path):
-        files_dict = {}
-
-        for filename in os.listdir(directory_path):
-            base_name, extension = os.path.splitext(filename)
-            
-            if extension in ['.pgm', '.yaml', '.png']:
-                if base_name in files_dict:
-                    files_dict[base_name].append(os.path.join(directory_path, filename))
-                else:
-                    files_dict[base_name] = [os.path.join(directory_path, filename)]
+def process_map(map_info, export_dir, world_dir, height=1.5):
+    # Check if the required keys exist in the map info dictionary
+    if 'map_name' not in map_info or 'image' not in map_info:
+        print(f"Error: Map info missing required keys 'map_name' or 'image'")
+        return False
         
-        return files_dict
-
-    def create_mesh_from_map(self, map_array, metadata):
-        height = np.array([0, 0, self.height])
-        vertices = []
-        faces = []
-        vertex_count = 0
-
-        thresh_map = map_array.copy()
-
-        # Apply the thresholds
-        thresh_map[map_array >= metadata["occupied_thresh"] * 255] = 255  # Occupied cells
-        thresh_map[map_array <= metadata["free_thresh"] * 255] = 0  # Free cells
-        thresh_map[(map_array > metadata["free_thresh"] * 255) & (map_array < metadata["occupied_thresh"] * 255)] = 127  # Unknown cells
-
-        # Reduce resolution to simplify the mesh
-        step = 1  # Adjust this value to change the simplification level
-
-        for y in range(0, thresh_map.shape[0] - 1, step):
-            for x in range(0, thresh_map.shape[1] - 1, step):
-                if thresh_map[y, x] == 0:  # If the pixel is black (occupied)
-                    new_vertices = [
-                        self.coords_to_loc((x, y), metadata),
-                        self.coords_to_loc((x, y+step), metadata),
-                        self.coords_to_loc((x+step, y), metadata),
-                        self.coords_to_loc((x+step, y+step), metadata)
-                    ]
-                    vertices.extend(new_vertices)
-                    vertices.extend([v + height for v in new_vertices])
-
-                    new_faces = [
-                        [vertex_count + i for i in face]
-                        for face in [[0, 2, 4], [4, 2, 6], [1, 2, 0], [3, 2, 1],
-                                     [5, 0, 4], [1, 0, 5], [3, 7, 2], [7, 6, 2],
-                                     [7, 4, 6], [5, 4, 7], [1, 5, 3], [7, 3, 5]]
-                    ]
-                    faces.extend(new_faces)
-                    vertex_count += 8
-
-        mesh = trimesh.Trimesh(vertices=vertices, faces=faces)
-        if not mesh.is_volume:
-            mesh.fix_normals()
+    map_name = map_info['map_name']
+    image_path = map_info['image']
+    
+    # Check if the image file exists
+    if not os.path.exists(image_path):
+        print(f"Error: Image file {image_path} not found")
+        return False
         
-        mesh.update_faces(mesh.unique_faces())
-        
-        return mesh
+    print(f'Loading map file: {image_path}')
+    
+    try:
+        map_array = cv2.imread(image_path)
+        map_array = cv2.flip(map_array, 0)
+        map_array = cv2.cvtColor(map_array, cv2.COLOR_BGR2GRAY)
+    except cv2.error as err:
+        print(err, "Conversion failed: Invalid image input, please check your file path")    
+        return False
+    
+    # Set all -1 (unknown) values to 255 (white/unoccupied)
+    map_array[map_array < 0] = 255
+    
+    print('Processing...')
+    mesh = create_mesh_from_map(map_array, map_info, height)
 
-    def coords_to_loc(self, coords, metadata):
-        x, y = coords
-        loc_x = x * metadata['resolution'] + metadata['origin'][0]
-        loc_y = y * metadata['resolution'] + metadata['origin'][1]
-        return np.array([loc_x, loc_y, 0.0])
+    if not export_dir.endswith('/'):
+        export_dir = export_dir + '/'
+
+    if not world_dir.endswith('/'):
+        world_dir = world_dir + '/'
+    
+    model_dir = export_dir + f'{map_name}'
+    meshes_dir = model_dir + '/meshes/'
+    
+    if not os.path.exists(meshes_dir):
+        os.makedirs(meshes_dir)
+
+    if not os.path.exists(world_dir):
+        os.makedirs(world_dir)
+
+    stl_dir = meshes_dir + f'{map_name}.stl'
+    sdf_dir = model_dir + f'/{map_name}.sdf'
+    config_dir = model_dir + '/model.config'
+
+    model_template = XML_MODEL_TEMPLATE.format(name=map_name)
+    sdf_data = XML_SDF_TEMPLATE.format(model_template=model_template)
+    config_data = XML_MODEL_CONFIG_TEMPLATE.format(name=map_name)
+    print(f'Exporting to file: {stl_dir}')
+    
+    with open(stl_dir, 'wb') as f:
+        mesh.export(f, "stl")
+
+    with open(sdf_dir, 'w') as f:
+        f.write(sdf_data)
+
+    with open(config_dir, 'w') as f:
+        f.write(config_data)
+
+    # Create world file
+    world_data = XML_WORLD_TEMPLATE.format(model_template=model_template)
+
+    world_file = world_dir + f'{map_name}.sdf'
+    with open(world_file, 'w') as f:
+        f.write(world_data)
+    
+    print(f'Successfully processed map: {map_name}')
+    return True
+
+def process_maps(map_info_list, export_dir, world_dir, height=1.5):
+    success_count = 0
+    fail_count = 0
+    
+    for map_info in map_info_list:
+        if process_map(map_info, export_dir, world_dir, height):
+            success_count += 1
+        else:
+            fail_count += 1
+    
+    print(f'Conversion completed. Success: {success_count}, Failed: {fail_count}')
+    return success_count, fail_count
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(argument_default=argparse.SUPPRESS)
+    parser = argparse.ArgumentParser()
+    
     parser.add_argument(
-      '--map_dir', type=str, required=True,
-      help='File name of the map to convert'
+        '--map_dir', type=str, required=True,
+        help='Directory containing YAML map files'
     )
-
+    
     parser.add_argument(
-      '--model_dir', type=str, default=os.path.abspath('.'),
-      help='Gazebo model output directory'
+        '--model_dir', type=str, default=os.path.abspath('.'),
+        help='Gazebo model output directory'
     )
-
+    
     parser.add_argument(
-      '--world_dir', type=str, default=os.path.abspath('.'),
-      help='World output directory'
+        '--world_dir', type=str, default=os.path.abspath('.'),
+        help='World output directory'
     )
-
-    option = parser.parse_args()
-
-    Converter = MapConverter(option.map_dir, option.model_dir, option.world_dir)
-    Converter.map_callback()
-    print('Conversion Done')
+    
+    parser.add_argument(
+        '--height', type=float, default=1.5,
+        help='Height of the 3D map mesh'
+    )
+    
+    args = parser.parse_args()
+    
+    # Check if map_dir exists
+    if not os.path.isdir(args.map_dir):
+        print(f"Error: Map directory {args.map_dir} not found or is not a directory.")
+        sys.exit(1)
+    
+    # Find all YAML files in the map_dir
+    yaml_files = []
+    for file in os.listdir(args.map_dir):
+        if file.lower().endswith('.yaml') or file.lower().endswith('.yml'):
+            yaml_files.append(os.path.join(args.map_dir, file))
+    
+    if not yaml_files:
+        print(f"Error: No YAML files found in {args.map_dir}")
+        sys.exit(1)
+    
+    print(f"Found {len(yaml_files)} YAML files in {args.map_dir}")
+    
+    # Process the list of YAML files and create map_info_list
+    map_info_list = []
+    for yaml_file in yaml_files:
+        try:
+            with open(yaml_file, 'r') as stream:
+                map_info = yaml.safe_load(stream)
+                
+                # Add map_name based on the YAML filename
+                map_name = os.path.splitext(os.path.basename(yaml_file))[0]
+                map_info['map_name'] = map_name
+                
+                # Make image path absolute if it's relative
+                if not os.path.isabs(map_info['image']):
+                    yaml_dir = os.path.dirname(os.path.abspath(yaml_file))
+                    map_info['image'] = os.path.join(yaml_dir, map_info['image'])
+                
+                map_info_list.append(map_info)
+                print(f"Added map: {map_name}")
+        except Exception as e:
+            print(f"Error loading YAML file {yaml_file}: {str(e)}")
+    
+    if not map_info_list:
+        print("No valid map files found. Exiting.")
+        sys.exit(1)
+    
+    # Process all maps
+    process_maps(map_info_list, args.model_dir, args.world_dir, args.height)

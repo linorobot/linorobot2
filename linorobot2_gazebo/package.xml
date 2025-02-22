@@ -22,8 +22,9 @@
     <exec_depend>python3-pycollada</exec_depend>
     <exec_depend>python3-scipy</exec_depend>
     <exec_depend>python3-networkx</exec_depend>
-    <exec_depend>python3-opencv-contrib-python</exec_depend>
-    <exec_depend>python3-matplotlib</exec_depend>
+    <!--     <exec_depend>python3-opencv-contrib-python</exec_depend>
+    <exec_depend>python3-matplotlib</exec_depend> -->
+    <exec_depend>python3-tk</exec_depend>
     <export>
         <build_type>ament_python</build_type>
     </export>

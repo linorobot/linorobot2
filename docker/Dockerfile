@@ -199,8 +199,10 @@ SHELL ["/bin/bash", "-c"]
 # Install Gazebo Sim Harmonic
 RUN curl https://packages.osrfoundation.org/gazebo.gpg --output /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg;
 RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] http://packages.osrfoundation.org/gazebo/ubuntu-stable $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/gazebo-stable.list > /dev/null;
-RUN apt-get update 
-RUN apt-get install -y gz-harmonic ros-humble-ros-gzharmonic
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        gz-harmonic \
+        ros-humble-ros-gzharmonic \  
+    && rm -rf /var/lib/apt/lists/*
 
 # Classic Gazebo
 # RUN git clone https://github.com/osrf/gazebo_models.git /root/.gazebo/models

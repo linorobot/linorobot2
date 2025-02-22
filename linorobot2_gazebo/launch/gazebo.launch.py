@@ -21,6 +21,7 @@ from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 from launch_ros.actions import ComposableNodeContainer
 from launch_ros.descriptions import ComposableNode
+from launch.conditions import IfCondition
 
 
 def generate_launch_description():
@@ -48,6 +49,12 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
+        DeclareLaunchArgument(
+            name='gui', 
+            default_value='true',
+            description='Enable Gazebo Client'
+        ),
+        
         DeclareLaunchArgument(
             name='urdf', 
             default_value=urdf_path,
@@ -89,11 +96,19 @@ def generate_launch_description():
             default_value='0.0',
             description='Robot spawn heading'
         ),
-
+        
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(gazebo_launch_path),
             launch_arguments={
-                'gz_args': [' -r ', LaunchConfiguration('world')]
+                'gz_args': [' -r -s ', LaunchConfiguration('world')]
+            }.items()
+        ),
+
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(gazebo_launch_path),
+            condition=IfCondition(LaunchConfiguration('gui')),
+            launch_arguments={
+                'gz_args': [' -g']
             }.items()
         ),
 

@@ -268,7 +268,7 @@ class MapImageProcessor(tk.Tk):
                 meters_per_pixel = real_distance / (pixel_distance / self.image_scale)
                 
                 # Update map_info
-                self.__map_info["origin"] = meters_per_pixel
+                self.__map_info["resolution"] = meters_per_pixel
                 self.resolution_var.set(f"Resolution: {meters_per_pixel:.6f} meters/pixel")
                 
                 self.status_bar.config(text=f"Meters per pixel set: {meters_per_pixel:.6f}")

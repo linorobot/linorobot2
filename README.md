@@ -15,7 +15,7 @@ The image below summarizes the topics available after running **bringup.launch.p
 An in-depth tutorial on how to build the robot is available in [linorobot2_hardware](https://github.com/linorobot/linorobot2_hardware).
 
 ## Installation 
-This package requires ros-foxy or ros-galactic. If you haven't installed ROS2 yet, you can use this [installer](https://github.com/linorobot/ros2me) script that has been tested to work on x86 and ARM based dev boards ie. Raspberry Pi4/Nvidia Jetson Series. 
+This package requires ros-jazzy. If you haven't installed ROS2 yet, you can use this [installer](https://github.com/linorobot/ros2me) script that has been tested to work on x86 and ARM based dev boards ie. Raspberry Pi4/Nvidia Jetson Series. 
 
 ### 1. Robot Computer - linorobot2 Package
 The easiest way to install this package on the robot computer is to run the bash script found in this package's root directory. It will install all the dependencies, set the ENV variables for the robot base and sensors, and create a linorobot2_ws (robot_computer_ws) on the robot computer's `$HOME` directory. If you're using a ZED camera with a Jetson Nano, you must create a custom Ubuntu 20.04 image for CUDA and the GPU driver to work. Here's a quick [guide](./ROBOT_INSTALLATION.md#1-creating-jetson-nano-image) on how to create a custom image for Jetson Nano.
@@ -274,7 +274,7 @@ Alternatively, `map` argument can be used when launching Nav2 (next step) to dyn
     ros2 launch linorobot2_navigation navigation.launch.py map:=<path_to_map_file>/<map_name>.yaml
 
 
-#### 4.2 Run [Nav2](https://navigation.ros.org/tutorials/docs/navigation2_on_real_turtlebot3.html) package:
+#### 4.2 Run [Nav2](https://docs.nav2.org/tutorials/docs/navigation2_on_real_turtlebot3.html) package:
 
     ros2 launch linorobot2_navigation navigation.launch.py
 
@@ -290,7 +290,7 @@ The `rviz` argument for navigation.launch.py won't work on headless setup but yo
 
     ros2 launch linorobot2_viz navigation.launch.py
 
-Check out Nav2 [tutorial](https://navigation.ros.org/tutorials/docs/navigation2_on_real_turtlebot3.html#initialize-the-location-of-turtlebot-3) for more details on how to initialize and send goal pose. 
+Check out Nav2 [tutorial](https://docs.nav2.org/tutorials/docs/navigation2_on_real_turtlebot3.html#initialize-the-location-of-turtlebot-3) for more details on how to initialize and send goal pose. 
 
 navigation.launch.py will continue to throw this error `Timed out waiting for transform from base_link to map to become available, tf error: Invalid frame ID "map" passed to canTransform argument target_frame - frame does not exist` until the robot's pose has been initialized.
 
@@ -322,6 +322,6 @@ navigation.launch.py will continue to throw this error `Timed out waiting for tr
 
 ## Useful Resources:
 
-https://navigation.ros.org/setup_guides/index.html
+https://docs.nav2.org/setup_guides/index.html
 
-http://gazebosim.org/tutorials/?tut=ros2_overview
+https://gazebosim.org/docs/latest/ros2_overview

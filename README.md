@@ -88,7 +88,7 @@ Set LINOROBOT2_BASE env variable to the type of robot base used. Available env v
 
 You can skip the next step (Host Machine - RVIZ Configurations) since this package already contains the same RVIZ configurations to visualize the robot. 
 
-### 3. Host Machine - RVIZ Configurations
+### 3. Host Machine - RVIZ Configuration
 Install [linorobot2_viz](https://github.com/linorobot/linorobot2_viz) package to visualize the robot remotely specifically when creating a map or initializing/sending goal poses to the robot. The package has been separated to minimize the installation required if you're not using the simulation tools on the host machine.
 
     cd <host_machine_ws>
@@ -96,6 +96,13 @@ Install [linorobot2_viz](https://github.com/linorobot/linorobot2_viz) package to
     rosdep update && rosdep install --from-path src --ignore-src -y 
     colcon build
     source install/setup.bash
+
+### 4. Docker Configuration
+Docker can be used to run linorobot2 on a host machine for simulation. You might need to customize the docker/.env file.
+
+    git clone https://github.com/linorobot/linorobot2.git
+    cd linorobot2/docker
+    sudo docker compose build
 
 ## Hardware and Robot Firmware
 All the hardware documentation and robot microcontroller's firmware can be found [here](https://github.com/linorobot/linorobot2_hardware).
@@ -201,6 +208,23 @@ The agent needs a few seconds to get reconnected (less than 30 seconds). Unplug 
     ros2 launch linorobot2_gazebo gazebo.launch.py
 
 linorobot2_bringup.launch.py or gazebo.launch.py must always be run on a separate terminal before creating a map or robot navigation when working on a real robot or gazebo simulation respectively.
+
+#### 1.1c Using Gazebo simulation in a Docker container:
+
+You can run gazebo in a docker container and start navigation.
+You must have previously built the docker image. The following commands are run with sudo, but follow the docker post-install
+instructions to enable docker commands to be run without sudo.
+
+cd to the docker directory and run the following command:
+
+    sudo docker compose up -d gazebo navigate-sim
+
+Gazebo will start and display the world, and nav2 will start along with an rviz window. You can set the initial position of the robot
+and give it goal poses to navigate to. Note you cannot run some of the system in a docker container and other parts natively on the docker host.
+
+You can look at logs from the ROS nodes by running
+
+    sudo docker compose logs
 
 ### 2. Controlling the robot
 #### 2.1  Keyboard Teleop

@@ -1,0 +1,18 @@
+name: colcon build
+
+on:
+  pull_request:
+    branches: [ jazzy ]  # Adjust this if your default branch is different
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04 
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install and Build ROS2 environment
+      run: |
+        export USE_ROS_DISTRO=humble
+        export UBUNTU_VER=22.04
+        export RMW=cyclonedds
+        cd docker && docker compose build
+      shell: bash

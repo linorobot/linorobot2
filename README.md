@@ -102,7 +102,10 @@ Docker can be used to run linorobot2 on a host machine for simulation. You might
 
     git clone https://github.com/linorobot/linorobot2.git
     cd linorobot2/docker
-    sudo docker compose build
+    docker compose build
+
+If you get a "permission denied" error running docker, follow the steps in the [docker post install instructions](https://docs.docker.com/engine/install/linux-postinstall/) to add yourself to the docker group, so that you don't have to
+use sudo to run docker commands.
 
 ## Hardware and Robot Firmware
 All the hardware documentation and robot microcontroller's firmware can be found [here](https://github.com/linorobot/linorobot2_hardware).
@@ -212,19 +215,28 @@ linorobot2_bringup.launch.py or gazebo.launch.py must always be run on a separat
 #### 1.1c Using Gazebo simulation in a Docker container:
 
 You can run gazebo in a docker container and start navigation.
-You must have previously built the docker image. The following commands are run with sudo, but follow the docker post-install
-instructions to enable docker commands to be run without sudo.
+You must have previously built the docker image.
+If
 
 cd to the docker directory and run the following command:
 
-    sudo docker compose up -d gazebo navigate-sim
+    docker compose up -d gazebo navigate-sim
 
 Gazebo will start and display the world, and nav2 will start along with an rviz window. You can set the initial position of the robot
 and give it goal poses to navigate to. Note you cannot run some of the system in a docker container and other parts natively on the docker host.
 
+If a gazebo and rviz window don't open, test whether docker has permission to open a window:
+
+    docker compose down         # stops the running containers
+    docker compose up gazebo    # starts the gazebo container on its own and lets you look at console output
+
+If you see errors related to "Unable to create rendering window", run the following command and try again:
+
+    xhost +
+
 You can look at logs from the ROS nodes by running
 
-    sudo docker compose logs
+    docker compose logs
 
 ### 2. Controlling the robot
 #### 2.1  Keyboard Teleop

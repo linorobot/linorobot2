@@ -101,13 +101,9 @@ RUN export ROS_APT_SOURCE_VERSION=$(curl -s https://api.github.com/repos/ros-inf
 RUN apt-get update && apt-get install -y --no-install-recommends \
         ros-dev-tools \
         ros-${USE_ROS_DISTRO}-ament-* \
-    && rm -rf /var/lib/apt/lists/*
-
-RUN apt-get update && apt-get upgrade && apt install -y --no-install-recommends \
         ros-${USE_ROS_DISTRO}-ros-base \
         python3-argcomplete \
     && rm -rf /var/lib/apt/lists/*
-
 
 RUN source /opt/ros/${USE_ROS_DISTRO}/setup.bash
 RUN rosdep init 

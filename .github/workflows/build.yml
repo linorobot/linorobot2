@@ -6,13 +6,13 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04 
+    runs-on: ubuntu-24.04 
     steps:
     - uses: actions/checkout@v4
     - name: Install and Build ROS2 environment
       run: |
-        export USE_ROS_DISTRO=humble
-        export UBUNTU_VER=22.04
+        export USE_ROS_DISTRO=jazzy
+        export UBUNTU_VER=24.04
         export RMW=cyclonedds
         cd docker && docker compose build
       shell: bash

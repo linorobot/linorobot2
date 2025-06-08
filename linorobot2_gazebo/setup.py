@@ -15,6 +15,9 @@ setup(
         (os.path.join('share', package_name, 'worlds'), glob(os.path.join('worlds', '*.sdf'))),
         (os.path.join('share', package_name, 'rviz'), glob(os.path.join('rviz', '*.rviz'))),
         (os.path.join('share', package_name, 'hook'), glob('hook/*.sh')),
+        *[(os.path.join('share', package_name, os.path.dirname(file_path)), [file_path]) 
+          for file_path in glob(os.path.join('models', '**/*'), recursive=True) 
+          if os.path.isfile(file_path)],        
     ],
     zip_safe=True,
     author='Juan Miguel Jimeno',

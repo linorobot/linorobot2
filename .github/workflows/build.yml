@@ -16,3 +16,11 @@ jobs:
         export RMW=cyclonedds
         cd docker && docker compose build
       shell: bash
+    - name: Install and Build ROS2 environment on Nvidia Runtime
+      run: |
+        export RUNTIME=nvidia
+        export USE_ROS_DISTRO=humble
+        export UBUNTU_VER=22.04
+        export RMW=cyclonedds
+        cd docker && docker compose build
+      shell: bash

@@ -11,8 +11,15 @@ jobs:
     - uses: actions/checkout@v4
     - name: Install and Build ROS2 environment
       run: |
-        export USE_ROS_DISTRO=jazzy
         export UBUNTU_VER=24.04
+        export USE_ROS_DISTRO=jazzy
+        export RMW=cyclonedds
+        cd docker && docker compose build
+      shell: bash
+    - name: Nvidia - Install and Build ROS2 environment
+      run: |
+        export UBUNTU_VER=24.04
+        export USE_ROS_DISTRO=jazzy
         export RMW=cyclonedds
         cd docker && docker compose build
       shell: bash

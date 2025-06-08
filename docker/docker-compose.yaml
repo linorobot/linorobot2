@@ -40,7 +40,12 @@ services:
   gazebo:
     container_name: gazebo
     extends: dev
-    command: ros2 launch linorobot2_gazebo gazebo.launch.py world:=/root/linorobot2_ws/install/linorobot2_gazebo/share/linorobot2_gazebo/worlds/${WORLD:-playground}.sdf
+    command: > 
+      ros2 launch linorobot2_gazebo gazebo.launch.py 
+      world:=/root/linorobot2_ws/install/linorobot2_gazebo/share/linorobot2_gazebo/worlds/${WORLD:-turtlebot3_world}.sdf
+      spawn_x:=${SPAWN_X:-0.0}
+      spawn_y:=${SPAWN_Y:-0.0}
+      spawn_yaw:=${SPAWN_Z:-0.0}
     devices:
       - /dev:/dev
 
@@ -62,33 +67,17 @@ services:
     extends: dev
     command: >
       ros2 launch linorobot2_navigation slam.launch.py
-      rviz:=false
-
-  slam-sim:
-    container_name: slam-sim
-    extends: dev
-    command: >
-      ros2 launch linorobot2_navigation slam.launch.py
-      rviz:=true
-      sim:=true
+      rviz:=${RVIZ:-false}
+      sim:=${SIM:-false}
 
   navigate:
     container_name: navigate
     extends: dev
     command: >
       ros2 launch linorobot2_navigation navigation.launch.py
-      map:=/root/linorobot2_ws/src/linorobot2/linorobot2_navigation/maps/${WORLD:-playground}.yaml
-      rviz:=false
-      sim:=false
-
-  navigate-sim:
-    container_name: navigate-sim
-    extends: dev
-    command: >
-      ros2 launch linorobot2_navigation navigation.launch.py
-      map:=/root/linorobot2_ws/src/linorobot2/linorobot2_navigation/maps/${WORLD:-playground}.yaml
-      rviz:=true
-      sim:=true
+      map:=/root/linorobot2_ws/src/linorobot2/linorobot2_navigation/maps/${WORLD:-turtlebot3_world}.yaml
+      rviz:=${RVIZ:-false}
+      sim:=${SIM:-false}
 
   save-map:
     container_name: save-map
@@ -117,38 +106,19 @@ services:
     - ../.:/root/linorobot2_ws/src/linorobot2
 
   webtop:
-    image: lscr.io/linuxserver/webtop:latest
     container_name: webtop
-    security_opt:
-      - seccomp:unconfined
+    image: lscr.io/linuxserver/webtop:latest
     environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Etc/UTC
-      - SUBFOLDER=/
-      - TITLE=Webtop
-      - DISPLAY=:200
+    - DISPLAY=:200
     network_mode: host
-    volumes:
-      - /path/to/data:/config
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /tmp/.X11-unix:/tmp/.X11-unix:rw
-      - $HOME/.Xauthority:/root/.Xauthority
     devices:
-      - /dev/dri:/dev/dri
-    shm_size: "1gb"
-    restart: unless-stopped
+    - /dev/dri:/dev/dri 
 
   kasmvnc:
-    runtime: ${RUNTIME}
     container_name: kasmvnc
-    image: ghcr.io/linuxserver/baseimage-kasmvnc:alpine318
-    privileged: true
-    network_mode: host
-    volumes:
-      - /tmp/.X11-unix:/tmp/.X11-unix:rw
-      - $HOME/.Xauthority:/root/.Xauthority
+    image: lsiobase/kasmvnc:alpine321
     environment:
-      - DISPLAY=:200
+    - DISPLAY=:200
+    network_mode: host
     devices:
-      - /dev/dri:/dev/dri
+    - /dev/dri:/dev/dri

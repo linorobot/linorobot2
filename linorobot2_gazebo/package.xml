@@ -27,5 +27,8 @@
     <exec_depend>python3-tk</exec_depend>
     <export>
         <build_type>ament_python</build_type>
+        <gazebo_ros gazebo_model_path="${prefix}/models"/>
     </export>
+
+    
 </package>

@@ -4,7 +4,7 @@ ARG RUNTIME=
 ARG DEPLOY=
 ARG RMW=
 
-FROM --platform=$BUILDPLATFORM ros:${USE_ROS_DISTRO}-ros-base AS ros2
+FROM --platform=$BUILDPLATFORM ros:${USE_ROS_DISTRO:-jazzy}-ros-base AS ros2
 SHELL ["/bin/bash", "-c"]
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -213,7 +213,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 #         && rosdep install --rosdistro=${ROS_DISTRO} --from-paths /root/preinstall -iry --os=ubuntu:$(lsb_release -sc) \
 #     && rm -rf /var/lib/apt/lists/*
 
-FROM ${DEPLOY} AS base
+FROM ${DEPLOY:-simulation} AS base
 SHELL ["/bin/bash", "-c"]
 
 COPY . /root/linorobot2_ws/src/linorobot2

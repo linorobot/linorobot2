@@ -1,1 +1,0 @@
-ament_prepend_unique_value GAZEBO_MODEL_PATH "$COLCON_CURRENT_PREFIX/share/linorobot2_gazebo/models"

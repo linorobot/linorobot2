@@ -69,8 +69,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         wget \
         curl \
         python3-pip \
-        libegl1-mesa \
-        libglu1-mesa \ 
+        libegl1-mesa-dev \
+        libglu1-mesa-dev \
         libxv1 \
         libxtst6 \
     && rm -rf /var/lib/apt/lists/*

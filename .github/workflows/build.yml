@@ -21,5 +21,6 @@ jobs:
         export UBUNTU_VER=24.04
         export USE_ROS_DISTRO=jazzy
         export RMW=cyclonedds
+        export RUNTIME=nvidia
         cd docker && docker compose build
       shell: bash

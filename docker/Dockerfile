@@ -37,7 +37,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         python3-pip \
     && rm -rf /var/lib/apt/lists/*
 
-FROM nvidia/cuda:12.1.0-runtime-ubuntu${UBUNTU_VER} AS ros2nvidia
+FROM nvidia/cuda:12.9.0-runtime-ubuntu${UBUNTU_VER} AS ros2nvidia
 SHELL ["/bin/bash", "-c"]
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -69,15 +69,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         wget \
         curl \
         python3-pip \
-        libegl1-mesa \
-        libglu1-mesa \ 
+        libegl1-mesa-dev \
+        libglu1-mesa-dev \
         libxv1 \
         libxtst6 \
     && rm -rf /var/lib/apt/lists/*
 
 # Install VirtualGL
-ARG VIRTUALGL_VER="3.1"
-RUN wget -O /tmp/virtualgl.deb https://zenlayer.dl.sourceforge.net/project/virtualgl/${VIRTUALGL_VER}/virtualgl_${VIRTUALGL_VER}_amd64.deb
+ARG VIRTUALGL_VER="3.1.3"
+RUN wget -O /tmp/virtualgl.deb https://github.com/VirtualGL/virtualgl/releases/download/${VIRTUALGL_VER}/virtualgl_${VIRTUALGL_VER}_amd64.deb
 RUN dpkg -i /tmp/virtualgl.deb 
 
 # Install glvnd 

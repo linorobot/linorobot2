@@ -23,7 +23,7 @@ from launch_ros.actions import Node
 from launch.conditions import IfCondition
 
 
-MAP_NAME='playground' #change to the name of your own map here
+MAP_NAME='turtlebot3_world' #change to the name of your own map here
 
 def generate_launch_description():
     nav2_launch_path = PathJoinSubstitution(

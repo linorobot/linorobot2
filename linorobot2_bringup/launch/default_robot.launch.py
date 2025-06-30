@@ -39,7 +39,7 @@ def generate_launch_description():
 
         DeclareLaunchArgument(
             name='micro_ros_baudrate', 
-            default_value='115200',
+            default_value='921600',
             description='micro-ROS baudrate'
         ),
 

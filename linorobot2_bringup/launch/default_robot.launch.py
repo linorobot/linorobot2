@@ -14,11 +14,11 @@
 
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, PythonExpression
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, EqualsSubstitution
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
-from launch.conditions import IfCondition, LaunchConfigurationEquals, LaunchConfigurationNotEquals
+from launch.conditions import IfCondition
 
 
 def generate_launch_description():
@@ -56,21 +56,21 @@ def generate_launch_description():
         ),
 
         Node(
-            condition=LaunchConfigurationEquals('micro_ros_transport', 'serial'),
+            condition=IfCondition(EqualsSubstitution(LaunchConfiguration('micro_ros_transport'), 'serial')),
             package='micro_ros_agent',
             executable='micro_ros_agent',
             name='micro_ros_agent',
             output='screen',
-            arguments=['serial', '--dev', LaunchConfiguration("base_serial_port"), '--baudrate', LaunchConfiguration("micro_ros_baudrate")]
+            arguments=['serial', '--dev', LaunchConfiguration("base_serial_port"), '--baudrate', LaunchConfiguration("micro_ros_baudrate")],
         ),
 
         Node(
-            condition=LaunchConfigurationEquals('micro_ros_transport', 'udp4'),
+            condition=IfCondition(EqualsSubstitution(LaunchConfiguration('micro_ros_transport'), 'udp4')),
             package='micro_ros_agent',
             executable='micro_ros_agent',
             name='micro_ros_agent',
             output='screen',
-            arguments=[LaunchConfiguration('micro_ros_transport'), '--port', LaunchConfiguration('micro_ros_port')]
+            arguments=[LaunchConfiguration('micro_ros_transport'), '--port', LaunchConfiguration('micro_ros_port')],
         ),
     
         IncludeLaunchDescription(

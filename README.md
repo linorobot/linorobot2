@@ -98,14 +98,22 @@ Install [linorobot2_viz](https://github.com/linorobot/linorobot2_viz) package to
     source install/setup.bash
 
 ### 4. Docker Configuration
-Docker can be used to run linorobot2 on a host machine for simulation. You might need to customize the docker/.env file.
+Docker can be used to run linorobot2 on a host machine for simulation. This can be useful if you aren't
+running Ubuntu 24.04 with ROS-Jazzy installed.
+
+If you don't already have docker installed, you can install it
+using the [docker installation instructions](https://docs.docker.com/engine/install/) for your operating system.
+Be sure to follow the post-install instructions.
+
+You might need to customize the docker/.env file if for example, you want to change the default robot type.
+Build the docker image:
 
     git clone https://github.com/linorobot/linorobot2.git
     cd linorobot2/docker
     docker compose build
 
-If you get a "permission denied" error running docker, follow the steps in the [docker post install instructions](https://docs.docker.com/engine/install/linux-postinstall/) to add yourself to the docker group, so that you don't have to
-use sudo to run docker commands.
+If you get a "permission denied" error running docker, follow the steps in the [docker post install instructions](https://docs.docker.com/engine/install/linux-postinstall/) to add yourself to the docker group,
+so that you don't have to use sudo to run docker commands.
 
 ## Hardware and Robot Firmware
 All the hardware documentation and robot microcontroller's firmware can be found [here](https://github.com/linorobot/linorobot2_hardware).
@@ -215,26 +223,56 @@ linorobot2_bringup.launch.py or gazebo.launch.py must always be run on a separat
 #### 1.1c Using Gazebo simulation in a Docker container:
 
 You can run gazebo in a docker container and start navigation.
-You must have previously built the docker image.
-If
+You must have previously built the docker image as described in the installation section above.
+You must cd to the docker directory to run the following commands.
+Press Ctrl-C to terminate a docker container.
 
-cd to the docker directory and run the following command:
+##### Start gazebo container
 
-    docker compose up -d gazebo navigate-sim
+    docker compose up gazebo
 
-Gazebo will start and display the world, and nav2 will start along with an rviz window. You can set the initial position of the robot
-and give it goal poses to navigate to. Note you cannot run some of the system in a docker container and other parts natively on the docker host.
-
-If a gazebo and rviz window don't open, test whether docker has permission to open a window:
-
-    docker compose down         # stops the running containers
-    docker compose up gazebo    # starts the gazebo container on its own and lets you look at console output
-
+Gazebo will start and display the robot in the turtlebot3-world.
 If you see errors related to "Unable to create rendering window", run the following command and try again:
 
     xhost +
 
-You can look at logs from the ROS nodes by running
+##### Start ROS navigation container
+
+In another terminal, run
+
+    export SIM=true
+    docker compose up navigate
+
+nav2 will start printing "Invalid Frame ID: map". This indicates you need to start
+rviz and set the 2D Pose Estimate.
+
+##### Start rviz
+
+In another terminal, run
+
+    docker compose up rviz-nav
+
+An rviz window will open. You can set the initial position of the robot
+and give it goal poses to navigate to. Output to the navigate terminal shows
+progress from the navigation software.
+
+##### Docker compose operation
+
+In the sections above, you interactively launched containers one at a time.
+You can also launch multiple containers
+at once, running them in daemon mode with the -d flag:
+
+    export SIM=true
+    export RVIZ=true
+    docker compose up -d gazebo navigate
+
+Shut down running containers with:
+
+    docker compose down
+
+Note you cannot run some of the system in a docker container and other parts natively on the docker host.
+
+You can dump logs from the ROS nodes by running
 
     docker compose logs
 

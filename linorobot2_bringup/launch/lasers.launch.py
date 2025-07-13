@@ -15,9 +15,9 @@
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, OpaqueFunction
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, EqualsSubstitution
 from launch_ros.substitutions import FindPackageShare
-from launch.conditions import LaunchConfigurationEquals
+from launch.conditions import IfCondition
 from launch_ros.actions import Node
 
 
@@ -110,7 +110,7 @@ def generate_launch_description():
         ),
 
         Node(
-            condition=LaunchConfigurationEquals('sensor', 'ydlidar'),
+            condition=IfCondition(EqualsSubstitution(LaunchConfiguration('sensor'), 'ydlidar')),
             package='ydlidar_ros2_driver',
             executable='ydlidar_ros2_driver_node',
             name='ydlidar_ros2_driver_node',
@@ -143,7 +143,7 @@ def generate_launch_description():
         ),
 
         # Node(
-        #     condition=LaunchConfigurationEquals('sensor', 'rplidar'),
+        #     condition=IfCondition(EqualsSubstitution(LaunchConfiguration('sensor'), 'rplidar')),
         #     name='rplidar_composition',
         #     package='rplidar_ros',
         #     executable='rplidar_composition',
@@ -159,7 +159,7 @@ def generate_launch_description():
         # ),
 
         Node( 
-            condition=LaunchConfigurationEquals('sensor', 'xv11'),
+            condition=IfCondition(EqualsSubstitution(LaunchConfiguration('sensor'), 'xv11')),
             name='xv_11_driver',
             package='xv_11_driver',
             executable='xv_11_driver',
@@ -174,7 +174,7 @@ def generate_launch_description():
         ),
 
         Node(
-            condition=LaunchConfigurationEquals('sensor', 'ldlidar'),
+            condition=IfCondition(EqualsSubstitution(LaunchConfiguration('sensor'), 'ldlidar')),
             package='ldlidar',
             executable='ldlidar',
             name='ldlidar',
@@ -188,7 +188,7 @@ def generate_launch_description():
         ),
 
         Node(
-            condition=LaunchConfigurationEquals('sensor', 'ld06'),
+            condition=IfCondition(EqualsSubstitution(LaunchConfiguration('sensor'), 'ld06')),
             package='ldlidar_stl_ros2',
             executable='ldlidar_stl_ros2_node',
             name='ld06',
@@ -211,7 +211,7 @@ def generate_launch_description():
         ),
 
         Node(
-            condition=LaunchConfigurationEquals('sensor', 'ld19'),
+            condition=IfCondition(EqualsSubstitution(LaunchConfiguration('sensor'), 'ld19')),
             package='ldlidar_stl_ros2',
             executable='ldlidar_stl_ros2_node',
             name='ld19',
@@ -234,7 +234,7 @@ def generate_launch_description():
         ),
 
         Node(
-            condition=LaunchConfigurationEquals('sensor', 'stl27l'),
+            condition=IfCondition(EqualsSubstitution(LaunchConfiguration('sensor'), 'stl27l')),
             package='ldlidar_stl_ros2',
             executable='ldlidar_stl_ros2_node',
             name='stl27l',

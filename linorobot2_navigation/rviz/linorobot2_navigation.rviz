@@ -11,7 +11,7 @@ Panels:
         - /Controller1/Local Costmap1
         - /Controller1/Local Plan1
       Splitter Ratio: 0.5833333134651184
-    Tree Height: 724
+    Tree Height: 276
   - Class: rviz_common/Selection
     Name: Selection
   - Class: rviz_common/Tool Properties
@@ -65,6 +65,9 @@ Visualization Manager:
         Expand Link Details: false
         Expand Tree: false
         Link Tree Style: ""
+      Mass Properties:
+        Inertia: false
+        Mass: false
       Name: RobotModel
       TF Prefix: ""
       Update Interval: 0
@@ -72,6 +75,8 @@ Visualization Manager:
       Visual Enabled: true
     - Class: rviz_default_plugins/TF
       Enabled: true
+      Filter (blacklist): ""
+      Filter (whitelist): ""
       Frame Timeout: 15
       Frames:
         All Enabled: false
@@ -79,48 +84,31 @@ Visualization Manager:
           Value: true
         base_link:
           Value: false
+        camera_depth_link:
+          Value: true
         camera_link:
           Value: false
-        front_left_wheel_link:
-          Value: false
-        front_right_wheel_link:
-          Value: false
+        front_caster_wheel_link:
+          Value: true
         imu_link:
           Value: false
         laser:
           Value: false
-        map:
-          Value: false
+        left_wheel_link:
+          Value: true
         odom:
           Value: false
-        rear_left_wheel_link:
-          Value: false
-        rear_right_wheel_link:
-          Value: false
+        rear_caster_wheel_link:
+          Value: true
+        right_wheel_link:
+          Value: true
       Marker Scale: 2
       Name: TF
       Show Arrows: true
       Show Axes: true
       Show Names: false
       Tree:
-        map:
-          odom:
-            base_footprint:
-              base_link:
-                camera_link:
-                  {}
-                imu_link:
-                  {}
-                laser:
-                  {}
-              front_left_wheel_link:
-                {}
-              front_right_wheel_link:
-                {}
-              rear_left_wheel_link:
-                {}
-              rear_right_wheel_link:
-                {}
+        {}
       Update Interval: 0
       Value: true
     - Alpha: 1
@@ -150,6 +138,7 @@ Visualization Manager:
       Topic:
         Depth: 5
         Durability Policy: Volatile
+        Filter size: 10
         History Policy: Keep Last
         Reliability Policy: Best Effort
         Value: /scan
@@ -190,6 +179,8 @@ Visualization Manager:
       Use rainbow: true
       Value: true
     - Alpha: 1
+      Binary representation: false
+      Binary threshold: 100
       Class: rviz_default_plugins/Map
       Color Scheme: map
       Draw Behind: true
@@ -198,6 +189,7 @@ Visualization Manager:
       Topic:
         Depth: 1
         Durability Policy: Transient Local
+        Filter size: 10
         History Policy: Keep Last
         Reliability Policy: Reliable
         Value: /map
@@ -225,6 +217,7 @@ Visualization Manager:
       Topic:
         Depth: 5
         Durability Policy: Volatile
+        Filter size: 10
         History Policy: Keep Last
         Reliability Policy: Best Effort
         Value: /particlecloud
@@ -232,6 +225,8 @@ Visualization Manager:
     - Class: rviz_common/Group
       Displays:
         - Alpha: 0.20000000298023224
+          Binary representation: false
+          Binary threshold: 100
           Class: rviz_default_plugins/Map
           Color Scheme: map
           Draw Behind: false
@@ -240,6 +235,7 @@ Visualization Manager:
           Topic:
             Depth: 1
             Durability Policy: Transient Local
+            Filter size: 10
             History Policy: Keep Last
             Reliability Policy: Reliable
             Value: /global_costmap/costmap
@@ -252,6 +248,8 @@ Visualization Manager:
           Use Timestamp: false
           Value: true
         - Alpha: 0.30000001192092896
+          Binary representation: false
+          Binary threshold: 100
           Class: rviz_default_plugins/Map
           Color Scheme: costmap
           Draw Behind: false
@@ -260,6 +258,7 @@ Visualization Manager:
           Topic:
             Depth: 1
             Durability Policy: Transient Local
+            Filter size: 10
             History Policy: Keep Last
             Reliability Policy: Reliable
             Value: /downsampled_costmap
@@ -294,6 +293,7 @@ Visualization Manager:
           Topic:
             Depth: 5
             Durability Policy: Volatile
+            Filter size: 10
             History Policy: Keep Last
             Reliability Policy: Reliable
             Value: /plan
@@ -325,6 +325,7 @@ Visualization Manager:
           Topic:
             Depth: 5
             Durability Policy: Volatile
+            Filter size: 10
             History Policy: Keep Last
             Reliability Policy: Reliable
             Value: /global_costmap/voxel_marked_cloud
@@ -339,6 +340,7 @@ Visualization Manager:
           Topic:
             Depth: 5
             Durability Policy: Volatile
+            Filter size: 10
             History Policy: Keep Last
             Reliability Policy: Reliable
             Value: /global_costmap/published_footprint
@@ -348,6 +350,8 @@ Visualization Manager:
     - Class: rviz_common/Group
       Displays:
         - Alpha: 0.5
+          Binary representation: false
+          Binary threshold: 100
           Class: rviz_default_plugins/Map
           Color Scheme: costmap
           Draw Behind: false
@@ -356,6 +360,7 @@ Visualization Manager:
           Topic:
             Depth: 1
             Durability Policy: Transient Local
+            Filter size: 10
             History Policy: Keep Last
             Reliability Policy: Reliable
             Value: /local_costmap/costmap
@@ -390,6 +395,7 @@ Visualization Manager:
           Topic:
             Depth: 5
             Durability Policy: Volatile
+            Filter size: 10
             History Policy: Keep Last
             Reliability Policy: Reliable
             Value: /local_plan
@@ -414,6 +420,7 @@ Visualization Manager:
           Topic:
             Depth: 5
             Durability Policy: Volatile
+            Filter size: 10
             History Policy: Keep Last
             Reliability Policy: Reliable
             Value: /local_costmap/published_footprint
@@ -445,6 +452,7 @@ Visualization Manager:
           Topic:
             Depth: 5
             Durability Policy: Volatile
+            Filter size: 10
             History Policy: Keep Last
             Reliability Policy: Reliable
             Value: /local_costmap/voxel_marked_cloud
@@ -543,17 +551,16 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
+        camera_depth_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
         camera_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        front_left_wheel_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        front_right_wheel_link:
+        front_caster_wheel_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -567,16 +574,24 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-        rear_left_wheel_link:
+        left_wheel_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        rear_right_wheel_link:
+        rear_caster_wheel_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
+        right_wheel_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+      Mass Properties:
+        Inertia: false
+        Mass: false
       Name: RobotModel
       TF Prefix: ""
       Update Interval: 0
@@ -595,6 +610,9 @@ Visualization Manager:
     - Class: rviz_default_plugins/Measure
       Line color: 128; 128; 0
     - Class: rviz_default_plugins/SetInitialPose
+      Covariance x: 0.25
+      Covariance y: 0.25
+      Covariance yaw: 0.06853891909122467
       Topic:
         Depth: 5
         Durability Policy: Volatile
@@ -616,7 +634,7 @@ Visualization Manager:
   Value: true
   Views:
     Current:
-      Angle: 0
+      Angle: -1.5599987506866455
       Class: rviz_default_plugins/TopDownOrtho
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
@@ -635,12 +653,12 @@ Visualization Manager:
 Window Geometry:
   Displays:
     collapsed: false
-  Height: 1136
+  Height: 1402
   Hide Left Dock: false
   Hide Right Dock: true
   Navigation 2:
     collapsed: false
-  QMainWindow State: 000000ff00000000fd00000004000000000000015600000416fc020000000afb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000003d00000311000000c900fffffffb00000018004e0061007600690067006100740069006f006e002000320100000354000000ff000000b700fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb0000001e005200650061006c00730065006e0073006500430061006d00650072006100000002c6000000c10000002800ffffff00000001000001c60000034afc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073000000003d0000034a000000a400fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000750000000b7fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000004420000003efc0100000002fb0000000800540069006d00650100000000000004420000000000000000fb0000000800540069006d00650100000000000004500000000000000000000005f40000041600000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd000000040000000000000240000004dafc020000000afb0000001200530065006c0065006300740069006f006e00000001e10000009b000000b200fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c0061007900730100000070000001860000018600fffffffb00000018004e0061007600690067006100740069006f006e002000320100000202000003480000034800fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb0000001e005200650061006c00730065006e0073006500430061006d00650072006100000002c6000000c10000002800ffffff00000001000001c60000034afc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073000000003d0000034a0000013800fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000750000000b7fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000004420000003efc0100000002fb0000000800540069006d00650100000000000004420000000000000000fb0000000800540069006d0065010000000000000450000000000000000000000504000004da00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   RealsenseCamera:
     collapsed: false
   Selection:
@@ -650,5 +668,5 @@ Window Geometry:
   Views:
     collapsed: true
   Width: 1872
-  X: 48
-  Y: 27
+  X: 132
+  Y: 64

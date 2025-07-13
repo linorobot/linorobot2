@@ -43,7 +43,7 @@ services:
     command: > 
       ros2 launch linorobot2_gazebo gazebo.launch.py 
       world:=/root/linorobot2_ws/install/linorobot2_gazebo/share/linorobot2_gazebo/worlds/${WORLD:-turtlebot3_world}.sdf
-      spawn_x:=${SPAWN_X:-0.0}
+      spawn_x:=${SPAWN_X:-0.5}
       spawn_y:=${SPAWN_Y:-0.0}
       spawn_yaw:=${SPAWN_Z:-0.0}
     devices:

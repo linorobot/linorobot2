@@ -56,7 +56,6 @@
     <gazebo reference="camera_link">
       <sensor name="camera" type="rgbd_camera">
         <topic>camera</topic>
-        <gz_frame_id>camera_link</gz_frame_id>
         <update_rate>30.0</update_rate>
         <always_on>true</always_on>
         <visualize>true</visualize>

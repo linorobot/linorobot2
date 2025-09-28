@@ -61,12 +61,33 @@ def generate_launch_description():
             description='Navigation map path'
         ),
 
+        DeclareLaunchArgument(
+            name='initial_pose_x',
+            default_value='0.5',
+            description='Initial robot X position'
+        ),
+
+        DeclareLaunchArgument(
+            name='initial_pose_y',
+            default_value='0.0',
+            description='Initial robot Y position'
+        ),
+
+        DeclareLaunchArgument(
+            name='initial_pose_yaw',
+            default_value='0.0',
+            description='Initial robot yaw'
+        ),
+
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(nav2_launch_path),
             launch_arguments={
                 'map': LaunchConfiguration("map"),
                 'use_sim_time': LaunchConfiguration("sim"),
-                'params_file': nav2_config_path
+                'params_file': nav2_config_path,
+                'initial_pose_x': LaunchConfiguration('initial_pose_x'),
+                'initial_pose_y': LaunchConfiguration('initial_pose_y'),
+                'initial_pose_yaw': LaunchConfiguration('initial_pose_yaw')
             }.items()
         ),
 

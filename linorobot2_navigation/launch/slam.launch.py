@@ -63,20 +63,41 @@ def generate_launch_description():
             default_value='false',
             description='Run rviz'
         ),
-
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(navigation_launch_path),
-            launch_arguments={
-                'use_sim_time': LaunchConfiguration("sim"),
-                'params_file': nav2_config_path
-            }.items()
+        DeclareLaunchArgument(
+            name='initial_pose_x',
+            default_value='0.5',
+            description='Initial robot X position'
         ),
+
+        DeclareLaunchArgument(
+            name='initial_pose_y',
+            default_value='0.0',
+            description='Initial robot Y position'
+        ),
+
+        DeclareLaunchArgument(
+            name='initial_pose_yaw',
+            default_value='0.0',
+            description='Initial robot yaw'
+        ),
+
+        # IncludeLaunchDescription(
+        #     PythonLaunchDescriptionSource(navigation_launch_path),
+        #     launch_arguments={
+        #         'use_sim_time': LaunchConfiguration("sim"),
+        #         'params_file': nav2_config_path
+        #     }.items()
+        # ),
 
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(slam_launch_path),
             launch_arguments={
                 'use_sim_time': LaunchConfiguration("sim"),
-                slam_param_name: slam_config_path
+                slam_param_name: slam_config_path,
+                # Pass the initial pose to slam_toolbox
+                'initial_pose_x': LaunchConfiguration('initial_pose_x'),
+                'initial_pose_y': LaunchConfiguration('initial_pose_y'),
+                'initial_pose_yaw': LaunchConfiguration('initial_pose_yaw')
             }.items()
         ),
 

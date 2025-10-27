@@ -8,7 +8,7 @@
     ros2 topic echo /model/diff_drive/odometry
 -->
 <sdf version="1.8">
-  <world name="playground">
+  <world name="turtlebot3_world">
 
     <gravity>0 0 -9.8</gravity>
     <physics default="0" name="default_physics" type="ode">

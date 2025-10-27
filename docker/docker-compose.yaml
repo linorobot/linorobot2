@@ -45,7 +45,6 @@ services:
       - GZ_IP=127.0.0.1
     command: > 
       ros2 launch linorobot2_gazebo gazebo.launch.py 
-      world:=empty_world.sdf
       spawn_y:=${SPAWN_Y:-0.0}
       spawn_yaw:=${SPAWN_Z:-0.0}
     devices:

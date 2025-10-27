@@ -6,6 +6,7 @@ services:
       dockerfile: docker/Dockerfile
       args:
         - BASE_IMAGE=${BASE_IMAGE}
+        - ROS_DISTRO=${ROS_DISTRO:-jazzy}
         - HOST_ARCH=${HOST_ARCH:-amd64}
         - VIRTUALGL_ENABLED=${VIRTUALGL_ENABLED:-true}
         - VIRTUALGL_VER=${VIRTUALGL_VER:-3.1}

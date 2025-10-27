@@ -1,30 +1,25 @@
 services:   
   base:
-    image: linorobot2-${DEPLOY}:${USE_ROS_DISTRO}
+    image: linorobot2:${BASE_IMAGE}
     build:
       context: ../
       dockerfile: docker/Dockerfile
       args:
-        - RUNTIME=${RUNTIME}
-        - DEPLOY=${DEPLOY}
-        - UBUNTU_VER=${UBUNTU_VER}
-        - USE_ROS_DISTRO=${USE_ROS_DISTRO}
-        - ROBOT_BASE=${ROBOT_BASE}
-        - LASER_SENSOR=${LASER_SENSOR} 
-        - DEPTH_SENSOR=${DEPTH_SENSOR}
-        - RMW=${RMW}
-      target: base
+        - BASE_IMAGE=${BASE_IMAGE}
+        - HOST_ARCH=${HOST_ARCH:-amd64}
+        - VIRTUALGL_ENABLED=${VIRTUALGL_ENABLED:-true}
+        - VIRTUALGL_VER=${VIRTUALGL_VER:-3.1}
+      target: final
 
   dev:
-    runtime: ${RUNTIME}
-    image: linorobot2-${DEPLOY}:${USE_ROS_DISTRO}
-    hostname: linorobot2-${USE_ROS_DISTRO}
+    image: linorobot2:${BASE_IMAGE}
     stdin_open: true
     tty: true
     network_mode: host
     ipc: host
     privileged: true
     environment:
+      - GPU_ID=${GPU_ID:-0}
       - ROS_DOMAIN_ID=${ROS_DOMAIN_ID}
       - LINOROBOT2_BASE=${ROBOT_BASE} 
       - LINOROBOT2_LASER_SENSOR=${LASER_SENSOR} 
@@ -37,13 +32,20 @@ services:
       - $HOME/.Xauthority:/root/.Xauthority
       - ../linorobot2_navigation/maps:/root/linorobot2_ws/src/linorobot2/linorobot2_navigation/maps:rw)
 
+  test:
+    container_name: test
+    extends: dev
+    command: sleep infinity
+
   gazebo:
     container_name: gazebo
     extends: dev
+    environment:
+      - IGN_IP=127.0.0.1
+      - GZ_IP=127.0.0.1
     command: > 
       ros2 launch linorobot2_gazebo gazebo.launch.py 
-      world:=/root/linorobot2_ws/install/linorobot2_gazebo/share/linorobot2_gazebo/worlds/${WORLD:-turtlebot3_world}.sdf
-      spawn_x:=${SPAWN_X:-0.5}
+      world:=empty_world.sdf
       spawn_y:=${SPAWN_Y:-0.0}
       spawn_yaw:=${SPAWN_Z:-0.0}
     devices:

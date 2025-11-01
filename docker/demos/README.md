@@ -16,3 +16,8 @@ export TMUXINATOR_CONFIG=$PWD
 ```
 tmuxinator start sim
 ```
+
+To stop the simulation, stop any process by pressing Ctrl + C and run:
+```
+tmuxinator stop sim
+```

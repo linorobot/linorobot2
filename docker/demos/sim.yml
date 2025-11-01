@@ -1,4 +1,5 @@
 name: linorobot2-sim-demo
+root: <%= ENV["TMUXINATOR_CONFIG"] %>
 on_project_start: 
 - export DISPLAY=:200
 - export WORLD=turtlebot3_world
@@ -6,9 +7,10 @@ on_project_start:
 - export RVIZ=true
 - export SPAWN_X=0.5
 
-on_project_exit: 
+on_project_stop: 
 - docker compose down
-tmux_options: -f $HOME/.config/tmuxinator/eztmux/.tmux.conf
+
+tmux_options: -f $HOME/.config/tmuxinator/default.conf
 windows:
   - main:
       panes:

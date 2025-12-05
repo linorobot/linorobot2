@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:arg name="namespace" default="" />
   <xacro:property name="base_length" value="0.445" />
   <xacro:property name="base_width" value="0.200" />
   <xacro:property name="base_height" value="0.129" />

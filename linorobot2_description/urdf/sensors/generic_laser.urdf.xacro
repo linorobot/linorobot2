@@ -11,7 +11,7 @@
       min_range="0.08"
       max_range="12.0"
       frame_id="laser"
-      topic_name="scan"
+      topic_name="/scan"
     >
       <xacro:insert_block name="origin" />
     </xacro:laser>

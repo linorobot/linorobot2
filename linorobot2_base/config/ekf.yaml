@@ -1,4 +1,4 @@
-ekf_filter_node:
+<robot_namespace>/ekf_filter_node:
     ros__parameters:
         frequency: 50.0
         two_d_mode: true
@@ -14,14 +14,14 @@ ekf_filter_node:
         #vx    , vy    , vz,
         #vroll , vpitch, vyaw,
         #ax    , ay    , az
-        odom0: odom/unfiltered
+        odom0: <robot_namespace>/odom/unfiltered
         odom0_config: [false, false, false,
                        false, false, false,
                        true, true, false,
                        false, false, true,
                        false, false, false]
 
-        imu0: imu/data
+        imu0: <robot_namespace>/imu/data
         imu0_config: [false, false, false,
                       false, false, false,
                       false, false, false,

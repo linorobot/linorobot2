@@ -23,6 +23,7 @@ from launch_ros.substitutions import FindPackageShare
 
 def generate_launch_description():
     robot_base = os.getenv('LINOROBOT2_BASE')
+    remappings = [("/tf", "tf"), ("/tf_static", "tf_static")]
 
     urdf_path = PathJoinSubstitution(
         [FindPackageShare("linorobot2_description"), "urdf/robots", f"{robot_base}.urdf.xacro"]
@@ -33,6 +34,12 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
+        DeclareLaunchArgument(
+            name='namespace',
+            default_value='linorobot2',
+            description='Robot Namespace'
+        ),
+
         DeclareLaunchArgument(
             name='urdf', 
             default_value=urdf_path,
@@ -59,30 +66,35 @@ def generate_launch_description():
 
         Node(
             package='joint_state_publisher',
+            namespace=LaunchConfiguration('namespace'),
             executable='joint_state_publisher',
             name='joint_state_publisher',
             condition=IfCondition(LaunchConfiguration("publish_joints")),
             parameters=[
                 {'use_sim_time': LaunchConfiguration('use_sim_time')}
-            ]
+            ],
+            remappings=remappings,
         ),
 
         Node(
             package='robot_state_publisher',
             executable='robot_state_publisher',
+            namespace=LaunchConfiguration('namespace'),
             name='robot_state_publisher',
             output='screen',
             parameters=[
                 {
                     'use_sim_time': LaunchConfiguration('use_sim_time'),
-                    'robot_description': Command(['xacro ', LaunchConfiguration('urdf')])
+                    'robot_description': Command(['xacro ', LaunchConfiguration('urdf'), ' namespace:=', LaunchConfiguration('namespace')])
                 }
-            ]
+            ],
+            remappings=remappings,
         ),
 
         Node(
             package='rviz2',
             executable='rviz2',
+            namespace=LaunchConfiguration('namespace'),
             name='rviz2',
             output='screen',
             arguments=['-d', rviz_config_path],

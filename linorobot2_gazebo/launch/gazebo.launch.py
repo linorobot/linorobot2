@@ -23,9 +23,12 @@ from launch_ros.actions import ComposableNodeContainer
 from launch_ros.descriptions import ComposableNode
 from launch.conditions import IfCondition
 
+from nav2_common.launch import ReplaceString
+
 
 def generate_launch_description():
     use_sim_time = True
+    remappings = [("/tf", "tf"), ("/tf_static", "tf_static")]
 
     gazebo_launch_path = PathJoinSubstitution(
         [FindPackageShare('ros_gz_sim'), 'launch', 'gz_sim.launch.py']
@@ -41,7 +44,7 @@ def generate_launch_description():
     )
     
     world_path = PathJoinSubstitution(
-        [FindPackageShare("linorobot2_gazebo"), "worlds", "turtlebot3_world.sdf"]
+        [FindPackageShare("linorobot2_gazebo"), "worlds", "playground.sdf"]
     )
 
     description_launch_path = PathJoinSubstitution(
@@ -49,6 +52,18 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
+        DeclareLaunchArgument(
+            name='namespace',
+            default_value='linorobot2',
+            description='Robot Namespace'
+        ),
+        
+        DeclareLaunchArgument(
+            name='use_simulator', 
+            default_value='true',
+            description='Enable Gazebo server'
+        ),
+
         DeclareLaunchArgument(
             name='gui', 
             default_value='true',
@@ -63,7 +78,7 @@ def generate_launch_description():
 
         DeclareLaunchArgument(
             name='odom_topic', 
-            default_value='/odom',
+            default_value='odometry',
             description='EKF out odometry topic'
         ),
         
@@ -99,14 +114,16 @@ def generate_launch_description():
         
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(gazebo_launch_path),
+            condition=IfCondition(LaunchConfiguration('use_simulator')),
             launch_arguments={
                 'gz_args': [' -r -s ', LaunchConfiguration('world')]
             }.items()
+            
         ),
 
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(gazebo_launch_path),
-            condition=IfCondition(LaunchConfiguration('gui')),
+            condition=IfCondition(LaunchConfiguration('use_simulator')),
             launch_arguments={
                 'gz_args': [' -g']
             }.items()
@@ -115,10 +132,11 @@ def generate_launch_description():
         Node(
             package='ros_gz_sim',
             executable='create',
+            namespace=LaunchConfiguration('namespace'),
             output='screen',
             arguments=[
                 '-topic', 'robot_description', 
-                '-entity', 'linorobot2', 
+                '-name', LaunchConfiguration('namespace'), 
                 '-x', LaunchConfiguration('spawn_x'),
                 '-y', LaunchConfiguration('spawn_y'),
                 '-z', LaunchConfiguration('spawn_z'),
@@ -129,47 +147,57 @@ def generate_launch_description():
         Node(
             package="ros_gz_bridge",
             executable="parameter_bridge",
-            arguments=[
-                "/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock",
-                "/cmd_vel@geometry_msgs/msg/Twist@gz.msgs.Twist",
-                "/odom/unfiltered@nav_msgs/msg/Odometry[gz.msgs.Odometry",
-                "/imu/data@sensor_msgs/msg/Imu[gz.msgs.IMU",
-                "/joint_states@sensor_msgs/msg/JointState[gz.msgs.Model",
-                "/scan@sensor_msgs/msg/LaserScan[gz.msgs.LaserScan",
-                "/camera/camera_info@sensor_msgs/msg/CameraInfo[gz.msgs.CameraInfo",
-                "/camera/image@sensor_msgs/msg/Image[gz.msgs.Image",
-                "/camera/depth_image@sensor_msgs/msg/Image[gz.msgs.Image",
-                "/camera/points@sensor_msgs/msg/PointCloud2[gz.msgs.PointCloudPacked",
+            namespace=LaunchConfiguration('namespace'),
+            parameters=[
+                {
+                    'use_sim_time': use_sim_time,
+                    'config_file': PathJoinSubstitution(
+                        [FindPackageShare("linorobot2_gazebo"), "config", "mecanum.yaml"]
+                    ),
+                    "expand_gz_topic_names": True,
+                }
             ],
-            remappings=[
-                ('/camera/camera_info', '/camera/color/camera_info'),
-                ('/camera/image', '/camera/color/image_raw'),
-                ('/camera/depth_image', '/camera/depth/image_rect_raw'),
-                ('/camera/points', '/camera/depth/color/points'),
-            ]
+            # remappings=[
+            #     ('camera/camera_info', 'camera/color/camera_info'),
+            #     ('camera/image', 'camera/color/image_raw'),
+            #     ('camera/depth_image', 'camera/depth/image_rect_raw'),
+            #     ('camera/points', 'camera/depth/color/points'),
+            # ]
         ),
 
         Node(
             package='linorobot2_gazebo',
+            namespace=LaunchConfiguration('namespace'),
             executable='command_timeout',
             name='command_timeout'
         ),
 
+        
+
         Node(
             package='robot_localization',
             executable='ekf_node',
+            namespace=LaunchConfiguration('namespace'),
             name='ekf_filter_node',
             output='screen',
             parameters=[
                 {'use_sim_time': use_sim_time}, 
-                ekf_config_path
+                ReplaceString(
+                    source_file=ekf_config_path,
+                    replacements={"<robot_namespace>": ("/", LaunchConfiguration("namespace"))},
+                )
             ],
-            remappings=[("odometry/filtered", LaunchConfiguration("odom_topic"))]
+            remappings=[
+                ("odometry/filtered", LaunchConfiguration("odom_topic")),
+                ("/tf", "tf"),
+                ("/tf_static", "tf_static")
+            ]
         ),
 
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(description_launch_path),
             launch_arguments={
+                'namespace': LaunchConfiguration('namespace'),
                 'use_sim_time': str(use_sim_time),
                 'publish_joints': 'false',
                 'urdf': LaunchConfiguration('urdf')

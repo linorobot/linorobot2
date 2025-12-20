@@ -10,7 +10,7 @@ FROM ${BASE_IMAGE:-gazebo-cuda} AS final
 ARG VIRTUALGL_VER="3.1"
 ARG VIRTUALGL_ENABLED="true"
 ARG HOST_ARCH=amd64
-ARG RMW=fastdds
+ARG RMW=fastrtps
 ARG USER=ros
 ARG ROS_DISTRO=jazzy
 
@@ -54,7 +54,7 @@ WORKDIR /home/${USER}/linorobot2_ws
 
 # Copy source code and import dependencies
 COPY --chown=${USER}:${USER} . /home/${USER}/linorobot2_ws/src/linorobot2
-RUN vcs import src < src/linorobot2/install.repos
+#RUN vcs import src < src/linorobot2/install.repos
 
 # Update rosdep and install dependencies
 RUN sudo apt-get update && \

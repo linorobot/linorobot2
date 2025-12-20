@@ -10,13 +10,9 @@ on_project_start:
 on_project_stop: 
 - docker compose down
 
-tmux_options: -f $HOME/.config/tmuxinator/default.conf
 windows:
   - main:
       panes:
       - docker compose up kasmvnc
       - docker compose up gazebo
       - docker compose up navigate
-
-      - # This is not limited to this line only
-      - # You can add as much panes as you want.

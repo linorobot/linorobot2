@@ -30,8 +30,9 @@ services:
       - WORLD=${WORLD:-playground}
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
-      - $HOME/.Xauthority:/root/.Xauthority
-      - ../linorobot2_navigation/maps:/root/linorobot2_ws/src/linorobot2/linorobot2_navigation/maps:rw)
+      - $HOME/.Xauthority:/home/ros/.Xauthority
+      - ../linorobot2_navigation/maps:/home/ros/linorobot2_ws/src/linorobot2/linorobot2_navigation/maps:rw)
+
 
   test:
     container_name: test
@@ -77,7 +78,7 @@ services:
     extends: dev
     command: >
       ros2 launch linorobot2_navigation navigation.launch.py
-      map:=/root/linorobot2_ws/src/linorobot2/linorobot2_navigation/maps/${WORLD:-turtlebot3_world}.yaml
+      map:=/home/ros/linorobot2_ws/src/linorobot2/linorobot2_navigation/maps/${WORLD:-turtlebot3_world}.yaml
       rviz:=${RVIZ:-false}
       sim:=${SIM:-false}
 
@@ -86,14 +87,14 @@ services:
     extends: dev
     command: >
       ros2 run nav2_map_server map_saver_cli 
-      -f /root/linorobot2_ws/src/linorobot2/linorobot2_navigation/maps/map
+      -f /home/ros/linorobot2_ws/src/linorobot2/linorobot2_navigation/maps/map
       --fmt png
       --ros-args -p save_map_timeout:=10000.
 
   rviz-nav:
     container_name: rviz-nav
     extends: dev
-    command: rviz2 -d /root/linorobot2_ws/src/linorobot2/linorobot2_navigation/rviz/linorobot2_navigation.rviz
+    command: rviz2 -d /home/ros/linorobot2_ws/src/linorobot2/linorobot2_navigation/rviz/linorobot2_navigation.rviz
 
   rviz:
     container_name: rviz
@@ -105,7 +106,7 @@ services:
     extends: dev
     command: sleep infinity
     volumes:
-    - ../.:/root/linorobot2_ws/src/linorobot2
+    - ../.:/home/ros/linorobot2_ws/src/linorobot2
 
   webtop:
     container_name: webtop

@@ -1,0 +1,20 @@
+name: linorobot2-sim-demo
+on_project_start: 
+- export DISPLAY=:200
+- export WORLD=turtlebot3_world
+- export SIM=true
+- export RVIZ=true
+- export SPAWN_X=0.5
+
+on_project_exit: 
+- docker compose down
+tmux_options: -f $HOME/.config/tmuxinator/eztmux/.tmux.conf
+windows:
+  - main:
+      panes:
+      - docker compose up webtop
+      - docker compose up gazebo
+      - docker compose up navigate
+
+      - # This is not limited to this line only
+      - # You can add as much panes as you want.

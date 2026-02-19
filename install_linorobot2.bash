@@ -13,6 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+echo ""
+echo "DEPRECATION WARNING: install_linorobot2.bash is deprecated and will be removed in a future release."
+echo "Please use install.bash instead. For example:"
+echo "  bash install.bash --base <robot_type> [--laser <laser_sensor>] [--depth <depth_sensor>]"
+echo ""
+
 set -e
 
 ROSDISTRO="$(printenv ROS_DISTRO)"

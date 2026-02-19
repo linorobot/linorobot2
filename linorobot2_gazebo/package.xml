@@ -19,7 +19,6 @@
     <exec_depend>depth_image_proc</exec_depend>
     <exec_depend>python-trimesh-pip</exec_depend>
     <exec_depend>python3-numpy</exec_depend>
-    <exec_depend>python3-pycollada</exec_depend>
     <exec_depend>python3-scipy</exec_depend>
     <exec_depend>python3-networkx</exec_depend>
     <!--     <exec_depend>python3-opencv-contrib-python</exec_depend>

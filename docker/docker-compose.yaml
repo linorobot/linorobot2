@@ -1,5 +1,5 @@
 services:   
-  base:
+  build:
     image: linorobot2:${BASE_IMAGE}
     build:
       context: ../
@@ -12,7 +12,7 @@ services:
         - VIRTUALGL_VER=${VIRTUALGL_VER:-3.1}
       target: final
 
-  dev:
+  base:
     image: linorobot2:${BASE_IMAGE}
     stdin_open: true
     tty: true
@@ -33,14 +33,9 @@ services:
       - $HOME/.Xauthority:/home/ros/.Xauthority
       - ../linorobot2_navigation/maps:/home/ros/linorobot2_ws/src/linorobot2/linorobot2_navigation/maps:rw)
 
-  test:
-    container_name: test
-    extends: dev
-    command: sleep infinity
-
   gazebo:
     container_name: gazebo
-    extends: dev
+    extends: base
     environment:
       - IGN_IP=127.0.0.1
       - GZ_IP=127.0.0.1
@@ -50,10 +45,20 @@ services:
       spawn_yaw:=${SPAWN_Z:-0.0}
     devices:
       - /dev:/dev
+    volumes:
+      - ../linorobot2_gazebo/worlds:/home/ros/linorobot2_ws/src/linorobot2/linorobot2_gazebo/worlds:rw)
+      - ../linorobot2_gazebo/models:/home/ros/linorobot2_ws/src/linorobot2/linorobot2_gazebo/models:rw)
+
+  dev:
+    container_name: dev
+    extends: base
+    command: sleep infinity
+    volumes:
+    - ../.:/home/ros/linorobot2_ws/src/linorobot2
 
   bringup:
     container_name: bringup
-    extends: dev
+    extends: base
     command: >
       ros2 launch linorobot2_bringup bringup.launch.py 
       custom_robot:=${CUSTOM_ROBOT}
@@ -66,7 +71,7 @@ services:
 
   slam:
     container_name: slam
-    extends: dev
+    extends: base
     command: >
       ros2 launch linorobot2_navigation slam.launch.py
       rviz:=${RVIZ:-false}
@@ -74,7 +79,7 @@ services:
 
   navigate:
     container_name: navigate
-    extends: dev
+    extends: base
     command: >
       ros2 launch linorobot2_navigation navigation.launch.py
       map:=/home/ros/linorobot2_ws/src/linorobot2/linorobot2_navigation/maps/${WORLD:-turtlebot3_world}.yaml
@@ -83,7 +88,7 @@ services:
 
   save-map:
     container_name: save-map
-    extends: dev
+    extends: base
     command: >
       ros2 run nav2_map_server map_saver_cli 
       -f /home/ros/linorobot2_ws/src/linorobot2/linorobot2_navigation/maps/map
@@ -92,20 +97,13 @@ services:
 
   rviz-nav:
     container_name: rviz-nav
-    extends: dev
+    extends: base
     command: rviz2 -d /home/ros/linorobot2_ws/src/linorobot2/linorobot2_navigation/rviz/linorobot2_navigation.rviz
 
   rviz:
     container_name: rviz
-    extends: dev
+    extends: base
     command: rviz2
-
-  debug:
-    container_name: debug
-    extends: dev
-    command: sleep infinity
-    volumes:
-    - ../.:/home/ros/linorobot2_ws/src/linorobot2
 
   webtop:
     container_name: webtop

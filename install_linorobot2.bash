@@ -78,7 +78,7 @@ function install_ydlidar {
     sudo echo  'KERNEL=="ttyUSB*", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", MODE:="0666", GROUP:="dialout",  SYMLINK+="ydlidar"' >/etc/udev/rules.d/ydlidar.rules
     sudo echo  'KERNEL=="ttyACM*", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="5740", MODE:="0666", GROUP:="dialout",  SYMLINK+="ydlidar"' >/etc/udev/rules.d/ydlidar-V2.rules
     sudo echo  'KERNEL=="ttyUSB*", ATTRS{idVendor}=="067b", ATTRS{idProduct}=="2303", MODE:="0666", GROUP:="dialout",  SYMLINK+="ydlidar"' >/etc/udev/rules.d/ydlidar-2303.rules
-    colcon build --symlink-install
+    colcon build
     source $WORKSPACE/install/setup.bash
 }
 
@@ -177,8 +177,7 @@ function install_zed {
     git clone https://github.com/stereolabs/zed-ros2-wrapper src/zed-ros2-wrapper
     git clone https://github.com/ros-perception/image_common -b $ROS_DISTRO src/image_common #https://github.com/stereolabs/zed-ros2-wrapper#image-transport-and-topic-subscriptions
     rosdep install --from-paths src --ignore-src -r -y
-    colcon build --symlink-install --cmake-args=-DCMAKE_BUILD_TYPE=Release
-    # colcon build --symlink-install --cmake-args=-DCMAKE_BUILD_TYPE=Release --cmake-args=-DCUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda-11.4
+    colcon build --cmake-args=-DCMAKE_BUILD_TYPE=Release
     source $WORKSPACE/install/setup.bash
     source ~/.bashrc
 }

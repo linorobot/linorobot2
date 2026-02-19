@@ -9,15 +9,14 @@ FROM ${BASE_IMAGE:-gazebo-cuda} AS final
 # Build arguments
 ARG VIRTUALGL_VER="3.1"
 ARG VIRTUALGL_ENABLED="true"
-ARG HOST_ARCH=amd64
-ARG RMW=fastrtps
+ARG TARGETARCH
 ARG USER=ros
 ARG ROS_DISTRO=jazzy
 
 # Set environment variables
-ENV RMW_IMPLEMENTATION=rmw_${RMW}_cpp \
-    DEBIAN_FRONTEND=noninteractive \
-    PIP_BREAK_SYSTEM_PACKAGES=1
+ENV DEBIAN_FRONTEND=noninteractive \
+    PIP_BREAK_SYSTEM_PACKAGES=1 \
+    VIRTUALGL_ENABLED=${VIRTUALGL_ENABLED}
 
 # Install VirtualGL and graphics libraries
 RUN if [ "${VIRTUALGL_ENABLED}" = "true" ]; then \
@@ -30,17 +29,9 @@ RUN if [ "${VIRTUALGL_ENABLED}" = "true" ]; then \
             libegl1 \
             libxext6 \
             libx11-6 && \
-        wget -O /tmp/virtualgl.deb "https://github.com/VirtualGL/virtualgl/releases/download/${VIRTUALGL_VER}/virtualgl_${VIRTUALGL_VER}_${HOST_ARCH}.deb" && \
+        wget -O /tmp/virtualgl.deb "https://github.com/VirtualGL/virtualgl/releases/download/${VIRTUALGL_VER}/virtualgl_${VIRTUALGL_VER}_${TARGETARCH}.deb" && \
         apt-get install -y /tmp/virtualgl.deb && \
         rm -f /tmp/virtualgl.deb && \
-        rm -rf /var/lib/apt/lists/* ; \
-    fi
-
-# Install RMW implementation (CycloneDDS if specified)
-RUN if [ "${RMW}" = "cyclonedds" ]; then \
-        apt-get update && \
-        apt-get install -y --no-install-recommends \
-            ros-${ROS_DISTRO}-rmw-cyclonedds-cpp && \
         rm -rf /var/lib/apt/lists/* ; \
     fi
 
@@ -48,13 +39,15 @@ RUN if [ "${RMW}" = "cyclonedds" ]; then \
 RUN mkdir -p /home/${USER}/linorobot2_ws/src && \
     chown -R ${USER}:${USER} /home/${USER}/linorobot2_ws
 
+# Copy and configure entrypoint before leaving root user
+COPY docker/entrypoint.sh /entrypoint.sh
+
 # Switch to ros user for building
 USER ${USER}
 WORKDIR /home/${USER}/linorobot2_ws
 
 # Copy source code and import dependencies
 COPY --chown=${USER}:${USER} . /home/${USER}/linorobot2_ws/src/linorobot2
-#RUN vcs import src < src/linorobot2/install.repos
 
 # Update rosdep and install dependencies
 RUN sudo apt-get update && \
@@ -66,28 +59,8 @@ RUN sudo apt-get update && \
         --os=ubuntu:$(lsb_release --codename | cut -f2) && \
     sudo rm -rf /var/lib/apt/lists/*
 
-# Install gz-python-bindings in user space
-RUN python3 -m pip install --user \
-    -i https://mbari-org.github.io/gz-python-bindings/simple \
-    gz-python-bindings
-
 # Build the workspace
-RUN /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash && \
-    colcon build --symlink-install"
-
-# Switch back to root for entrypoint setup
-USER root
-
-# Copy and configure entrypoint
-COPY docker/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh && \
-    if [ "${VIRTUALGL_ENABLED}" = "true" ]; then \
-        sed -i 's/"$@"/vglrun +v -d \/dev\/dri\/card${GPU_ID:-0} "$@"/' /entrypoint.sh; \
-    fi
-
-# Switch back to ros user for runtime
-USER ${USER}
-WORKDIR /home/${USER}/linorobot2_ws
+RUN /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash && colcon build"
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["/bin/bash"]
+CMD ["/bin/bash"] 

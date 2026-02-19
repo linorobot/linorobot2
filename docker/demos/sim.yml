@@ -1,4 +1,4 @@
-name: linorobot2-sim-demo
+name: sim
 root: <%= ENV["TMUXINATOR_CONFIG"] %>
 on_project_start: 
 - export DISPLAY=:200

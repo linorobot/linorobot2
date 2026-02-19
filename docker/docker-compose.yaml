@@ -33,7 +33,6 @@ services:
       - $HOME/.Xauthority:/home/ros/.Xauthority
       - ../linorobot2_navigation/maps:/home/ros/linorobot2_ws/src/linorobot2/linorobot2_navigation/maps:rw)
 
-
   test:
     container_name: test
     extends: dev

@@ -57,7 +57,7 @@ RUN /bin/bash -c " \
         source /opt/ros/${ROS_DISTRO}/setup.bash && \
         sudo apt-get update && \
         bash ${WORKSPACE}/src/linorobot2/install.bash \
-            ${ROBOT_BASE}:=${ROBOT_BASE} \
+            --base ${ROBOT_BASE} \
             ${LASER_SENSOR:+--laser ${LASER_SENSOR}} \
             ${DEPTH_SENSOR:+--depth ${DEPTH_SENSOR}} \
             --workspace ${WORKSPACE} && \

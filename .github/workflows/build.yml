@@ -14,7 +14,10 @@ jobs:
       - uses: actions/checkout@v4
       
       - name: Create fake udev directory for hardware builds
-        run: sudo mkdir -p /etc/udev/rules.d
+        run: |
+          sudo mkdir -p /etc/udev/rules.d
+          bash install.bash --laser ld19 --udev-only
+          cat /etc/udev/rules.d/ldlidar.rules
 
       - name: Install and Build ROS2 environment - ${{ matrix.base_image }}
         run: |

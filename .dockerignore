@@ -1,0 +1,18 @@
+# Version control
+.git
+.gitignore
+
+# Docker tooling (not needed inside the image; entrypoint.sh is the only exception)
+docker/Dockerfile
+docker/docker-compose.yaml
+docker/sim.yaml
+docker/demos/
+
+# Local colcon build artifacts
+build/
+install/
+log/
+
+# Python cache
+__pycache__/
+*.pyc

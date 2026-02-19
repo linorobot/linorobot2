@@ -22,9 +22,11 @@ The easiest way to install this package on the robot computer is to run the bash
 
     source /opt/ros/<ros_distro>/setup.bash
     cd /tmp
-    wget https://raw.githubusercontent.com/linorobot/linorobot2/${ROS_DISTRO}/install_linorobot2.bash
-    bash install_linorobot2.bash <robot_type> <laser_sensor> <depth_sensor>
+    wget https://raw.githubusercontent.com/linorobot/linorobot2/${ROS_DISTRO}/install.bash
+    bash install.bash --base <robot_type> [--laser <laser_sensor>] [--depth <depth_sensor>] [--workspace <path>]
     source ~/.bashrc
+
+Passing `--base` runs the full installation: workspace setup, sensor drivers, micro-ROS, and the linorobot2 package, and exports the required env variables to `~/.bashrc`. Omitting `--base` installs only the specified sensor drivers (useful when integrating into an existing workspace).
 
 robot_type:
 - `2wd` - 2 wheel drive robot.
@@ -48,8 +50,8 @@ laser_sensor:
 - `zed` - * [Zed](https://www.stereolabs.com/zed)
 - `zed2` - * [Zed 2](https://www.stereolabs.com/zed-2)
 - `zed2i` - * [Zed 2i](https://www.stereolabs.com/zed-2i)
-- `zedm` - * [Zed Mini](https://www.stereolabs.com/zed-mini) 
-- `-` - If the robot's sensor is not listed above.
+- `zedm` - * [Zed Mini](https://www.stereolabs.com/zed-mini)
+- Omit `--laser` if no laser sensor is used.
 
 Sensors marked with an asterisk are depth sensors. If a depth sensor is used as a laser sensor, the launch files will run [depthimage_to_laserscan](https://github.com/ros-perception/depthimage_to_laserscan) to convert the depth sensor's depth image to laser scans.
 

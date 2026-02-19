@@ -1,5 +1,15 @@
 ## Manual installation of linorobot2 package on robot computer
 
+> **Note:** For most users, the automated installer is the recommended approach instead of following this guide manually:
+>
+>     source /opt/ros/<ros_distro>/setup.bash
+>     cd /tmp
+>     wget https://raw.githubusercontent.com/linorobot/linorobot2/${ROS_DISTRO}/install.bash
+>     bash install.bash --base <robot_type> [--laser <laser_sensor>] [--depth <depth_sensor>]
+>     source ~/.bashrc
+>
+> Follow the steps below only if you need a custom installation.
+
 ### 1. Install micro-ROS and its dependencies
 
 #### 1.1 Source your ROS2 distro and workspace

@@ -61,6 +61,7 @@ RUN /bin/bash -c " \
             --base ${ROBOT_BASE} \
             ${LASER_SENSOR:+--laser ${LASER_SENSOR}} \
             ${DEPTH_SENSOR:+--depth ${DEPTH_SENSOR}} \
+            --exclude-udev \
             --workspace ${WORKSPACE} && \
         sudo rm -rf /var/lib/apt/lists/*; \
     fi"

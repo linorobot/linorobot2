@@ -30,13 +30,21 @@ function show_help {
     echo "                          Valid values: realsense, zed, zedm, zed2, zed2i,"
     echo "                                        oakd, oakdlite, oakdpro"
     echo "  -w, --workspace <path>  Target workspace path. (default: \$HOME/linorobot2_ws)"
+    echo "      --exclude-udev      Skip udev rule installation (e.g. for Docker builds)."
+    echo "      --udev-only         Only install udev rules; skip all driver and workspace"
+    echo "                          setup. --base is not required in this mode."
     echo "  -h, --help              Show this help message and exit."
     echo
     echo "Examples:"
     echo "  $(basename $0) --base 2wd --laser a1"
     echo "  $(basename $0) --base 4wd --laser realsense --depth realsense"
     echo "  $(basename $0) --laser ydlidar"
+    echo "  $(basename $0) --laser ld06 --udev-only"
+    echo "  $(basename $0) --base 2wd --laser a1 --exclude-udev"
 }
+
+EXCLUDE_UDEV=false
+UDEV_ONLY=false
 
 while [[ "$#" -gt 0 ]]; do
     case $1 in
@@ -44,13 +52,29 @@ while [[ "$#" -gt 0 ]]; do
         --laser|-l)     LASER_SENSOR="$2"; shift ;;
         --depth|-d)     DEPTH_SENSOR="$2"; shift ;;
         --workspace|-w) WORKSPACE="$2";    shift ;;
+        --exclude-udev) EXCLUDE_UDEV=true ;;
+        --udev-only)    UDEV_ONLY=true ;;
         --help|-h)      show_help; exit 0 ;;
         *) echo "Unknown argument: $1"; echo; show_help; exit 1 ;;
     esac
     shift
 done
 
-if [[ -z "$BASE" && -z "$LASER_SENSOR" && -z "$DEPTH_SENSOR" ]]; then
+if [ "$EXCLUDE_UDEV" = "true" ] && [ "$UDEV_ONLY" = "true" ]; then
+    echo "Error: --exclude-udev and --udev-only are mutually exclusive."
+    echo
+    show_help
+    exit 1
+fi
+
+if [ "$UDEV_ONLY" = "true" ]; then
+    if [[ -z "$LASER_SENSOR" && -z "$DEPTH_SENSOR" ]]; then
+        echo "Error: --udev-only requires at least --laser or --depth."
+        echo
+        show_help
+        exit 1
+    fi
+elif [[ -z "$BASE" && -z "$LASER_SENSOR" && -z "$DEPTH_SENSOR" ]]; then
     echo "Error: at least one option is required."
     echo
     show_help
@@ -69,7 +93,9 @@ LASER_SENSOR_ARRAY=(ydlidar xv11 ld06 ld19 stl27l a1 a2 a3 c1 s1 s2 s3 ldlidar)
 LASER_SENSOR_ARRAY+=(${DEPTH_SENSOR_ARRAY[@]})
 
 ####################################
-# Sensor install functions
+# Sensor driver functions
+# - Pure driver installation only; no udev operations.
+# - To add a new sensor: define install_<sensor> here.
 ####################################
 
 function install_cuda_jetson {
@@ -104,10 +130,7 @@ function install_ydlidar {
     cd $WORKSPACE
     git clone https://github.com/YDLIDAR/ydlidar_ros2_driver src/ydlidar_ros2_driver
     chmod 0777 src/ydlidar_ros2_driver/startup/*
-    sudo echo  'KERNEL=="ttyUSB*", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", MODE:="0666", GROUP:="dialout",  SYMLINK+="ydlidar"' >/etc/udev/rules.d/ydlidar.rules
-    sudo echo  'KERNEL=="ttyACM*", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="5740", MODE:="0666", GROUP:="dialout",  SYMLINK+="ydlidar"' >/etc/udev/rules.d/ydlidar-V2.rules
-    sudo echo  'KERNEL=="ttyUSB*", ATTRS{idVendor}=="067b", ATTRS{idProduct}=="2303", MODE:="0666", GROUP:="dialout",  SYMLINK+="ydlidar"' >/etc/udev/rules.d/ydlidar-2303.rules
-    colcon build --symlink-install
+    colcon build
     source $WORKSPACE/install/setup.bash
 }
 
@@ -116,22 +139,11 @@ function install_ldlidar_stl_ros2 {
     git clone https://github.com/hippo5329/ldlidar_stl_ros2.git src/ldlidar_stl_ros2
     colcon build
     source $WORKSPACE/install/setup.bash
-    cd /tmp
-    wget https://raw.githubusercontent.com/linorobot/ldlidar/ros2/ldlidar.rules
-    sudo cp ldlidar.rules /etc/udev/rules.d
 }
 
-function install_ld06 {
-    install_ldlidar_stl_ros2
-}
-
-function install_ld19 {
-    install_ldlidar_stl_ros2
-}
-
-function install_stl27l {
-    install_ldlidar_stl_ros2
-}
+function install_ld06    { install_ldlidar_stl_ros2; }
+function install_ld19    { install_ldlidar_stl_ros2; }
+function install_stl27l  { install_ldlidar_stl_ros2; }
 
 function install_ldlidar {
     cd $WORKSPACE
@@ -145,49 +157,24 @@ function install_sllidar_ros2 {
     git clone https://github.com/Slamtec/sllidar_ros2.git
     colcon build
     source $WORKSPACE/install/setup.bash
-    sudo cp sllidar_ros2/scripts/rplidar.rules /etc/udev/rules.d
 }
 
-function install_a1 {
-    install_sllidar_ros2
-}
-
-function install_a2 {
-    install_sllidar_ros2
-}
-
-function install_a3 {
-    install_sllidar_ros2
-}
-
-function install_c1 {
-    install_sllidar_ros2
-}
-
-function install_s1 {
-    install_sllidar_ros2
-}
-
-function install_s2 {
-    install_sllidar_ros2
-}
-
-function install_s3 {
-    install_sllidar_ros2
-}
+function install_a1  { install_sllidar_ros2; }
+function install_a2  { install_sllidar_ros2; }
+function install_a3  { install_sllidar_ros2; }
+function install_c1  { install_sllidar_ros2; }
+function install_s1  { install_sllidar_ros2; }
+function install_s2  { install_sllidar_ros2; }
+function install_s3  { install_sllidar_ros2; }
 
 function install_realsense {
     sudo apt install -y ros-$ROS_DISTRO-realsense2-camera
-    cd /tmp
-    wget https://raw.githubusercontent.com/IntelRealSense/librealsense/master/config/99-realsense-libusb.rules
-    sudo cp 99-realsense-libusb.rules /etc/udev/rules.d
 }
 
 function install_astra {
     cd $WORKSPACE
     sudo apt install -y libuvc-dev libopenni2-dev
     git clone https://github.com/linorobot/ros_astra_camera src/ros_astra_camera
-    sudo cp src/ros_astra_camera/56-orbbec-usb.rules /etc/udev/rules.d/
     colcon build
     source $WORKSPACE/install/setup.bash
 }
@@ -205,44 +192,117 @@ function install_zed {
         echo "Linux Machine not supported by Zed Camera"
         exit 1
     fi
-
     chmod +x zed_sdk
     ./zed_sdk -- silent
     cd $WORKSPACE
-
     git clone https://github.com/stereolabs/zed-ros2-wrapper src/zed-ros2-wrapper
     git clone https://github.com/ros-perception/image_common -b $ROS_DISTRO src/image_common #https://github.com/stereolabs/zed-ros2-wrapper#image-transport-and-topic-subscriptions
     rosdep install --from-paths src --ignore-src -r -y
-    colcon build --symlink-install --cmake-args=-DCMAKE_BUILD_TYPE=Release
-    # colcon build --symlink-install --cmake-args=-DCMAKE_BUILD_TYPE=Release --cmake-args=-DCUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda-11.4
+    colcon build --cmake-args=-DCMAKE_BUILD_TYPE=Release
     source $WORKSPACE/install/setup.bash
     source ~/.bashrc
 }
 
-function install_zedm {
-    install_zed
-}
-
-function install_zed2 {
-    install_zed
-}
-
-function install_zed2i {
-    install_zed
-}
+function install_zedm  { install_zed; }
+function install_zed2  { install_zed; }
+function install_zed2i { install_zed; }
 
 function install_oakd {
-    echo 'SUBSYSTEM=="usb", ATTRS{idVendor}=="03e7", MODE="0666"' | sudo tee /etc/udev/rules.d/80-movidius.rules
-    sudo udevadm control --reload-rules && sudo udevadm trigger
     sudo apt install ros-$ROS_DISTRO-depthai-ros
 }
 
-function install_oakdlite {
-    install_oakd
+function install_oakdlite { install_oakd; }
+function install_oakdpro  { install_oakd; }
+
+####################################
+# Sensor udev functions
+# - Pure udev rule installation only; no driver operations.
+# - Only defined for sensors that have udev rules.
+# - Sensors without a udev_<sensor> function have no udev rules.
+# - To add udev rules for a new sensor: define udev_<sensor> here.
+####################################
+
+function udev_ydlidar {
+    sudo echo  'KERNEL=="ttyUSB*", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", MODE:="0666", GROUP:="dialout",  SYMLINK+="ydlidar"' >/etc/udev/rules.d/ydlidar.rules
+    sudo echo  'KERNEL=="ttyACM*", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="5740", MODE:="0666", GROUP:="dialout",  SYMLINK+="ydlidar"' >/etc/udev/rules.d/ydlidar-V2.rules
+    sudo echo  'KERNEL=="ttyUSB*", ATTRS{idVendor}=="067b", ATTRS{idProduct}=="2303", MODE:="0666", GROUP:="dialout",  SYMLINK+="ydlidar"' >/etc/udev/rules.d/ydlidar-2303.rules
 }
 
-function install_oakdpro {
-    install_oakd
+function udev_ldlidar_stl_ros2 {
+    cd /tmp
+    wget https://raw.githubusercontent.com/linorobot/ldlidar/ros2/ldlidar.rules
+    sudo cp ldlidar.rules /etc/udev/rules.d
+}
+
+function udev_ld06   { udev_ldlidar_stl_ros2; }
+function udev_ld19   { udev_ldlidar_stl_ros2; }
+function udev_stl27l { udev_ldlidar_stl_ros2; }
+
+function udev_sllidar_ros2 {
+    # Clone repo if not already present (rules file lives inside the repo)
+    if [ ! -d "$WORKSPACE/sllidar_ros2" ]; then
+        cd $WORKSPACE
+        git clone https://github.com/Slamtec/sllidar_ros2.git
+    fi
+    sudo cp $WORKSPACE/sllidar_ros2/scripts/rplidar.rules /etc/udev/rules.d
+}
+
+function udev_a1  { udev_sllidar_ros2; }
+function udev_a2  { udev_sllidar_ros2; }
+function udev_a3  { udev_sllidar_ros2; }
+function udev_c1  { udev_sllidar_ros2; }
+function udev_s1  { udev_sllidar_ros2; }
+function udev_s2  { udev_sllidar_ros2; }
+function udev_s3  { udev_sllidar_ros2; }
+
+function udev_realsense {
+    cd /tmp
+    wget https://raw.githubusercontent.com/IntelRealSense/librealsense/master/config/99-realsense-libusb.rules
+    sudo cp 99-realsense-libusb.rules /etc/udev/rules.d
+}
+
+function udev_astra {
+    # Clone repo if not already present (rules file lives inside the repo)
+    if [ ! -d "$WORKSPACE/src/ros_astra_camera" ]; then
+        cd $WORKSPACE
+        git clone https://github.com/linorobot/ros_astra_camera src/ros_astra_camera
+    fi
+    sudo cp $WORKSPACE/src/ros_astra_camera/56-orbbec-usb.rules /etc/udev/rules.d/
+}
+
+function udev_oakd {
+    echo 'SUBSYSTEM=="usb", ATTRS{idVendor}=="03e7", MODE="0666"' | sudo tee /etc/udev/rules.d/80-movidius.rules
+    sudo udevadm control --reload-rules && sudo udevadm trigger
+}
+
+function udev_oakdlite { udev_oakd; }
+function udev_oakdpro  { udev_oakd; }
+
+# No udev rules: xv11, ldlidar, zed, zedm, zed2, zed2i, cuda_jetson
+
+####################################
+# Sensor install dispatcher
+# Centralises all --exclude-udev / --udev-only logic in one place.
+# Sensor functions above stay clean and flag-free.
+####################################
+
+function run_install {
+    local sensor=$1
+
+    if [ "$UDEV_ONLY" = "true" ]; then
+        if declare -f "udev_${sensor}" > /dev/null 2>&1; then
+            udev_${sensor}
+        else
+            echo "No udev operation for ${sensor}"
+        fi
+        return
+    fi
+
+    install_${sensor}
+
+    if [ "$EXCLUDE_UDEV" != "true" ] && declare -f "udev_${sensor}" > /dev/null 2>&1; then
+        udev_${sensor}
+    fi
 }
 
 ####################################
@@ -338,20 +398,27 @@ fi
 ####################################
 
 echo
-if [[ -n "$BASE" && "$BASE" != "ci" ]]
-    then
-        echo "Installing linorobot2 on robot computer."
-        echo
-        echo "===========SUMMARY============"
-        echo "ROBOT TYPE   : $BASE"
-        echo "LASER SENSOR : $LASER_SENSOR"
-        echo "DEPTH SENSOR : $DEPTH_SENSOR"
+if [ "$UDEV_ONLY" = "true" ]; then
+    echo "Installing udev rules only."
+    echo
+    echo "===========SUMMARY============"
+    echo "LASER SENSOR : $LASER_SENSOR"
+    echo "DEPTH SENSOR : $DEPTH_SENSOR"
+elif [[ -n "$BASE" && "$BASE" != "ci" ]]; then
+    echo "Installing linorobot2 on robot computer."
+    echo
+    echo "===========SUMMARY============"
+    echo "ROBOT TYPE   : $BASE"
+    echo "LASER SENSOR : $LASER_SENSOR"
+    echo "DEPTH SENSOR : $DEPTH_SENSOR"
+    echo "EXCLUDE UDEV : $EXCLUDE_UDEV"
 else
-        echo "Installing sensor drivers."
-        echo
-        echo "===========SUMMARY============"
-        echo "LASER SENSOR : $LASER_SENSOR"
-        echo "DEPTH SENSOR : $DEPTH_SENSOR"
+    echo "Installing sensor drivers."
+    echo
+    echo "===========SUMMARY============"
+    echo "LASER SENSOR : $LASER_SENSOR"
+    echo "DEPTH SENSOR : $DEPTH_SENSOR"
+    echo "EXCLUDE UDEV : $EXCLUDE_UDEV"
 fi
 echo
 
@@ -363,31 +430,33 @@ echo
 # Installation
 ####################################
 
-if [[ -n "$BASE" && "$BASE" != "ci" ]]
-    then
-        setup_workspace
-else
-        mkdir -p $WORKSPACE/src
+if [ "$UDEV_ONLY" != "true" ]; then
+    if [[ -n "$BASE" && "$BASE" != "ci" ]]
+        then
+            setup_workspace
+    else
+            mkdir -p $WORKSPACE/src
+    fi
 fi
 
-#### Sensor drivers
+#### Sensor install (driver + udev, or just udev, depending on flags)
 if [[ -n "$LASER_SENSOR" ]] && (printf '%s\n' "${LASER_SENSOR_ARRAY[@]}" | grep -xq "$LASER_SENSOR")
     then
-        install_$LASER_SENSOR
+        run_install $LASER_SENSOR
 fi
 
 if [[ -n "$DEPTH_SENSOR" ]] && (printf '%s\n' "${DEPTH_SENSOR_ARRAY[@]}" | grep -xq "$DEPTH_SENSOR")
     then
-        install_$DEPTH_SENSOR
+        run_install $DEPTH_SENSOR
 fi
 
 if [[ "$BASE" == "ci" ]]
     then
-        for key in "${!LASER_SENSOR_ARRAY[@]}"; do install_${LASER_SENSOR_ARRAY[$key]}; done
+        for key in "${!LASER_SENSOR_ARRAY[@]}"; do run_install ${LASER_SENSOR_ARRAY[$key]}; done
 fi
 
 #### Full install (robot computer only)
-if [[ -n "$BASE" && "$BASE" != "ci" ]]
+if [[ -n "$BASE" && "$BASE" != "ci" ]] && [ "$UDEV_ONLY" != "true" ]
     then
         install_microros
         setup_microros_agent
@@ -409,7 +478,7 @@ fi
 echo
 echo "INSTALLATION DONE."
 echo
-if [[ -n "$BASE" && "$BASE" != "ci" ]]
+if [[ -n "$BASE" && "$BASE" != "ci" ]] && [ "$UDEV_ONLY" != "true" ]
     then
         echo "Restart your robot computer now."
 fi

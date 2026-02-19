@@ -13,10 +13,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
+      - name: Create fake udev directory for hardware builds
+        run: sudo mkdir -p /etc/udev/rules.d
+
       - name: Install and Build ROS2 environment - ${{ matrix.base_image }}
         run: |
           export ROS_DISTRO=jazzy
           export ROBOT_BASE=2wd
+          export LASER_SENSOR=ld19
           export BASE_IMAGE=${{ matrix.base_image }}
           export 
           cd docker && docker compose build

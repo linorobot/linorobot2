@@ -36,6 +36,7 @@ services:
       - $HOME/.Xauthority:/home/ros/.Xauthority
       - ../linorobot2_navigation/maps:/home/ros/linorobot2_ws/src/linorobot2/linorobot2_navigation/maps:rw)
 
+
   gazebo:
     container_name: gazebo
     extends: base
@@ -69,8 +70,8 @@ services:
       odom_topic:=${ODOM_TOPIC}
       base_serial_port:=${BASE_SERIAL_PORT}
       joy:=${LAUNCH_JOYSTICK}
-    devices:
-      - /dev:/dev
+    # devices:
+    #   - /dev/ldlidar:/dev/ldlidar # This is needed for all hardware to be connected
 
   slam:
     container_name: slam

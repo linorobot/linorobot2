@@ -356,14 +356,14 @@ function install_linorobot2_pkg {
 # Validation
 ####################################
 
-if [[ "$ROSDISTRO" == "" || "$ROSDISTRO" == "<unknown>" ]]
+if [ "$UDEV_ONLY" != "true" ] && [[ "$ROSDISTRO" == "" || "$ROSDISTRO" == "<unknown>" ]]
     then
         echo "No ROS2 distro detected"
         echo "Try running $ source /opt/ros/<ros_distro>/setup.bash and try again."
         exit 1
 fi
 
-if [[ -n "$BASE" && "$BASE" != "ci" ]] && !(printf '%s\n' "${ROBOT_TYPE_ARRAY[@]}" | grep -xq "$BASE")
+if [[ -n "$BASE" ]] && !(printf '%s\n' "${ROBOT_TYPE_ARRAY[@]}" | grep -xq "$BASE")
     then
         echo "Invalid linorobot base: $BASE"
         echo
@@ -373,7 +373,7 @@ if [[ -n "$BASE" && "$BASE" != "ci" ]] && !(printf '%s\n' "${ROBOT_TYPE_ARRAY[@]
         exit 1
 fi
 
-if [[ "$BASE" != "ci" && -n "$LASER_SENSOR" ]] && !(printf '%s\n' "${LASER_SENSOR_ARRAY[@]}" | grep -xq "$LASER_SENSOR")
+if [[ -n "$LASER_SENSOR" ]] && !(printf '%s\n' "${LASER_SENSOR_ARRAY[@]}" | grep -xq "$LASER_SENSOR")
     then
         echo "Invalid linorobot2 laser sensor: $LASER_SENSOR"
         echo
@@ -383,7 +383,7 @@ if [[ "$BASE" != "ci" && -n "$LASER_SENSOR" ]] && !(printf '%s\n' "${LASER_SENSO
         exit 1
 fi
 
-if [[ "$BASE" != "ci" && -n "$DEPTH_SENSOR" ]] && !(printf '%s\n' "${DEPTH_SENSOR_ARRAY[@]}" | grep -xq "$DEPTH_SENSOR")
+if [[ -n "$DEPTH_SENSOR" ]] && !(printf '%s\n' "${DEPTH_SENSOR_ARRAY[@]}" | grep -xq "$DEPTH_SENSOR")
     then
         echo "Invalid linorobot2 depth sensor: $DEPTH_SENSOR"
         echo
@@ -404,7 +404,7 @@ if [ "$UDEV_ONLY" = "true" ]; then
     echo "===========SUMMARY============"
     echo "LASER SENSOR : $LASER_SENSOR"
     echo "DEPTH SENSOR : $DEPTH_SENSOR"
-elif [[ -n "$BASE" && "$BASE" != "ci" ]]; then
+elif [[ -n "$BASE" ]]; then
     echo "Installing linorobot2 on robot computer."
     echo
     echo "===========SUMMARY============"
@@ -431,7 +431,7 @@ echo
 ####################################
 
 if [ "$UDEV_ONLY" != "true" ]; then
-    if [[ -n "$BASE" && "$BASE" != "ci" ]]
+    if [[ -n "$BASE" ]]
         then
             setup_workspace
     else
@@ -450,13 +450,8 @@ if [[ -n "$DEPTH_SENSOR" ]] && (printf '%s\n' "${DEPTH_SENSOR_ARRAY[@]}" | grep 
         run_install $DEPTH_SENSOR
 fi
 
-if [[ "$BASE" == "ci" ]]
-    then
-        for key in "${!LASER_SENSOR_ARRAY[@]}"; do run_install ${LASER_SENSOR_ARRAY[$key]}; done
-fi
-
 #### Full install (robot computer only)
-if [[ -n "$BASE" && "$BASE" != "ci" ]] && [ "$UDEV_ONLY" != "true" ]
+if [[ -n "$BASE" ]] && [ "$UDEV_ONLY" != "true" ]
     then
         install_microros
         setup_microros_agent
@@ -478,7 +473,7 @@ fi
 echo
 echo "INSTALLATION DONE."
 echo
-if [[ -n "$BASE" && "$BASE" != "ci" ]] && [ "$UDEV_ONLY" != "true" ]
+if [[ -n "$BASE" ]] && [ "$UDEV_ONLY" != "true" ]
     then
         echo "Restart your robot computer now."
 fi

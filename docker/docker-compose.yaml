@@ -8,6 +8,9 @@ services:
         - BASE_IMAGE=${BASE_IMAGE}
         - ROS_DISTRO=${ROS_DISTRO:-jazzy}
         - HOST_ARCH=${HOST_ARCH:-amd64}
+        - ROBOT_BASE=${ROBOT_BASE}
+        - LASER_SENSOR=${LASER_SENSOR}
+        - DEPTH_SENSOR=${DEPTH_SENSOR}
         - VIRTUALGL_ENABLED=${VIRTUALGL_ENABLED:-true}
         - VIRTUALGL_VER=${VIRTUALGL_VER:-3.1}
       target: final

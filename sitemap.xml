@@ -1,43 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-         <loc>https://linorobot.github.io/linorobot2/01_overview/</loc>
+         <loc>https://linorobot.github.io/linorobot2/</loc>
          <lastmod>2026-02-22</lastmod>
     </url>
     <url>
-         <loc>https://linorobot.github.io/linorobot2/02_installation/</loc>
+         <loc>https://linorobot.github.io/linorobot2/base_controller/</loc>
          <lastmod>2026-02-22</lastmod>
     </url>
     <url>
-         <loc>https://linorobot.github.io/linorobot2/03_base_controller/</loc>
+         <loc>https://linorobot.github.io/linorobot2/docker/</loc>
          <lastmod>2026-02-22</lastmod>
     </url>
     <url>
-         <loc>https://linorobot.github.io/linorobot2/04_odometry/</loc>
+         <loc>https://linorobot.github.io/linorobot2/installation/</loc>
          <lastmod>2026-02-22</lastmod>
     </url>
     <url>
-         <loc>https://linorobot.github.io/linorobot2/05_sensors/</loc>
+         <loc>https://linorobot.github.io/linorobot2/mapping/</loc>
          <lastmod>2026-02-22</lastmod>
     </url>
     <url>
-         <loc>https://linorobot.github.io/linorobot2/06_transforms/</loc>
+         <loc>https://linorobot.github.io/linorobot2/navigation/</loc>
          <lastmod>2026-02-22</lastmod>
     </url>
     <url>
-         <loc>https://linorobot.github.io/linorobot2/07_mapping/</loc>
+         <loc>https://linorobot.github.io/linorobot2/odometry/</loc>
          <lastmod>2026-02-22</lastmod>
     </url>
     <url>
-         <loc>https://linorobot.github.io/linorobot2/08_navigation/</loc>
+         <loc>https://linorobot.github.io/linorobot2/sensors/</loc>
          <lastmod>2026-02-22</lastmod>
     </url>
     <url>
-         <loc>https://linorobot.github.io/linorobot2/09_docker/</loc>
+         <loc>https://linorobot.github.io/linorobot2/tools/</loc>
          <lastmod>2026-02-22</lastmod>
     </url>
     <url>
-         <loc>https://linorobot.github.io/linorobot2/10_tools/</loc>
+         <loc>https://linorobot.github.io/linorobot2/transforms/</loc>
          <lastmod>2026-02-22</lastmod>
     </url>
 </urlset>

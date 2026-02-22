@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://linorobot.github.io/linorobot2/03_base_controller/">
+        <link rel="canonical" href="https://linorobot.github.io/linorobot2/base_controller/">
       
       
-        <link rel="prev" href="../02_installation/">
+        <link rel="prev" href="../installation/">
       
       
-        <link rel="next" href="../04_odometry/">
+        <link rel="next" href="../odometry/">
       
       
         
@@ -232,7 +232,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../01_overview/" class="md-nav__link">
+      <a href=".." class="md-nav__link">
         
   
   
@@ -259,7 +259,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../02_installation/" class="md-nav__link">
+      <a href="../installation/" class="md-nav__link">
         
   
   
@@ -493,7 +493,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../04_odometry/" class="md-nav__link">
+      <a href="../odometry/" class="md-nav__link">
         
   
   
@@ -520,7 +520,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../05_sensors/" class="md-nav__link">
+      <a href="../sensors/" class="md-nav__link">
         
   
   
@@ -547,7 +547,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../06_transforms/" class="md-nav__link">
+      <a href="../transforms/" class="md-nav__link">
         
   
   
@@ -574,7 +574,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../07_mapping/" class="md-nav__link">
+      <a href="../mapping/" class="md-nav__link">
         
   
   
@@ -601,7 +601,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../08_navigation/" class="md-nav__link">
+      <a href="../navigation/" class="md-nav__link">
         
   
   
@@ -628,7 +628,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../09_docker/" class="md-nav__link">
+      <a href="../docker/" class="md-nav__link">
         
   
   
@@ -655,7 +655,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../10_tools/" class="md-nav__link">
+      <a href="../tools/" class="md-nav__link">
         
   
   
@@ -868,7 +868,7 @@
 <li><strong>Reads</strong> the wheel encoders to measure how far each wheel has actually turned.</li>
 <li><strong>Publishes</strong> odometry: how far the robot has traveled and how it has rotated, as <code>nav_msgs/Odometry</code> on <code>odom/unfiltered</code>.</li>
 </ol>
-<p>In addition to the drive wheels, the microcontroller also reads an onboard IMU (Inertial Measurement Unit) and publishes its raw data. This IMU data will later be fused with wheel odometry to produce a more accurate position estimate. That's covered in the <a href="../04_odometry/">Odometry</a> section.</p>
+<p>In addition to the drive wheels, the microcontroller also reads an onboard IMU (Inertial Measurement Unit) and publishes its raw data. This IMU data will later be fused with wheel odometry to produce a more accurate position estimate. That's covered in the <a href="04_odometry.md">Odometry</a> section.</p>
 <h2 id="topics">Topics<a class="headerlink" href="#topics" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -997,7 +997,7 @@
 </code></pre></div>
 <p>If you enable the magnetometer, you'll also need to update <code>ekf.yaml</code> to use the yaw from the fused IMU. Both the IMU and magnetometer must be calibrated first. An uncalibrated magnetometer will cause the robot's pose to drift and rotate unpredictably.</p>
 <h2 id="whats-next">What's Next<a class="headerlink" href="#whats-next" title="Permanent link">&para;</a></h2>
-<p>Once the base controller is running and connected, you have a robot that can receive velocity commands and report its position. The next step is to make that position estimate more reliable using sensor fusion. See <a href="../04_odometry/">Odometry</a>.</p>
+<p>Once the base controller is running and connected, you have a robot that can receive velocity commands and report its position. The next step is to make that position estimate more reliable using sensor fusion. See <a href="04_odometry.md">Odometry</a>.</p>
 
 
 
@@ -1033,7 +1033,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../02_installation/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Installation">
+          <a href="../installation/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Installation">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1050,7 +1050,7 @@
         
         
           
-          <a href="../04_odometry/" class="md-footer__link md-footer__link--next" aria-label="Next: Odometry">
+          <a href="../odometry/" class="md-footer__link md-footer__link--next" aria-label="Next: Odometry">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next

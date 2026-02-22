@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://linorobot.github.io/linorobot2/02_installation/">
+        <link rel="canonical" href="https://linorobot.github.io/linorobot2/sensors/">
       
       
-        <link rel="prev" href="../01_overview/">
+        <link rel="prev" href="../odometry/">
       
       
-        <link rel="next" href="../03_base_controller/">
+        <link rel="next" href="../transforms/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>Installation - linorobot2</title>
+        <title>Setting Up Sensors - linorobot2</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#installation" class="md-skip">
+        <a href="#setting-up-sensors" class="md-skip">
           Skip to content
         </a>
       
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Installation
+              Setting Up Sensors
             
           </span>
         </div>
@@ -232,7 +232,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../01_overview/" class="md-nav__link">
+      <a href=".." class="md-nav__link">
         
   
   
@@ -240,6 +240,87 @@
     
   
     Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../base_controller/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Base Controller
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../odometry/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Odometry
   
 
     
@@ -275,7 +356,7 @@
   <span class="md-ellipsis">
     
   
-    Installation
+    Setting Up Sensors
   
 
     
@@ -293,7 +374,7 @@
   <span class="md-ellipsis">
     
   
-    Installation
+    Setting Up Sensors
   
 
     
@@ -319,22 +400,33 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#real-robot" class="md-nav__link">
+  <a href="#why-sensors-matter" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Real Robot
+        Why Sensors Matter
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Real Robot">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#real-hardware-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Real Hardware Setup
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Real Hardware Setup">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#prerequisites" class="md-nav__link">
+  <a href="#supported-laser-sensors" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Prerequisites
+        Supported Laser Sensors
       
     </span>
   </a>
@@ -342,32 +434,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#hardware-and-robot-firmware" class="md-nav__link">
+  <a href="#supported-depth-sensors" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Hardware and Robot Firmware
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#robot-computer-installation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Robot Computer Installation
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#host-machine-rviz-remote-visualization" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Host Machine: RVIZ (Remote Visualization)
+        Supported Depth Sensors
       
     </span>
   </a>
@@ -392,10 +462,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#21-install-linorobot2-package" class="md-nav__link">
+  <a href="#sensor-urdf-files" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2.1 Install linorobot2 Package
+        Sensor URDF Files
       
     </span>
   </a>
@@ -403,10 +473,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#22-define-robot-type" class="md-nav__link">
+  <a href="#how-sensors-are-included" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2.2 Define Robot Type
+        How Sensors Are Included
       
     </span>
   </a>
@@ -414,10 +484,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#docker-option" class="md-nav__link">
+  <a href="#configuring-sensor-positions" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Docker Option
+        Configuring Sensor Positions
       
     </span>
   </a>
@@ -426,6 +496,28 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#published-topics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Published Topics
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#whats-next" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What's Next
+      
+    </span>
+  </a>
   
 </li>
       
@@ -444,88 +536,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../03_base_controller/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Base Controller
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../04_odometry/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Odometry
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../05_sensors/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Setting Up Sensors
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../06_transforms/" class="md-nav__link">
+      <a href="../transforms/" class="md-nav__link">
         
   
   
@@ -552,7 +563,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../07_mapping/" class="md-nav__link">
+      <a href="../mapping/" class="md-nav__link">
         
   
   
@@ -579,7 +590,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../08_navigation/" class="md-nav__link">
+      <a href="../navigation/" class="md-nav__link">
         
   
   
@@ -606,7 +617,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../09_docker/" class="md-nav__link">
+      <a href="../docker/" class="md-nav__link">
         
   
   
@@ -633,7 +644,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../10_tools/" class="md-nav__link">
+      <a href="../tools/" class="md-nav__link">
         
   
   
@@ -680,22 +691,33 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#real-robot" class="md-nav__link">
+  <a href="#why-sensors-matter" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Real Robot
+        Why Sensors Matter
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Real Robot">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#real-hardware-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Real Hardware Setup
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Real Hardware Setup">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#prerequisites" class="md-nav__link">
+  <a href="#supported-laser-sensors" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Prerequisites
+        Supported Laser Sensors
       
     </span>
   </a>
@@ -703,32 +725,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#hardware-and-robot-firmware" class="md-nav__link">
+  <a href="#supported-depth-sensors" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Hardware and Robot Firmware
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#robot-computer-installation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Robot Computer Installation
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#host-machine-rviz-remote-visualization" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Host Machine: RVIZ (Remote Visualization)
+        Supported Depth Sensors
       
     </span>
   </a>
@@ -753,10 +753,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#21-install-linorobot2-package" class="md-nav__link">
+  <a href="#sensor-urdf-files" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2.1 Install linorobot2 Package
+        Sensor URDF Files
       
     </span>
   </a>
@@ -764,10 +764,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#22-define-robot-type" class="md-nav__link">
+  <a href="#how-sensors-are-included" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2.2 Define Robot Type
+        How Sensors Are Included
       
     </span>
   </a>
@@ -775,10 +775,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#docker-option" class="md-nav__link">
+  <a href="#configuring-sensor-positions" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Docker Option
+        Configuring Sensor Positions
       
     </span>
   </a>
@@ -787,6 +787,28 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#published-topics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Published Topics
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#whats-next" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What's Next
+      
+    </span>
+  </a>
   
 </li>
       
@@ -810,50 +832,22 @@
   
 
 
-<h1 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h1>
-<p>This guide walks you through installing linorobot2, whether you're setting up a real robot or running the Gazebo simulation on your desktop.</p>
-<h2 id="real-robot">Real Robot<a class="headerlink" href="#real-robot" title="Permanent link">&para;</a></h2>
-<h3 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h3>
-<p>The robot computer needs ROS2 Jazzy. If you haven't installed it yet, use the <a href="https://github.com/linorobot/ros2me">ros2me</a> installer script, which has been tested on x86 and ARM boards including Raspberry Pi 4 and Nvidia Jetson series.</p>
-<h3 id="hardware-and-robot-firmware">Hardware and Robot Firmware<a class="headerlink" href="#hardware-and-robot-firmware" title="Permanent link">&para;</a></h3>
-<p>Before diving into software, you'll need to build the robot and flash the microcontroller firmware. All hardware documentation (schematics, wiring, firmware) is at <a href="https://github.com/linorobot/linorobot2_hardware">linorobot2_hardware</a>.</p>
-<h3 id="robot-computer-installation">Robot Computer Installation<a class="headerlink" href="#robot-computer-installation" title="Permanent link">&para;</a></h3>
-<p>The easiest way to get everything installed on the robot computer is to run the provided bash script from the root of this repository. It installs all dependencies, sets the required environment variables, and creates a <code>linorobot2_ws</code> in your <code>$HOME</code> directory.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nb">source</span><span class="w"> </span>/opt/ros/&lt;ros_distro&gt;/setup.bash
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nb">cd</span><span class="w"> </span>/tmp
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>wget<span class="w"> </span>https://raw.githubusercontent.com/linorobot/linorobot2/<span class="si">${</span><span class="nv">ROS_DISTRO</span><span class="si">}</span>/install.bash
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>bash<span class="w"> </span>install.bash<span class="w"> </span>--base<span class="w"> </span>&lt;robot_type&gt;<span class="w"> </span><span class="o">[</span>--laser<span class="w"> </span>&lt;laser_sensor&gt;<span class="o">]</span><span class="w"> </span><span class="o">[</span>--depth<span class="w"> </span>&lt;depth_sensor&gt;<span class="o">]</span><span class="w"> </span><span class="o">[</span>--workspace<span class="w"> </span>&lt;path&gt;<span class="o">]</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="nb">source</span><span class="w"> </span>~/.bashrc
-</code></pre></div>
-<p>Passing <code>--base</code> runs the full installation: workspace setup, sensor drivers, micro-ROS, and the linorobot2 package, and exports the required env variables to <code>~/.bashrc</code>. Omitting <code>--base</code> installs only the specified sensor drivers, which is useful when integrating into an existing workspace.</p>
-<p><strong>robot_type:</strong> choose the base that matches your hardware:</p>
+<h1 id="setting-up-sensors">Setting Up Sensors<a class="headerlink" href="#setting-up-sensors" title="Permanent link">&para;</a></h1>
+<h2 id="why-sensors-matter">Why Sensors Matter<a class="headerlink" href="#why-sensors-matter" title="Permanent link">&para;</a></h2>
+<p>Odometry tells the robot where it <em>thinks</em> it is based on how far its wheels have turned. Sensors tell the robot what's actually around it. Without sensors, the robot is blind. It can't detect obstacles, can't build a map of its environment, and can't localize itself within a map.</p>
+<p>linorobot2 uses two primary sensor categories:</p>
+<ul>
+<li><strong>LaserScan (2D lidar)</strong> — produces a 360° ring of distance measurements on a flat plane. This is the primary sensor for obstacle detection and SLAM.</li>
+<li><strong>Depth camera (RGBD)</strong> — produces a 3D point cloud and/or depth image. Useful for detecting obstacles that a floor-level lidar misses (like table legs above the scan plane).</li>
+</ul>
+<p>Both sensor types publish data that Nav2 and SLAM Toolbox consume directly.</p>
+<h2 id="real-hardware-setup">Real Hardware Setup<a class="headerlink" href="#real-hardware-setup" title="Permanent link">&para;</a></h2>
+<p>On a physical robot, sensors are configured during installation via the <code>install.bash</code> script's <code>--laser</code> and <code>--depth</code> arguments. The script installs the appropriate ROS2 driver packages and sets environment variables that the bringup launch files use to start the correct driver at boot.</p>
+<h3 id="supported-laser-sensors">Supported Laser Sensors<a class="headerlink" href="#supported-laser-sensors" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
-<th>Value</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>2wd</code></td>
-<td>2 wheel drive robot</td>
-</tr>
-<tr>
-<td><code>4wd</code></td>
-<td>4 wheel drive robot</td>
-</tr>
-<tr>
-<td><code>mecanum</code></td>
-<td>Mecanum drive robot</td>
-</tr>
-</tbody>
-</table>
-<p><strong>laser_sensor:</strong> choose your 2D lidar or depth-camera-as-lidar:</p>
-<table>
-<thead>
-<tr>
-<th>Value</th>
+<th>Argument</th>
 <th>Sensor</th>
 </tr>
 </thead>
@@ -928,12 +922,12 @@
 </tr>
 </tbody>
 </table>
-<p>Sensors marked with <code>*</code> are depth cameras. When used as a laser sensor, the launch files will run <a href="https://github.com/ros-perception/depthimage_to_laserscan">depthimage_to_laserscan</a> to convert the depth image to a laser scan. Omit <code>--laser</code> if you have no laser sensor.</p>
-<p><strong>depth_sensor:</strong> choose your RGBD camera (optional, separate from the laser sensor):</p>
+<p>Sensors marked with <code>*</code> are depth cameras used as laser sensors. When configured this way, the launch files automatically run <a href="https://github.com/ros-perception/depthimage_to_laserscan">depthimage_to_laserscan</a> to convert the depth image into a <code>sensor_msgs/LaserScan</code> message on the <code>/scan</code> topic, making it compatible with SLAM Toolbox and Nav2 without any extra configuration.</p>
+<h3 id="supported-depth-sensors">Supported Depth Sensors<a class="headerlink" href="#supported-depth-sensors" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
-<th>Value</th>
+<th>Argument</th>
 <th>Sensor</th>
 </tr>
 </thead>
@@ -972,65 +966,97 @@
 </tr>
 </tbody>
 </table>
-<p>For a manual installation without the script, follow the <a href="../ROBOT_INSTALLATION.md">ROBOT_INSTALLATION.md</a> guide.</p>
-<h3 id="host-machine-rviz-remote-visualization">Host Machine: RVIZ (Remote Visualization)<a class="headerlink" href="#host-machine-rviz-remote-visualization" title="Permanent link">&para;</a></h3>
-<p>When working with a physical robot, you'll want to visualize what's happening from a separate machine (the laser scan, the map being built, and the robot's pose) without running a full simulation. Install <a href="https://github.com/linorobot/linorobot2_viz">linorobot2_viz</a> on your host machine for this purpose:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">cd</span><span class="w"> </span>&lt;host_machine_ws&gt;
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/linorobot/linorobot2_viz<span class="w"> </span>src/linorobot2_viz
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>rosdep<span class="w"> </span>update<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>rosdep<span class="w"> </span>install<span class="w"> </span>--from-path<span class="w"> </span>src<span class="w"> </span>--ignore-src<span class="w"> </span>-y
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>colcon<span class="w"> </span>build
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="nb">source</span><span class="w"> </span>install/setup.bash
-</code></pre></div>
-<p>This package is kept separate from the main installation to keep the robot computer lean. Both machines must be on the same ROS2 network (same <code>ROS_DOMAIN_ID</code>).</p>
-<hr />
 <h2 id="simulation">Simulation<a class="headerlink" href="#simulation" title="Permanent link">&para;</a></h2>
-<p>The simulation runs on your host/development machine and does not require a physical robot at all. It's a great way to tune Nav2 parameters and test your configuration before deploying to hardware.</p>
-<h3 id="21-install-linorobot2-package">2.1 Install linorobot2 Package<a class="headerlink" href="#21-install-linorobot2-package" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nb">cd</span><span class="w"> </span>&lt;host_machine_ws&gt;
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>git<span class="w"> </span>clone<span class="w"> </span>-b<span class="w"> </span><span class="nv">$ROS_DISTRO</span><span class="w"> </span>https://github.com/linorobot/linorobot2<span class="w"> </span>src/linorobot2
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>rosdep<span class="w"> </span>update<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>rosdep<span class="w"> </span>install<span class="w"> </span>--from-path<span class="w"> </span>src<span class="w"> </span>--ignore-src<span class="w"> </span>-y<span class="w"> </span>--skip-keys<span class="w"> </span>microxrcedds_agent<span class="w"> </span>--skip-keys<span class="w"> </span>micro_ros_agent
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>colcon<span class="w"> </span>build
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="nb">source</span><span class="w"> </span>install/setup.bash
+<p>In Gazebo, sensors are defined in URDF/xacro files and are already configured for each robot type. You don't need to install any additional drivers. Gazebo simulates the sensors and publishes on the same topics as real hardware.</p>
+<h3 id="sensor-urdf-files">Sensor URDF Files<a class="headerlink" href="#sensor-urdf-files" title="Permanent link">&para;</a></h3>
+<p>Sensor definitions live in <code>linorobot2_description/urdf/sensors/</code>:</p>
+<p><strong><code>generic_laser.urdf.xacro</code></strong> — Simulates a 360° 2D lidar:
+- 360 rays, full 360° sweep
+- Range: 0.08 m to 12.0 m
+- Update rate: 10 Hz
+- Publishes to: <code>/scan</code> (topic name: <code>scan</code>, frame ID: <code>laser</code>)</p>
+<p><strong><code>depth_sensor.urdf.xacro</code></strong> — Simulates an RGBD camera:
+- Resolution: 640 × 480
+- Update rate: 30 Hz
+- Horizontal FOV: ~86°
+- Depth range: 0.3 m to 100 m
+- Publishes to: <code>/camera</code> topics</p>
+<p><strong><code>imu.urdf.xacro</code></strong> — Simulates an IMU:
+- Publishes to: <code>/imu/data</code> at 50 Hz</p>
+<h3 id="how-sensors-are-included">How Sensors Are Included<a class="headerlink" href="#how-sensors-are-included" title="Permanent link">&para;</a></h3>
+<p>Each robot type's URDF (<code>linorobot2_description/urdf/robots/&lt;robot_type&gt;.urdf.xacro</code>) already includes the laser and depth sensor:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">&lt;xacro:generic_laser&gt;</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nt">&lt;xacro:insert_block</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;laser_pose&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="nt">&lt;/xacro:generic_laser&gt;</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="nt">&lt;xacro:depth_sensor&gt;</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">  </span><span class="nt">&lt;xacro:insert_block</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;depth_sensor_pose&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="nt">&lt;/xacro:depth_sensor&gt;</span>
 </code></pre></div>
-<blockquote>
-<p>The <code>--skip-keys</code> flags prevent a known <a href="https://github.com/micro-ROS/micro_ros_setup/issues/138">rosdep issue</a> with micro-ROS keys. Always include them when running <code>rosdep install</code> on this workspace.</p>
-</blockquote>
-<h3 id="22-define-robot-type">2.2 Define Robot Type<a class="headerlink" href="#22-define-robot-type" title="Permanent link">&para;</a></h3>
-<p>Set the <code>LINOROBOT2_BASE</code> environment variable to match the robot base you want to simulate:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;export LINOROBOT2_BASE=2wd&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>~/.bashrc
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="nb">source</span><span class="w"> </span>~/.bashrc
+<p>The <code>laser_pose</code> and <code>depth_sensor_pose</code> blocks define where the sensors are mounted relative to <code>base_link</code>. These are defined in the robot's properties file.</p>
+<h3 id="configuring-sensor-positions">Configuring Sensor Positions<a class="headerlink" href="#configuring-sensor-positions" title="Permanent link">&para;</a></h3>
+<p>Sensor positions are set in <code>linorobot2_description/urdf/&lt;robot_type&gt;_properties.urdf.xacro</code>. For example, in <code>2wd_properties.urdf.xacro</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">&lt;xacro:property</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;laser_pose&quot;</span><span class="nt">&gt;</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">&lt;origin</span><span class="w"> </span><span class="na">xyz=</span><span class="s">&quot;0.12 0 0.33&quot;</span><span class="w"> </span><span class="na">rpy=</span><span class="s">&quot;0 0 0&quot;</span><span class="nt">/&gt;</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="nt">&lt;/xacro:property&gt;</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="nt">&lt;xacro:property</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;depth_sensor_pose&quot;</span><span class="nt">&gt;</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">  </span><span class="nt">&lt;origin</span><span class="w"> </span><span class="na">xyz=</span><span class="s">&quot;0.14 0.0 0.045&quot;</span><span class="w"> </span><span class="na">rpy=</span><span class="s">&quot;0 0 0&quot;</span><span class="nt">/&gt;</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="nt">&lt;/xacro:property&gt;</span>
 </code></pre></div>
-<p>Available values: <code>2wd</code>, <code>4wd</code>, <code>mecanum</code>.</p>
-<p>The simulation package already includes RVIZ configurations, so you do not need to install <code>linorobot2_viz</code> separately when using the simulation.</p>
-<h3 id="docker-option">Docker Option<a class="headerlink" href="#docker-option" title="Permanent link">&para;</a></h3>
-<p>If you're not running Ubuntu 24.04 with ROS2 Jazzy, Docker is a convenient alternative for running the simulation.</p>
-<p>Install Docker using the <a href="https://docs.docker.com/engine/install/">official instructions</a> and follow the <a href="https://docs.docker.com/engine/install/linux-postinstall/">post-install steps</a> to run Docker without <code>sudo</code>.</p>
-<p>Customize <code>docker/.env</code> if needed (e.g., to change the robot type), then build the image:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/linorobot/linorobot2.git
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="nb">cd</span><span class="w"> </span>linorobot2/docker
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>docker<span class="w"> </span>compose<span class="w"> </span>build
+<p>All positions are measured from <code>base_link</code> (the center of the robot's base). Change these values to match where your sensors are physically mounted. After editing the xacro file, rebuild the workspace:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nb">cd</span><span class="w"> </span>&lt;robot_computer_ws&gt;
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>colcon<span class="w"> </span>build
 </code></pre></div>
-<p>To start the simulation in Docker:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Start Gazebo</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>gazebo
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="c1"># In another terminal, start navigation</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SIM</span><span class="o">=</span><span class="nb">true</span>
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>navigate
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>
-<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="c1"># In another terminal, open RViz</span>
-<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>rviz-nav
+<p>More details on how these poses relate to the TF tree are covered in the <a href="06_transforms.md">Transforms</a> section.</p>
+<h2 id="published-topics">Published Topics<a class="headerlink" href="#published-topics" title="Permanent link">&para;</a></h2>
+<p>After bringup (real robot) or Gazebo launch (simulation), the following sensor topics should be active:</p>
+<table>
+<thead>
+<tr>
+<th>Topic</th>
+<th>Type</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/scan</code></td>
+<td><code>sensor_msgs/LaserScan</code></td>
+<td>2D lidar or depth-to-laser conversion</td>
+</tr>
+<tr>
+<td><code>/camera/image_raw</code></td>
+<td><code>sensor_msgs/Image</code></td>
+<td>Depth camera RGB image</td>
+</tr>
+<tr>
+<td><code>/camera/depth/image_raw</code></td>
+<td><code>sensor_msgs/Image</code></td>
+<td>Depth camera depth image</td>
+</tr>
+<tr>
+<td><code>/imu/data</code></td>
+<td><code>sensor_msgs/Imu</code></td>
+<td>IMU data. Published directly by the firmware (no magnetometer) or by the Madgwick filter (magnetometer enabled). In simulation, published by <code>imu.urdf.xacro</code></td>
+</tr>
+<tr>
+<td><code>/imu/data_raw</code></td>
+<td><code>sensor_msgs/Imu</code></td>
+<td>Raw IMU acceleration and gyro data (real robot only, when magnetometer is enabled)</td>
+</tr>
+<tr>
+<td><code>/imu/mag</code></td>
+<td><code>sensor_msgs/MagneticField</code></td>
+<td>Magnetometer data (real robot only, when magnetometer is present)</td>
+</tr>
+</tbody>
+</table>
+<p>You can verify a sensor is publishing correctly with:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>ros2<span class="w"> </span>topic<span class="w"> </span>hz<span class="w"> </span>/scan
 </code></pre></div>
-<p>If you see "Unable to create rendering window" errors with Gazebo, run <code>xhost +</code> first.</p>
-<p>You can also run everything in daemon mode:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SIM</span><span class="o">=</span><span class="nb">true</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">RVIZ</span><span class="o">=</span><span class="nb">true</span>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d<span class="w"> </span>gazebo<span class="w"> </span>navigate
-</code></pre></div>
-<p>Shut everything down with <code>docker compose down</code>. View logs with <code>docker compose logs</code>.</p>
-<blockquote>
-<p>Note: you cannot mix Docker containers with native ROS2 nodes on the same machine.</p>
-</blockquote>
+<h2 id="whats-next">What's Next<a class="headerlink" href="#whats-next" title="Permanent link">&para;</a></h2>
+<p>With sensors publishing data, the next step is to make sure the robot knows <em>where</em> those sensors are mounted in 3D space, so it can correctly interpret a laser hit at angle X as being at a specific position in the world. That's the job of the TF tree, covered in <a href="06_transforms.md">Setting Up Transforms</a>.</p>
 
 
 
@@ -1066,7 +1092,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../01_overview/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Overview">
+          <a href="../odometry/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Odometry">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1076,20 +1102,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                Overview
+                Odometry
               </div>
             </div>
           </a>
         
         
           
-          <a href="../03_base_controller/" class="md-footer__link md-footer__link--next" aria-label="Next: Base Controller">
+          <a href="../transforms/" class="md-footer__link md-footer__link--next" aria-label="Next: Setting Up Transforms">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Base Controller
+                Setting Up Transforms
               </div>
             </div>
             <div class="md-footer__button md-icon">

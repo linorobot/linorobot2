@@ -1,0 +1,1136 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Build your own autonomous ROS2 robot with Nav2, SLAM Toolbox, and robot_localization">
+      
+      
+      
+        <link rel="canonical" href="https://linorobot.github.io/linorobot2/02_installation/">
+      
+      
+        <link rel="prev" href="../01_overview/">
+      
+      
+        <link rel="next" href="../03_base_controller/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.2">
+    
+    
+      
+        <title>Installation - linorobot2</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#installation" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="linorobot2" class="md-header__button md-logo" aria-label="linorobot2" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            linorobot2
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Installation
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/linorobot/linorobot2" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    linorobot/linorobot2
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="linorobot2" class="md-nav__button md-logo" aria-label="linorobot2" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    linorobot2
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/linorobot/linorobot2" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    linorobot/linorobot2
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01_overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#real-robot" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Real Robot
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Real Robot">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hardware-and-robot-firmware" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hardware and Robot Firmware
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#robot-computer-installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Robot Computer Installation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#host-machine-rviz-remote-visualization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Host Machine: RVIZ (Remote Visualization)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Simulation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Simulation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-install-linorobot2-package" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Install linorobot2 Package
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-define-robot-type" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 Define Robot Type
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#docker-option" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Docker Option
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03_base_controller/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Base Controller
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04_odometry/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Odometry
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05_sensors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Setting Up Sensors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06_transforms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Setting Up Transforms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07_mapping/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mapping
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08_navigation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Navigation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09_docker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Docker
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10_tools/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Simulation Tools
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#real-robot" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Real Robot
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Real Robot">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hardware-and-robot-firmware" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hardware and Robot Firmware
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#robot-computer-installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Robot Computer Installation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#host-machine-rviz-remote-visualization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Host Machine: RVIZ (Remote Visualization)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Simulation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Simulation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-install-linorobot2-package" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Install linorobot2 Package
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-define-robot-type" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 Define Robot Type
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#docker-option" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Docker Option
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h1>
+<p>This guide walks you through installing linorobot2, whether you're setting up a real robot or running the Gazebo simulation on your desktop.</p>
+<h2 id="real-robot">Real Robot<a class="headerlink" href="#real-robot" title="Permanent link">&para;</a></h2>
+<h3 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h3>
+<p>The robot computer needs ROS2 Jazzy. If you haven't installed it yet, use the <a href="https://github.com/linorobot/ros2me">ros2me</a> installer script, which has been tested on x86 and ARM boards including Raspberry Pi 4 and Nvidia Jetson series.</p>
+<h3 id="hardware-and-robot-firmware">Hardware and Robot Firmware<a class="headerlink" href="#hardware-and-robot-firmware" title="Permanent link">&para;</a></h3>
+<p>Before diving into software, you'll need to build the robot and flash the microcontroller firmware. All hardware documentation (schematics, wiring, firmware) is at <a href="https://github.com/linorobot/linorobot2_hardware">linorobot2_hardware</a>.</p>
+<h3 id="robot-computer-installation">Robot Computer Installation<a class="headerlink" href="#robot-computer-installation" title="Permanent link">&para;</a></h3>
+<p>The easiest way to get everything installed on the robot computer is to run the provided bash script from the root of this repository. It installs all dependencies, sets the required environment variables, and creates a <code>linorobot2_ws</code> in your <code>$HOME</code> directory.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nb">source</span><span class="w"> </span>/opt/ros/&lt;ros_distro&gt;/setup.bash
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nb">cd</span><span class="w"> </span>/tmp
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>wget<span class="w"> </span>https://raw.githubusercontent.com/linorobot/linorobot2/<span class="si">${</span><span class="nv">ROS_DISTRO</span><span class="si">}</span>/install.bash
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>bash<span class="w"> </span>install.bash<span class="w"> </span>--base<span class="w"> </span>&lt;robot_type&gt;<span class="w"> </span><span class="o">[</span>--laser<span class="w"> </span>&lt;laser_sensor&gt;<span class="o">]</span><span class="w"> </span><span class="o">[</span>--depth<span class="w"> </span>&lt;depth_sensor&gt;<span class="o">]</span><span class="w"> </span><span class="o">[</span>--workspace<span class="w"> </span>&lt;path&gt;<span class="o">]</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="nb">source</span><span class="w"> </span>~/.bashrc
+</code></pre></div>
+<p>Passing <code>--base</code> runs the full installation: workspace setup, sensor drivers, micro-ROS, and the linorobot2 package, and exports the required env variables to <code>~/.bashrc</code>. Omitting <code>--base</code> installs only the specified sensor drivers, which is useful when integrating into an existing workspace.</p>
+<p><strong>robot_type:</strong> choose the base that matches your hardware:</p>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>2wd</code></td>
+<td>2 wheel drive robot</td>
+</tr>
+<tr>
+<td><code>4wd</code></td>
+<td>4 wheel drive robot</td>
+</tr>
+<tr>
+<td><code>mecanum</code></td>
+<td>Mecanum drive robot</td>
+</tr>
+</tbody>
+</table>
+<p><strong>laser_sensor:</strong> choose your 2D lidar or depth-camera-as-lidar:</p>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Sensor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>a1</code></td>
+<td><a href="https://www.slamtec.com/en/Lidar/A1">RPLIDAR A1</a></td>
+</tr>
+<tr>
+<td><code>a2</code></td>
+<td><a href="https://www.slamtec.ai/product/slamtec-rplidar-a2/">RPLIDAR A2</a></td>
+</tr>
+<tr>
+<td><code>a3</code></td>
+<td><a href="https://www.slamtec.ai/product/slamtec-rplidar-a3/">RPLIDAR A3</a></td>
+</tr>
+<tr>
+<td><code>s1</code></td>
+<td><a href="https://www.slamtec.com/en/Lidar/S1">RPLIDAR S1</a></td>
+</tr>
+<tr>
+<td><code>s2</code></td>
+<td><a href="https://www.slamtec.com/en/Lidar/S2">RPLIDAR S2</a></td>
+</tr>
+<tr>
+<td><code>s3</code></td>
+<td><a href="https://www.slamtec.com/en/Lidar/S3">RPLIDAR S3</a></td>
+</tr>
+<tr>
+<td><code>c1</code></td>
+<td><a href="https://www.slamtec.ai/product/slamtec-rplidar-a3/">RPLIDAR C1</a></td>
+</tr>
+<tr>
+<td><code>ld06</code></td>
+<td><a href="https://www.ldrobot.com/ProductDetails?sensor_name=STL-06P">LD06 LIDAR</a></td>
+</tr>
+<tr>
+<td><code>ld19</code></td>
+<td><a href="https://www.ldrobot.com/ProductDetails?sensor_name=STL-19P">LD19/LD300 LIDAR</a></td>
+</tr>
+<tr>
+<td><code>stl27l</code></td>
+<td><a href="https://www.ldrobot.com/ProductDetails?sensor_name=STL-27L">STL27L LIDAR</a></td>
+</tr>
+<tr>
+<td><code>ydlidar</code></td>
+<td><a href="https://www.ydlidar.com/lidars.html">YDLIDAR</a></td>
+</tr>
+<tr>
+<td><code>xv11</code></td>
+<td><a href="http://xv11hacking.rohbotics.com/mainSpace/home.html">XV11</a></td>
+</tr>
+<tr>
+<td><code>realsense</code> *</td>
+<td><a href="https://www.intelrealsense.com/stereo-depth/">Intel RealSense</a> D435, D435i</td>
+</tr>
+<tr>
+<td><code>zed</code> *</td>
+<td><a href="https://www.stereolabs.com/zed">Zed</a></td>
+</tr>
+<tr>
+<td><code>zed2</code> *</td>
+<td><a href="https://www.stereolabs.com/zed-2">Zed 2</a></td>
+</tr>
+<tr>
+<td><code>zed2i</code> *</td>
+<td><a href="https://www.stereolabs.com/zed-2i">Zed 2i</a></td>
+</tr>
+<tr>
+<td><code>zedm</code> *</td>
+<td><a href="https://www.stereolabs.com/zed-mini">Zed Mini</a></td>
+</tr>
+</tbody>
+</table>
+<p>Sensors marked with <code>*</code> are depth cameras. When used as a laser sensor, the launch files will run <a href="https://github.com/ros-perception/depthimage_to_laserscan">depthimage_to_laserscan</a> to convert the depth image to a laser scan. Omit <code>--laser</code> if you have no laser sensor.</p>
+<p><strong>depth_sensor:</strong> choose your RGBD camera (optional, separate from the laser sensor):</p>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Sensor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>realsense</code></td>
+<td><a href="https://www.intelrealsense.com/stereo-depth/">Intel RealSense</a> D435, D435i</td>
+</tr>
+<tr>
+<td><code>zed</code></td>
+<td><a href="https://www.stereolabs.com/zed">Zed</a></td>
+</tr>
+<tr>
+<td><code>zed2</code></td>
+<td><a href="https://www.stereolabs.com/zed-2">Zed 2</a></td>
+</tr>
+<tr>
+<td><code>zed2i</code></td>
+<td><a href="https://www.stereolabs.com/zed-2i">Zed 2i</a></td>
+</tr>
+<tr>
+<td><code>zedm</code></td>
+<td><a href="https://www.stereolabs.com/zed-mini">Zed Mini</a></td>
+</tr>
+<tr>
+<td><code>oakd</code></td>
+<td><a href="https://shop.luxonis.com/collections/oak-cameras-1/products/oak-d">OAK-D</a></td>
+</tr>
+<tr>
+<td><code>oakdlite</code></td>
+<td><a href="https://shop.luxonis.com/collections/oak-cameras-1/products/oak-d-lite-1">OAK-D Lite</a></td>
+</tr>
+<tr>
+<td><code>oakdpro</code></td>
+<td><a href="https://shop.luxonis.com/collections/oak-cameras-1/products/oak-d-pro">OAK-D Pro</a></td>
+</tr>
+</tbody>
+</table>
+<p>For a manual installation without the script, follow the <a href="../ROBOT_INSTALLATION.md">ROBOT_INSTALLATION.md</a> guide.</p>
+<h3 id="host-machine-rviz-remote-visualization">Host Machine: RVIZ (Remote Visualization)<a class="headerlink" href="#host-machine-rviz-remote-visualization" title="Permanent link">&para;</a></h3>
+<p>When working with a physical robot, you'll want to visualize what's happening from a separate machine (the laser scan, the map being built, and the robot's pose) without running a full simulation. Install <a href="https://github.com/linorobot/linorobot2_viz">linorobot2_viz</a> on your host machine for this purpose:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">cd</span><span class="w"> </span>&lt;host_machine_ws&gt;
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/linorobot/linorobot2_viz<span class="w"> </span>src/linorobot2_viz
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>rosdep<span class="w"> </span>update<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>rosdep<span class="w"> </span>install<span class="w"> </span>--from-path<span class="w"> </span>src<span class="w"> </span>--ignore-src<span class="w"> </span>-y
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>colcon<span class="w"> </span>build
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="nb">source</span><span class="w"> </span>install/setup.bash
+</code></pre></div>
+<p>This package is kept separate from the main installation to keep the robot computer lean. Both machines must be on the same ROS2 network (same <code>ROS_DOMAIN_ID</code>).</p>
+<hr />
+<h2 id="simulation">Simulation<a class="headerlink" href="#simulation" title="Permanent link">&para;</a></h2>
+<p>The simulation runs on your host/development machine and does not require a physical robot at all. It's a great way to tune Nav2 parameters and test your configuration before deploying to hardware.</p>
+<h3 id="21-install-linorobot2-package">2.1 Install linorobot2 Package<a class="headerlink" href="#21-install-linorobot2-package" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nb">cd</span><span class="w"> </span>&lt;host_machine_ws&gt;
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>git<span class="w"> </span>clone<span class="w"> </span>-b<span class="w"> </span><span class="nv">$ROS_DISTRO</span><span class="w"> </span>https://github.com/linorobot/linorobot2<span class="w"> </span>src/linorobot2
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>rosdep<span class="w"> </span>update<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>rosdep<span class="w"> </span>install<span class="w"> </span>--from-path<span class="w"> </span>src<span class="w"> </span>--ignore-src<span class="w"> </span>-y<span class="w"> </span>--skip-keys<span class="w"> </span>microxrcedds_agent<span class="w"> </span>--skip-keys<span class="w"> </span>micro_ros_agent
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>colcon<span class="w"> </span>build
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="nb">source</span><span class="w"> </span>install/setup.bash
+</code></pre></div>
+<blockquote>
+<p>The <code>--skip-keys</code> flags prevent a known <a href="https://github.com/micro-ROS/micro_ros_setup/issues/138">rosdep issue</a> with micro-ROS keys. Always include them when running <code>rosdep install</code> on this workspace.</p>
+</blockquote>
+<h3 id="22-define-robot-type">2.2 Define Robot Type<a class="headerlink" href="#22-define-robot-type" title="Permanent link">&para;</a></h3>
+<p>Set the <code>LINOROBOT2_BASE</code> environment variable to match the robot base you want to simulate:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;export LINOROBOT2_BASE=2wd&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>~/.bashrc
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="nb">source</span><span class="w"> </span>~/.bashrc
+</code></pre></div>
+<p>Available values: <code>2wd</code>, <code>4wd</code>, <code>mecanum</code>.</p>
+<p>The simulation package already includes RVIZ configurations, so you do not need to install <code>linorobot2_viz</code> separately when using the simulation.</p>
+<h3 id="docker-option">Docker Option<a class="headerlink" href="#docker-option" title="Permanent link">&para;</a></h3>
+<p>If you're not running Ubuntu 24.04 with ROS2 Jazzy, Docker is a convenient alternative for running the simulation.</p>
+<p>Install Docker using the <a href="https://docs.docker.com/engine/install/">official instructions</a> and follow the <a href="https://docs.docker.com/engine/install/linux-postinstall/">post-install steps</a> to run Docker without <code>sudo</code>.</p>
+<p>Customize <code>docker/.env</code> if needed (e.g., to change the robot type), then build the image:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/linorobot/linorobot2.git
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="nb">cd</span><span class="w"> </span>linorobot2/docker
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>docker<span class="w"> </span>compose<span class="w"> </span>build
+</code></pre></div>
+<p>To start the simulation in Docker:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Start Gazebo</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>gazebo
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="c1"># In another terminal, start navigation</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SIM</span><span class="o">=</span><span class="nb">true</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>navigate
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="c1"># In another terminal, open RViz</span>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>rviz-nav
+</code></pre></div>
+<p>If you see "Unable to create rendering window" errors with Gazebo, run <code>xhost +</code> first.</p>
+<p>You can also run everything in daemon mode:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SIM</span><span class="o">=</span><span class="nb">true</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">RVIZ</span><span class="o">=</span><span class="nb">true</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d<span class="w"> </span>gazebo<span class="w"> </span>navigate
+</code></pre></div>
+<p>Shut everything down with <code>docker compose down</code>. View logs with <code>docker compose logs</code>.</p>
+<blockquote>
+<p>Note: you cannot mix Docker containers with native ROS2 nodes on the same machine.</p>
+</blockquote>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../01_overview/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Overview">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Overview
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../03_base_controller/" class="md-footer__link md-footer__link--next" aria-label="Next: Base Controller">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Base Controller
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.footer", "navigation.top", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

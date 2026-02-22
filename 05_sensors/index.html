@@ -1,0 +1,1162 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Build your own autonomous ROS2 robot with Nav2, SLAM Toolbox, and robot_localization">
+      
+      
+      
+        <link rel="canonical" href="https://linorobot.github.io/linorobot2/05_sensors/">
+      
+      
+        <link rel="prev" href="../04_odometry/">
+      
+      
+        <link rel="next" href="../06_transforms/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.2">
+    
+    
+      
+        <title>Setting Up Sensors - linorobot2</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#setting-up-sensors" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="linorobot2" class="md-header__button md-logo" aria-label="linorobot2" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            linorobot2
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Setting Up Sensors
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/linorobot/linorobot2" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    linorobot/linorobot2
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="linorobot2" class="md-nav__button md-logo" aria-label="linorobot2" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    linorobot2
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/linorobot/linorobot2" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    linorobot/linorobot2
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01_overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02_installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03_base_controller/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Base Controller
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04_odometry/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Odometry
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Setting Up Sensors
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Setting Up Sensors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#why-sensors-matter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why Sensors Matter
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#real-hardware-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Real Hardware Setup
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Real Hardware Setup">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#supported-laser-sensors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported Laser Sensors
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#supported-depth-sensors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported Depth Sensors
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Simulation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Simulation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sensor-urdf-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sensor URDF Files
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-sensors-are-included" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How Sensors Are Included
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuring-sensor-positions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuring Sensor Positions
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#published-topics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Published Topics
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#whats-next" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What's Next
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06_transforms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Setting Up Transforms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07_mapping/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mapping
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08_navigation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Navigation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09_docker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Docker
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10_tools/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Simulation Tools
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#why-sensors-matter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why Sensors Matter
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#real-hardware-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Real Hardware Setup
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Real Hardware Setup">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#supported-laser-sensors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported Laser Sensors
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#supported-depth-sensors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported Depth Sensors
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Simulation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Simulation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sensor-urdf-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sensor URDF Files
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-sensors-are-included" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How Sensors Are Included
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuring-sensor-positions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuring Sensor Positions
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#published-topics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Published Topics
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#whats-next" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What's Next
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="setting-up-sensors">Setting Up Sensors<a class="headerlink" href="#setting-up-sensors" title="Permanent link">&para;</a></h1>
+<h2 id="why-sensors-matter">Why Sensors Matter<a class="headerlink" href="#why-sensors-matter" title="Permanent link">&para;</a></h2>
+<p>Odometry tells the robot where it <em>thinks</em> it is based on how far its wheels have turned. Sensors tell the robot what's actually around it. Without sensors, the robot is blind. It can't detect obstacles, can't build a map of its environment, and can't localize itself within a map.</p>
+<p>linorobot2 uses two primary sensor categories:</p>
+<ul>
+<li><strong>LaserScan (2D lidar)</strong> — produces a 360° ring of distance measurements on a flat plane. This is the primary sensor for obstacle detection and SLAM.</li>
+<li><strong>Depth camera (RGBD)</strong> — produces a 3D point cloud and/or depth image. Useful for detecting obstacles that a floor-level lidar misses (like table legs above the scan plane).</li>
+</ul>
+<p>Both sensor types publish data that Nav2 and SLAM Toolbox consume directly.</p>
+<h2 id="real-hardware-setup">Real Hardware Setup<a class="headerlink" href="#real-hardware-setup" title="Permanent link">&para;</a></h2>
+<p>On a physical robot, sensors are configured during installation via the <code>install.bash</code> script's <code>--laser</code> and <code>--depth</code> arguments. The script installs the appropriate ROS2 driver packages and sets environment variables that the bringup launch files use to start the correct driver at boot.</p>
+<h3 id="supported-laser-sensors">Supported Laser Sensors<a class="headerlink" href="#supported-laser-sensors" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Sensor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>a1</code></td>
+<td><a href="https://www.slamtec.com/en/Lidar/A1">RPLIDAR A1</a></td>
+</tr>
+<tr>
+<td><code>a2</code></td>
+<td><a href="https://www.slamtec.ai/product/slamtec-rplidar-a2/">RPLIDAR A2</a></td>
+</tr>
+<tr>
+<td><code>a3</code></td>
+<td><a href="https://www.slamtec.ai/product/slamtec-rplidar-a3/">RPLIDAR A3</a></td>
+</tr>
+<tr>
+<td><code>s1</code></td>
+<td><a href="https://www.slamtec.com/en/Lidar/S1">RPLIDAR S1</a></td>
+</tr>
+<tr>
+<td><code>s2</code></td>
+<td><a href="https://www.slamtec.com/en/Lidar/S2">RPLIDAR S2</a></td>
+</tr>
+<tr>
+<td><code>s3</code></td>
+<td><a href="https://www.slamtec.com/en/Lidar/S3">RPLIDAR S3</a></td>
+</tr>
+<tr>
+<td><code>c1</code></td>
+<td><a href="https://www.slamtec.ai/product/slamtec-rplidar-a3/">RPLIDAR C1</a></td>
+</tr>
+<tr>
+<td><code>ld06</code></td>
+<td><a href="https://www.ldrobot.com/ProductDetails?sensor_name=STL-06P">LD06 LIDAR</a></td>
+</tr>
+<tr>
+<td><code>ld19</code></td>
+<td><a href="https://www.ldrobot.com/ProductDetails?sensor_name=STL-19P">LD19/LD300 LIDAR</a></td>
+</tr>
+<tr>
+<td><code>stl27l</code></td>
+<td><a href="https://www.ldrobot.com/ProductDetails?sensor_name=STL-27L">STL27L LIDAR</a></td>
+</tr>
+<tr>
+<td><code>ydlidar</code></td>
+<td><a href="https://www.ydlidar.com/lidars.html">YDLIDAR</a></td>
+</tr>
+<tr>
+<td><code>xv11</code></td>
+<td><a href="http://xv11hacking.rohbotics.com/mainSpace/home.html">XV11</a></td>
+</tr>
+<tr>
+<td><code>realsense</code> *</td>
+<td><a href="https://www.intelrealsense.com/stereo-depth/">Intel RealSense</a> D435, D435i</td>
+</tr>
+<tr>
+<td><code>zed</code> *</td>
+<td><a href="https://www.stereolabs.com/zed">Zed</a></td>
+</tr>
+<tr>
+<td><code>zed2</code> *</td>
+<td><a href="https://www.stereolabs.com/zed-2">Zed 2</a></td>
+</tr>
+<tr>
+<td><code>zed2i</code> *</td>
+<td><a href="https://www.stereolabs.com/zed-2i">Zed 2i</a></td>
+</tr>
+<tr>
+<td><code>zedm</code> *</td>
+<td><a href="https://www.stereolabs.com/zed-mini">Zed Mini</a></td>
+</tr>
+</tbody>
+</table>
+<p>Sensors marked with <code>*</code> are depth cameras used as laser sensors. When configured this way, the launch files automatically run <a href="https://github.com/ros-perception/depthimage_to_laserscan">depthimage_to_laserscan</a> to convert the depth image into a <code>sensor_msgs/LaserScan</code> message on the <code>/scan</code> topic, making it compatible with SLAM Toolbox and Nav2 without any extra configuration.</p>
+<h3 id="supported-depth-sensors">Supported Depth Sensors<a class="headerlink" href="#supported-depth-sensors" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Sensor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>realsense</code></td>
+<td><a href="https://www.intelrealsense.com/stereo-depth/">Intel RealSense</a> D435, D435i</td>
+</tr>
+<tr>
+<td><code>zed</code></td>
+<td><a href="https://www.stereolabs.com/zed">Zed</a></td>
+</tr>
+<tr>
+<td><code>zed2</code></td>
+<td><a href="https://www.stereolabs.com/zed-2">Zed 2</a></td>
+</tr>
+<tr>
+<td><code>zed2i</code></td>
+<td><a href="https://www.stereolabs.com/zed-2i">Zed 2i</a></td>
+</tr>
+<tr>
+<td><code>zedm</code></td>
+<td><a href="https://www.stereolabs.com/zed-mini">Zed Mini</a></td>
+</tr>
+<tr>
+<td><code>oakd</code></td>
+<td><a href="https://shop.luxonis.com/collections/oak-cameras-1/products/oak-d">OAK-D</a></td>
+</tr>
+<tr>
+<td><code>oakdlite</code></td>
+<td><a href="https://shop.luxonis.com/collections/oak-cameras-1/products/oak-d-lite-1">OAK-D Lite</a></td>
+</tr>
+<tr>
+<td><code>oakdpro</code></td>
+<td><a href="https://shop.luxonis.com/collections/oak-cameras-1/products/oak-d-pro">OAK-D Pro</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="simulation">Simulation<a class="headerlink" href="#simulation" title="Permanent link">&para;</a></h2>
+<p>In Gazebo, sensors are defined in URDF/xacro files and are already configured for each robot type. You don't need to install any additional drivers. Gazebo simulates the sensors and publishes on the same topics as real hardware.</p>
+<h3 id="sensor-urdf-files">Sensor URDF Files<a class="headerlink" href="#sensor-urdf-files" title="Permanent link">&para;</a></h3>
+<p>Sensor definitions live in <code>linorobot2_description/urdf/sensors/</code>:</p>
+<p><strong><code>generic_laser.urdf.xacro</code></strong> — Simulates a 360° 2D lidar:
+- 360 rays, full 360° sweep
+- Range: 0.08 m to 12.0 m
+- Update rate: 10 Hz
+- Publishes to: <code>/scan</code> (topic name: <code>scan</code>, frame ID: <code>laser</code>)</p>
+<p><strong><code>depth_sensor.urdf.xacro</code></strong> — Simulates an RGBD camera:
+- Resolution: 640 × 480
+- Update rate: 30 Hz
+- Horizontal FOV: ~86°
+- Depth range: 0.3 m to 100 m
+- Publishes to: <code>/camera</code> topics</p>
+<p><strong><code>imu.urdf.xacro</code></strong> — Simulates an IMU:
+- Publishes to: <code>/imu/data</code> at 50 Hz</p>
+<h3 id="how-sensors-are-included">How Sensors Are Included<a class="headerlink" href="#how-sensors-are-included" title="Permanent link">&para;</a></h3>
+<p>Each robot type's URDF (<code>linorobot2_description/urdf/robots/&lt;robot_type&gt;.urdf.xacro</code>) already includes the laser and depth sensor:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">&lt;xacro:generic_laser&gt;</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nt">&lt;xacro:insert_block</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;laser_pose&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="nt">&lt;/xacro:generic_laser&gt;</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="nt">&lt;xacro:depth_sensor&gt;</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">  </span><span class="nt">&lt;xacro:insert_block</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;depth_sensor_pose&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="nt">&lt;/xacro:depth_sensor&gt;</span>
+</code></pre></div>
+<p>The <code>laser_pose</code> and <code>depth_sensor_pose</code> blocks define where the sensors are mounted relative to <code>base_link</code>. These are defined in the robot's properties file.</p>
+<h3 id="configuring-sensor-positions">Configuring Sensor Positions<a class="headerlink" href="#configuring-sensor-positions" title="Permanent link">&para;</a></h3>
+<p>Sensor positions are set in <code>linorobot2_description/urdf/&lt;robot_type&gt;_properties.urdf.xacro</code>. For example, in <code>2wd_properties.urdf.xacro</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">&lt;xacro:property</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;laser_pose&quot;</span><span class="nt">&gt;</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">&lt;origin</span><span class="w"> </span><span class="na">xyz=</span><span class="s">&quot;0.12 0 0.33&quot;</span><span class="w"> </span><span class="na">rpy=</span><span class="s">&quot;0 0 0&quot;</span><span class="nt">/&gt;</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="nt">&lt;/xacro:property&gt;</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="nt">&lt;xacro:property</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;depth_sensor_pose&quot;</span><span class="nt">&gt;</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">  </span><span class="nt">&lt;origin</span><span class="w"> </span><span class="na">xyz=</span><span class="s">&quot;0.14 0.0 0.045&quot;</span><span class="w"> </span><span class="na">rpy=</span><span class="s">&quot;0 0 0&quot;</span><span class="nt">/&gt;</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="nt">&lt;/xacro:property&gt;</span>
+</code></pre></div>
+<p>All positions are measured from <code>base_link</code> (the center of the robot's base). Change these values to match where your sensors are physically mounted. After editing the xacro file, rebuild the workspace:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nb">cd</span><span class="w"> </span>&lt;robot_computer_ws&gt;
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>colcon<span class="w"> </span>build
+</code></pre></div>
+<p>More details on how these poses relate to the TF tree are covered in the <a href="../06_transforms/">Transforms</a> section.</p>
+<h2 id="published-topics">Published Topics<a class="headerlink" href="#published-topics" title="Permanent link">&para;</a></h2>
+<p>After bringup (real robot) or Gazebo launch (simulation), the following sensor topics should be active:</p>
+<table>
+<thead>
+<tr>
+<th>Topic</th>
+<th>Type</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/scan</code></td>
+<td><code>sensor_msgs/LaserScan</code></td>
+<td>2D lidar or depth-to-laser conversion</td>
+</tr>
+<tr>
+<td><code>/camera/image_raw</code></td>
+<td><code>sensor_msgs/Image</code></td>
+<td>Depth camera RGB image</td>
+</tr>
+<tr>
+<td><code>/camera/depth/image_raw</code></td>
+<td><code>sensor_msgs/Image</code></td>
+<td>Depth camera depth image</td>
+</tr>
+<tr>
+<td><code>/imu/data</code></td>
+<td><code>sensor_msgs/Imu</code></td>
+<td>IMU data. Published directly by the firmware (no magnetometer) or by the Madgwick filter (magnetometer enabled). In simulation, published by <code>imu.urdf.xacro</code></td>
+</tr>
+<tr>
+<td><code>/imu/data_raw</code></td>
+<td><code>sensor_msgs/Imu</code></td>
+<td>Raw IMU acceleration and gyro data (real robot only, when magnetometer is enabled)</td>
+</tr>
+<tr>
+<td><code>/imu/mag</code></td>
+<td><code>sensor_msgs/MagneticField</code></td>
+<td>Magnetometer data (real robot only, when magnetometer is present)</td>
+</tr>
+</tbody>
+</table>
+<p>You can verify a sensor is publishing correctly with:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>ros2<span class="w"> </span>topic<span class="w"> </span>hz<span class="w"> </span>/scan
+</code></pre></div>
+<h2 id="whats-next">What's Next<a class="headerlink" href="#whats-next" title="Permanent link">&para;</a></h2>
+<p>With sensors publishing data, the next step is to make sure the robot knows <em>where</em> those sensors are mounted in 3D space, so it can correctly interpret a laser hit at angle X as being at a specific position in the world. That's the job of the TF tree, covered in <a href="../06_transforms/">Setting Up Transforms</a>.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../04_odometry/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Odometry">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Odometry
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../06_transforms/" class="md-footer__link md-footer__link--next" aria-label="Next: Setting Up Transforms">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Setting Up Transforms
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.footer", "navigation.top", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

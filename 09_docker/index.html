@@ -1,0 +1,1493 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Build your own autonomous ROS2 robot with Nav2, SLAM Toolbox, and robot_localization">
+      
+      
+      
+        <link rel="canonical" href="https://linorobot.github.io/linorobot2/09_docker/">
+      
+      
+        <link rel="prev" href="../08_navigation/">
+      
+      
+        <link rel="next" href="../10_tools/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.2">
+    
+    
+      
+        <title>Docker - linorobot2</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#docker" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="linorobot2" class="md-header__button md-logo" aria-label="linorobot2" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            linorobot2
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Docker
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/linorobot/linorobot2" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    linorobot/linorobot2
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="linorobot2" class="md-nav__button md-logo" aria-label="linorobot2" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    linorobot2
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/linorobot/linorobot2" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    linorobot/linorobot2
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01_overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02_installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03_base_controller/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Base Controller
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04_odometry/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Odometry
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05_sensors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Setting Up Sensors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06_transforms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Setting Up Transforms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07_mapping/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mapping
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08_navigation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Navigation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Docker
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Docker
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#build" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Build
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Build">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-configure-dockerenv" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Configure docker/.env
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-build-the-image" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Build the image
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#web-visualization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Web Visualization
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Web Visualization">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#why-run-headless-with-a-browser-interface" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why run headless with a browser interface?
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#development" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Development
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Development">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#option-1-dev-single-terminal-gui-forwarded-to-host" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option 1: ./dev (single terminal, GUI forwarded to host)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#option-2-tmuxinator-multi-pane-gui-at-httphost_ip3000" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option 2: Tmuxinator (multi-pane, GUI at http://\&lt;host_ip>:3000)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hardware" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hardware
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Hardware">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-install-udev-rules-on-the-host" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Install udev rules on the host
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-reload-udev-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Reload udev rules
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-verify-the-device-symlinks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Verify the device symlinks
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-update-the-bringup-service-devices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Update the bringup service devices
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-run-the-robot" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Run the robot
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Simulation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Simulation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-install-tmuxinator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Install Tmuxinator
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-set-the-tmuxinator-config-path" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Set the tmuxinator config path
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-run-the-nav2-demo-in-gazebo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Run the Nav2 demo in Gazebo
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#custom-profiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Custom Profiles
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Custom Profiles">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#available-docker-compose-services" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Available docker-compose services
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#creating-a-new-profile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Creating a new profile
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10_tools/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Simulation Tools
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#build" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Build
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Build">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-configure-dockerenv" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Configure docker/.env
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-build-the-image" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Build the image
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#web-visualization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Web Visualization
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Web Visualization">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#why-run-headless-with-a-browser-interface" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why run headless with a browser interface?
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#development" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Development
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Development">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#option-1-dev-single-terminal-gui-forwarded-to-host" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option 1: ./dev (single terminal, GUI forwarded to host)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#option-2-tmuxinator-multi-pane-gui-at-httphost_ip3000" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option 2: Tmuxinator (multi-pane, GUI at http://\&lt;host_ip>:3000)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hardware" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hardware
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Hardware">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-install-udev-rules-on-the-host" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Install udev rules on the host
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-reload-udev-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Reload udev rules
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-verify-the-device-symlinks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Verify the device symlinks
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-update-the-bringup-service-devices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Update the bringup service devices
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-run-the-robot" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Run the robot
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simulation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Simulation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Simulation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-install-tmuxinator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Install Tmuxinator
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-set-the-tmuxinator-config-path" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Set the tmuxinator config path
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-run-the-nav2-demo-in-gazebo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Run the Nav2 demo in Gazebo
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#custom-profiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Custom Profiles
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Custom Profiles">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#available-docker-compose-services" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Available docker-compose services
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#creating-a-new-profile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Creating a new profile
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="docker">Docker<a class="headerlink" href="#docker" title="Permanent link">&para;</a></h1>
+<p>Docker lets you run linorobot2 without a native ROS2 installation. It is particularly useful for simulation on machines not running Ubuntu 24.04, for cloud-based simulation, and for remote visualization over a browser without needing a display attached.</p>
+<p>All commands below are run from the <strong>repository root</strong> unless a <code>cd</code> step explicitly changes directory.</p>
+<hr />
+<h2 id="build">Build<a class="headerlink" href="#build" title="Permanent link">&para;</a></h2>
+<h3 id="1-configure-dockerenv">1. Configure docker/.env<a class="headerlink" href="#1-configure-dockerenv" title="Permanent link">&para;</a></h3>
+<p>Edit <code>docker/.env</code> and set <code>BASE_IMAGE</code> to match your target use case:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>BASE_IMAGE=hardware      # Real robot hardware
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>BASE_IMAGE=gazebo        # Gazebo simulation
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>BASE_IMAGE=gazebo-cuda   # Gazebo simulation with CUDA support (recommended if you have an NVIDIA GPU)
+</code></pre></div>
+<p>If you are working with real hardware, also set the following:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>ROBOT_BASE=&lt;robot_type&gt;      # 2wd, 4wd, or mecanum
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>LASER_SENSOR=&lt;laser_sensor&gt;  # e.g. ld06, a1, ydlidar  (leave blank if not used)
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>DEPTH_SENSOR=&lt;depth_sensor&gt;  # e.g. realsense, oakd     (leave blank if not used)
+</code></pre></div>
+<p>After building, see the <a href="#hardware">Hardware</a> section for post-build setup (udev rules, device mapping, and running the robot).</p>
+<h3 id="2-build-the-image">2. Build the image<a class="headerlink" href="#2-build-the-image" title="Permanent link">&para;</a></h3>
+<p>Run the build script, which automatically passes your host user's UID and GID so that files created inside the container are owned by your user:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nb">cd</span><span class="w"> </span>docker
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>./build
+</code></pre></div>
+<p>Alternatively, run the build manually:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nb">cd</span><span class="w"> </span>docker
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="nv">HOST_UID</span><span class="o">=</span><span class="k">$(</span>id<span class="w"> </span>-u<span class="k">)</span><span class="w"> </span><span class="nv">HOST_GID</span><span class="o">=</span><span class="k">$(</span>id<span class="w"> </span>-g<span class="k">)</span><span class="w"> </span>docker<span class="w"> </span>compose<span class="w"> </span>build
+</code></pre></div>
+<blockquote>
+<p>Passing <code>HOST_UID</code> and <code>HOST_GID</code> is important when using the <code>dev</code> service, which mounts the host repository directory into the container. Without these, files created inside the container (e.g. build artifacts) will be owned by root on the host.</p>
+</blockquote>
+<hr />
+<h2 id="web-visualization">Web Visualization<a class="headerlink" href="#web-visualization" title="Permanent link">&para;</a></h2>
+<p>All tmuxinator configs in <code>docker/profiles</code> (<code>dev</code>, <code>hardware</code>, <code>sim</code>) route GUI output — including Gazebo, RViz, and any other ROS GUI tools — to a virtual display at <code>:200</code>. A <a href="https://github.com/kasmtech/KasmVNC">KasmVNC</a> server captures that display and streams it to a browser at:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>http://&lt;host_ip&gt;:3000
+</code></pre></div>
+<p>On machines with an NVIDIA GPU, the <code>gazebo-cuda</code> image uses <strong>VirtualGL</strong> to intercept OpenGL calls from Gazebo and redirect them to the GPU for hardware-accelerated rendering. Without this, a headless server falls back to software rendering, bypassing the GPU entirely.</p>
+<h3 id="why-run-headless-with-a-browser-interface">Why run headless with a browser interface?<a class="headerlink" href="#why-run-headless-with-a-browser-interface" title="Permanent link">&para;</a></h3>
+<p>This setup is particularly well-suited for <strong>cloud simulation</strong> on instances such as GCP or AWS, where no monitor is physically attached. The entire simulation stack — Gazebo, Nav2, sensor processing — runs on the remote machine. The browser is the only local interface needed, with no local ROS installation required. Compute can be scaled on demand simply by upgrading the instance, without being constrained by local hardware.</p>
+<p>It is also more efficient for <strong>remote visualization</strong> than the conventional approach. In a typical ROS setup, tools like RViz running on a remote machine receive raw topic data (point clouds, laser scans, images) over the network, which can be extremely bandwidth-intensive. With VNC, only a compressed video stream of the rendered display is transmitted — significantly reducing network usage, especially with data-heavy sensors like 3D LiDARs or RGBD cameras.</p>
+<hr />
+<h2 id="development">Development<a class="headerlink" href="#development" title="Permanent link">&para;</a></h2>
+<p>The <code>dev</code> service mounts the entire <code>linorobot2</code> repository from the host into the container at <code>/home/ros/linorobot2_ws/src/linorobot2</code>. You can edit code on the host with your preferred editor and changes are immediately visible inside the container — no image rebuild needed. Once changes are made, rebuild the workspace from inside the container with:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>colcon<span class="w"> </span>build
+</code></pre></div>
+<h3 id="option-1-dev-single-terminal-gui-forwarded-to-host">Option 1: ./dev (single terminal, GUI forwarded to host)<a class="headerlink" href="#option-1-dev-single-terminal-gui-forwarded-to-host" title="Permanent link">&para;</a></h3>
+<p>The <code>./dev</code> script starts the <code>dev</code> container if it is not already running, then opens an interactive bash shell inside it:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nb">cd</span><span class="w"> </span>docker
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>./dev
+</code></pre></div>
+<p>In this mode, GUI applications (e.g. RViz, rqt) are forwarded to the host machine's screen via the <code>$DISPLAY</code> environment variable.</p>
+<h3 id="option-2-tmuxinator-multi-pane-gui-at-httphost_ip3000">Option 2: Tmuxinator (multi-pane, GUI at http://\&lt;host_ip&gt;:3000)<a class="headerlink" href="#option-2-tmuxinator-multi-pane-gui-at-httphost_ip3000" title="Permanent link">&para;</a></h3>
+<p><a href="https://github.com/tmuxinator/tmuxinator">Tmuxinator</a> manages named tmux sessions from a YAML config. In this project it acts like a launch file for multiple Docker services: a single command starts all the required containers and arranges their output into named panes inside one terminal. Each pane runs a different service — Gazebo, Nav2, KasmVNC, an interactive shell — so you have everything visible and reachable without juggling multiple SSH sessions or terminal windows.</p>
+<p>A Tmuxinator config at <code>docker/profiles/dev.yml</code> opens a tmux window with four panes, each exec'd into the <code>dev</code> container, alongside a KasmVNC server. In this mode, any GUI application launched from inside the container appears in the browser at <code>http://&lt;host_ip&gt;:3000</code> (see <a href="#web-visualization">Web Visualization</a>).</p>
+<p><strong>1. Install Tmuxinator</strong></p>
+<p>Follow the installation instructions <a href="https://github.com/tmuxinator/tmuxinator?tab=readme-ov-file#installation">here</a>.</p>
+<p><strong>2. Set the config path</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nb">source</span><span class="w"> </span>docker/setup_tmux.bash
+</code></pre></div>
+<p>Verify the profiles are detected:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>tmuxinator<span class="w"> </span>ls
+</code></pre></div>
+<p>Expected output:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>tmuxinator projects:
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>dev       hardware  sim
+</code></pre></div>
+<p><strong>3. Start the session</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>tmuxinator<span class="w"> </span>start<span class="w"> </span>dev
+</code></pre></div>
+<p>This starts the <code>dev</code> container and KasmVNC, then opens a tmux window with four bash panes ready for development.</p>
+<p>Useful tmux key bindings:
+- <code>Ctrl+B</code> then arrow keys — navigate between panes
+- <code>Ctrl+B</code> then <code>D</code> — detach from the session (containers keep running)</p>
+<p><strong>4. Stop the session</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>tmuxinator<span class="w"> </span>stop<span class="w"> </span>dev
+</code></pre></div>
+<p>Or to stop and remove all containers:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nb">cd</span><span class="w"> </span>docker
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>docker<span class="w"> </span>compose<span class="w"> </span>down
+</code></pre></div>
+<blockquote>
+<p>Inside the container each pane behaves exactly like a native ROS 2 installation. You can run any ROS 2 command directly — for example:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>ros2<span class="w"> </span>topic<span class="w"> </span>list
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>ros2<span class="w"> </span>topic<span class="w"> </span><span class="nb">echo</span><span class="w"> </span>/cmd_vel
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>ros2<span class="w"> </span>node<span class="w"> </span>list
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>ros2<span class="w"> </span>run<span class="w"> </span>teleop_twist_keyboard<span class="w"> </span>teleop_twist_keyboard
+</code></pre></div>
+No extra setup is needed — <code>/opt/ros/&lt;ros_distro&gt;/setup.bash</code> is sourced automatically when the shell starts. To use workspace packages, run <code>source install/setup.bash</code> inside <code>linorobot2_ws</code>.</p>
+</blockquote>
+<hr />
+<h2 id="hardware">Hardware<a class="headerlink" href="#hardware" title="Permanent link">&para;</a></h2>
+<blockquote>
+<p>Before continuing, complete the <a href="#build">Build</a> steps and ensure <code>ROBOT_BASE</code>, <code>LASER_SENSOR</code>, and <code>DEPTH_SENSOR</code> are set in <code>docker/.env</code>.</p>
+</blockquote>
+<h3 id="1-install-udev-rules-on-the-host">1. Install udev rules on the host<a class="headerlink" href="#1-install-udev-rules-on-the-host" title="Permanent link">&para;</a></h3>
+<p>The Docker image already contains the sensor drivers (installed during build). To create the <code>/dev/&lt;sensor&gt;</code> symlinks on the <strong>host</strong> machine, run <code>install.bash</code> with <code>--udev-only</code>.</p>
+<p><code>--udev-only</code> is required — it forces the script to only copy udev rules and skip driver installation (which is not needed since drivers are already inside the container).</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>bash<span class="w"> </span>install.bash<span class="w"> </span>--laser<span class="w"> </span>&lt;laser_sensor&gt;<span class="w"> </span>--udev-only
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="c1"># and/or</span>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>bash<span class="w"> </span>install.bash<span class="w"> </span>--depth<span class="w"> </span>&lt;depth_sensor&gt;<span class="w"> </span>--udev-only
+</code></pre></div>
+<h3 id="2-reload-udev-rules">2. Reload udev rules<a class="headerlink" href="#2-reload-udev-rules" title="Permanent link">&para;</a></h3>
+<p>After installing, apply the rules without rebooting:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>sudo<span class="w"> </span>udevadm<span class="w"> </span>control<span class="w"> </span>--reload-rules<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>sudo<span class="w"> </span>udevadm<span class="w"> </span>trigger
+</code></pre></div>
+<h3 id="3-verify-the-device-symlinks">3. Verify the device symlinks<a class="headerlink" href="#3-verify-the-device-symlinks" title="Permanent link">&para;</a></h3>
+<p><strong>Microcontroller:</strong></p>
+<p>Plug in the microcontroller (for example Raspberry Pi Pico), then confirm the device node exists on the host:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>ls<span class="w"> </span>/dev/ttyACM0
+</code></pre></div>
+<p><strong>Sensors:</strong></p>
+<p>Plug in the sensor, then confirm the udev symlink exists on the host:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>ls<span class="w"> </span>/dev/&lt;sensor_name&gt;
+</code></pre></div>
+<p>Expected <code>/dev</code> paths after udev rules are installed:</p>
+<table>
+<thead>
+<tr>
+<th>Device</th>
+<th>Host <code>/dev</code> path</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Raspberry Pi Pico microcontroller</td>
+<td><code>/dev/ttyACM0</code></td>
+</tr>
+<tr>
+<td><code>ydlidar</code></td>
+<td><code>/dev/ydlidar</code></td>
+</tr>
+<tr>
+<td><code>ld06</code>, <code>ld19</code>, <code>stl27l</code></td>
+<td><code>/dev/ldlidar</code></td>
+</tr>
+<tr>
+<td><code>a1</code>, <code>a2</code>, <code>a3</code>, ...</td>
+<td><code>/dev/rplidar</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="4-update-the-bringup-service-devices">4. Update the bringup service devices<a class="headerlink" href="#4-update-the-bringup-service-devices" title="Permanent link">&para;</a></h3>
+<p>Edit <code>docker/docker-compose.yaml</code> and update the <code>bringup</code> service's <code>devices</code> section to map the correct host devices into the container:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="w">  </span><span class="nt">bringup</span><span class="p">:</span>
+<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">...</span>
+<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">devices</span><span class="p p-Indicator">:</span>
+<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dev/ttyACM0:/dev/ttyACM0</span><span class="w"> </span><span class="c1"># Robot&#39;s microcontroller (e.g. Pico)</span>
+<a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dev/ldlidar:/dev/ldlidar</span><span class="w"> </span><span class="c1"># Laser sensor (adjust to match your sensor symlink)</span>
+</code></pre></div>
+<h3 id="5-run-the-robot">5. Run the robot<a class="headerlink" href="#5-run-the-robot" title="Permanent link">&para;</a></h3>
+<p><strong>5.1. Set the tmuxinator config path:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="nb">source</span><span class="w"> </span>docker/setup_tmux.bash
+</code></pre></div>
+<p>Verify the profiles are detected:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>tmuxinator<span class="w"> </span>ls
+</code></pre></div>
+<p>Expected output:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>tmuxinator projects:
+<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>dev       hardware  sim
+</code></pre></div>
+<p><strong>5.2. Start the robot:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>tmuxinator<span class="w"> </span>start<span class="w"> </span>hardware
+</code></pre></div>
+<p>Once running, visualization is available at: <code>http://&lt;robot_ip&gt;:3000</code></p>
+<p>To stop, press <code>Ctrl+B</code> then <code>D</code> to detach from the tmux session, then run:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>tmuxinator<span class="w"> </span>stop<span class="w"> </span>hardware
+</code></pre></div>
+<hr />
+<h2 id="simulation">Simulation<a class="headerlink" href="#simulation" title="Permanent link">&para;</a></h2>
+<blockquote>
+<p>Before continuing, complete the <a href="#build">Build</a> steps with <code>BASE_IMAGE</code> set to <code>gazebo</code> or <code>gazebo-cuda</code>.</p>
+</blockquote>
+<h3 id="1-install-tmuxinator">1. Install Tmuxinator<a class="headerlink" href="#1-install-tmuxinator" title="Permanent link">&para;</a></h3>
+<p>Follow the installation instructions for Tmuxinator <a href="https://github.com/tmuxinator/tmuxinator?tab=readme-ov-file#installation">here</a>.</p>
+<h3 id="2-set-the-tmuxinator-config-path">2. Set the tmuxinator config path<a class="headerlink" href="#2-set-the-tmuxinator-config-path" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="nb">source</span><span class="w"> </span>docker/setup_tmux.bash
+</code></pre></div>
+<p>Verify the profiles are detected:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>tmuxinator<span class="w"> </span>ls
+</code></pre></div>
+<p>Expected output:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>tmuxinator projects:
+<a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>dev       hardware  sim
+</code></pre></div>
+<h3 id="3-run-the-nav2-demo-in-gazebo">3. Run the Nav2 demo in Gazebo<a class="headerlink" href="#3-run-the-nav2-demo-in-gazebo" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>tmuxinator<span class="w"> </span>start<span class="w"> </span>sim
+</code></pre></div>
+<p>Once running, visualization is available at: <code>http://&lt;host_ip&gt;:3000</code></p>
+<p>To stop the simulation, press <code>Ctrl+B</code> then <code>D</code> to detach from the tmux session, then run:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>tmuxinator<span class="w"> </span>stop<span class="w"> </span>sim
+</code></pre></div>
+<hr />
+<h2 id="custom-profiles">Custom Profiles<a class="headerlink" href="#custom-profiles" title="Permanent link">&para;</a></h2>
+<p>Tmuxinator profiles live in <code>docker/profiles/</code>. Each profile defines which Docker services to start and how to arrange tmux panes. You can create your own profile to run a different combination of services or add extra panes.</p>
+<h3 id="available-docker-compose-services">Available docker-compose services<a class="headerlink" href="#available-docker-compose-services" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Service</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>kasmvnc</code></td>
+<td>KasmVNC server — streams the virtual display (<code>:200</code>) to a browser at <code>http://&lt;host_ip&gt;:3000</code>. Should be included in every profile that uses GUI tools.</td>
+</tr>
+<tr>
+<td><code>dev</code></td>
+<td>Development container — mounts the host <code>linorobot2</code> repo into the container so edits are reflected immediately without rebuilding the image. Runs <code>sleep infinity</code> so you can exec into it as needed.</td>
+</tr>
+<tr>
+<td><code>gazebo</code></td>
+<td>Launches Gazebo with the world specified by <code>$WORLD</code> (default: <code>playground</code>). Loads <code>&lt;WORLD&gt;.sdf</code> from <code>linorobot2_gazebo/worlds/</code>. Pass <code>world_path:=&lt;path&gt;</code> to use an absolute SDF path instead. Requires <code>BASE_IMAGE=gazebo</code> or <code>gazebo-cuda</code>.</td>
+</tr>
+<tr>
+<td><code>bringup</code></td>
+<td>Starts the robot hardware stack (micro-ROS agent, sensors). Requires <code>ROBOT_BASE</code>, <code>LASER_SENSOR</code>, and/or <code>DEPTH_SENSOR</code> set in <code>.env</code>, and the corresponding devices mapped.</td>
+</tr>
+<tr>
+<td><code>slam</code></td>
+<td>Runs SLAM (online mapping). Set <code>SIM=true</code> when used with <code>gazebo</code>.</td>
+</tr>
+<tr>
+<td><code>navigate</code></td>
+<td>Runs Nav2 navigation with a pre-built map. Set <code>SIM=true</code> when used with <code>gazebo</code>.</td>
+</tr>
+<tr>
+<td><code>save-map</code></td>
+<td>Saves the current SLAM map to <code>linorobot2_navigation/maps/map.png</code>. Run this as a one-shot command while <code>slam</code> is active.</td>
+</tr>
+<tr>
+<td><code>rviz-nav</code></td>
+<td>Opens RViz with the navigation config pre-loaded.</td>
+</tr>
+<tr>
+<td><code>rviz</code></td>
+<td>Opens a bare RViz instance.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="creating-a-new-profile">Creating a new profile<a class="headerlink" href="#creating-a-new-profile" title="Permanent link">&para;</a></h3>
+<p>Copy the closest existing profile and edit it:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>cp<span class="w"> </span>docker/profiles/sim.yml<span class="w"> </span>docker/profiles/my-profile.yml
+</code></pre></div>
+<p>A minimal profile looks like this:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-profile</span>
+<a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a><span class="nt">root</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;%= ENV[&quot;TMUXINATOR_CONFIG&quot;] %&gt;</span>
+<a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a>
+<a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a><span class="nt">pre_window</span><span class="p">:</span>
+<a id="__codelineno-30-5" name="__codelineno-30-5" href="#__codelineno-30-5"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">export DISPLAY=:200</span>
+<a id="__codelineno-30-6" name="__codelineno-30-6" href="#__codelineno-30-6"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">export SIM=true</span><span class="w">        </span><span class="c1"># set any env vars your services need</span>
+<a id="__codelineno-30-7" name="__codelineno-30-7" href="#__codelineno-30-7"></a>
+<a id="__codelineno-30-8" name="__codelineno-30-8" href="#__codelineno-30-8"></a><span class="nt">on_project_stop</span><span class="p">:</span>
+<a id="__codelineno-30-9" name="__codelineno-30-9" href="#__codelineno-30-9"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker compose down</span>
+<a id="__codelineno-30-10" name="__codelineno-30-10" href="#__codelineno-30-10"></a>
+<a id="__codelineno-30-11" name="__codelineno-30-11" href="#__codelineno-30-11"></a><span class="nt">windows</span><span class="p">:</span>
+<a id="__codelineno-30-12" name="__codelineno-30-12" href="#__codelineno-30-12"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">main</span><span class="p">:</span>
+<a id="__codelineno-30-13" name="__codelineno-30-13" href="#__codelineno-30-13"></a><span class="w">      </span><span class="nt">panes</span><span class="p">:</span>
+<a id="__codelineno-30-14" name="__codelineno-30-14" href="#__codelineno-30-14"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker compose up kasmvnc</span><span class="w">   </span><span class="c1"># always include this for GUI</span>
+<a id="__codelineno-30-15" name="__codelineno-30-15" href="#__codelineno-30-15"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker compose up gazebo</span>
+<a id="__codelineno-30-16" name="__codelineno-30-16" href="#__codelineno-30-16"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker compose up slam</span>
+<a id="__codelineno-30-17" name="__codelineno-30-17" href="#__codelineno-30-17"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker compose up rviz-nav</span>
+</code></pre></div>
+<p>Each entry under <code>panes</code> becomes one tmux pane running that command. Use <code>docker compose up &lt;service&gt;</code> to start a service in the foreground, or <code>docker compose exec &lt;service&gt; bash</code> to open an interactive shell into an already-running container.</p>
+<p>Start your profile with:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a>tmuxinator<span class="w"> </span>start<span class="w"> </span>my-profile
+</code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../08_navigation/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Navigation">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Navigation
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../10_tools/" class="md-footer__link md-footer__link--next" aria-label="Next: Simulation Tools">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Simulation Tools
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.footer", "navigation.top", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

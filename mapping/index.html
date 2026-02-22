@@ -796,9 +796,9 @@
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>ros2<span class="w"> </span>launch<span class="w"> </span>linorobot2_navigation<span class="w"> </span>slam.launch.py
 </code></pre></div>
 <p>For simulation on the host machine:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>ros2<span class="w"> </span>launch<span class="w"> </span>linorobot2_navigation<span class="w"> </span>slam.launch.py<span class="w"> </span>sim:<span class="o">=</span><span class="nb">true</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>ros2<span class="w"> </span>launch<span class="w"> </span>linorobot2_navigation<span class="w"> </span>slam.launch.py<span class="w"> </span>sim:<span class="o">=</span><span class="nb">true</span><span class="w"> </span>rviz:<span class="o">=</span><span class="nb">true</span>
 </code></pre></div>
-<p><strong>Terminal 3 — Visualize (from host machine):</strong></p>
+<p><strong>Terminal 3 — Visualize (from host machine ideal when working with real robot):</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>ros2<span class="w"> </span>launch<span class="w"> </span>linorobot2_viz<span class="w"> </span>slam.launch.py
 </code></pre></div>
 <p>In RViz you should see the laser scan (colored dots) and the map building up as the robot moves.</p>

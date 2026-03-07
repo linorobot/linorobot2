@@ -1138,7 +1138,6 @@
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>LASER_SENSOR=&lt;laser_sensor&gt;  # e.g. ld06, a1, ydlidar  (leave blank if not used)
 <a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>DEPTH_SENSOR=&lt;depth_sensor&gt;  # e.g. realsense, oakd     (leave blank if not used)
 </code></pre></div>
-<p>After building, see the <a href="#hardware">Hardware</a> section for post-build setup (udev rules, device mapping, and running the robot).</p>
 <h3 id="2-build-the-image">2. Build the image<a class="headerlink" href="#2-build-the-image" title="Permanent link">&para;</a></h3>
 <p>Run the build script, which automatically passes your host user's UID and GID so that files created inside the container are owned by your user:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nb">cd</span><span class="w"> </span>docker
@@ -1151,6 +1150,7 @@
 <blockquote>
 <p>Passing <code>HOST_UID</code> and <code>HOST_GID</code> is important when using the <code>dev</code> service, which mounts the host repository directory into the container. Without these, files created inside the container (e.g. build artifacts) will be owned by root on the host.</p>
 </blockquote>
+<p>After building, see the <a href="#hardware">Hardware</a> section for post-build setup (udev rules, device mapping, and running the robot).</p>
 <hr />
 <h2 id="web-visualization">Web Visualization<a class="headerlink" href="#web-visualization" title="Permanent link">&para;</a></h2>
 <p>All tmuxinator configs in <code>docker/profiles</code> (<code>dev</code>, <code>hardware</code>, <code>sim</code>) route GUI output (including Gazebo, RViz, and any other ROS GUI tools) to a virtual display at <code>:200</code>. A <a href="https://github.com/kasmtech/KasmVNC">KasmVNC</a> server captures that display and streams it to a browser at:</p>

@@ -786,19 +786,19 @@
 <p>If you get the warning <code>slam_toolbox: Message Filter dropping message: frame 'laser'</code>, increase <code>transform_timeout</code> by 0.1 until it disappears.</p>
 <h2 id="creating-a-map">Creating a Map<a class="headerlink" href="#creating-a-map" title="Permanent link">&para;</a></h2>
 <p>Make sure the robot is fully booted and all topics (laser scan, odometry) are publishing before starting SLAM.</p>
-<p><strong>Terminal 1 — Boot the robot</strong> (real robot):</p>
+<p><strong>Terminal 1 — Boot the robot</strong> (Physical Robot):</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>ros2<span class="w"> </span>launch<span class="w"> </span>linorobot2_bringup<span class="w"> </span>bringup.launch.py
 </code></pre></div>
-<p>Or for simulation:</p>
+<p>Or for Simulated Robot:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>ros2<span class="w"> </span>launch<span class="w"> </span>linorobot2_gazebo<span class="w"> </span>gazebo.launch.py
 </code></pre></div>
 <p><strong>Terminal 2 — Start SLAM Toolbox:</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>ros2<span class="w"> </span>launch<span class="w"> </span>linorobot2_navigation<span class="w"> </span>slam.launch.py
 </code></pre></div>
-<p>For simulation on the host machine:</p>
+<p>For the Simulated Robot:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>ros2<span class="w"> </span>launch<span class="w"> </span>linorobot2_navigation<span class="w"> </span>slam.launch.py<span class="w"> </span>sim:<span class="o">=</span><span class="nb">true</span><span class="w"> </span>rviz:<span class="o">=</span><span class="nb">true</span>
 </code></pre></div>
-<p><strong>Terminal 3 — Visualize (from host machine ideal when working with real robot):</strong></p>
+<p><strong>Terminal 3 — Visualize (from host machine ideal when working with Physical Robot):</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>ros2<span class="w"> </span>launch<span class="w"> </span>linorobot2_viz<span class="w"> </span>slam.launch.py
 </code></pre></div>
 <p>In RViz you should see the laser scan (colored dots) and the map building up as the robot moves.</p>

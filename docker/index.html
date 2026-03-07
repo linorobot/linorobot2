@@ -1129,11 +1129,11 @@
 <h2 id="build">Build<a class="headerlink" href="#build" title="Permanent link">&para;</a></h2>
 <h3 id="1-configure-dockerenv">1. Configure docker/.env<a class="headerlink" href="#1-configure-dockerenv" title="Permanent link">&para;</a></h3>
 <p>Edit <code>docker/.env</code> and set <code>BASE_IMAGE</code> to match your target use case:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>BASE_IMAGE=hardware      # Real robot hardware
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>BASE_IMAGE=gazebo        # Gazebo simulation
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>BASE_IMAGE=hardware      # Physical Robot
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>BASE_IMAGE=gazebo        # Simulated Robot
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>BASE_IMAGE=gazebo-cuda   # Gazebo simulation with CUDA support (recommended if you have an NVIDIA GPU)
 </code></pre></div>
-<p>If you are working with real hardware, also set the following:</p>
+<p>If you are working with Physical Robot, also set the following:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>ROBOT_BASE=&lt;robot_type&gt;      # 2wd, 4wd, or mecanum
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>LASER_SENSOR=&lt;laser_sensor&gt;  # e.g. ld06, a1, ydlidar  (leave blank if not used)
 <a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>DEPTH_SENSOR=&lt;depth_sensor&gt;  # e.g. realsense, oakd     (leave blank if not used)

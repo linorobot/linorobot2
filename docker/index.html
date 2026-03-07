@@ -1150,7 +1150,7 @@
 <blockquote>
 <p>Passing <code>HOST_UID</code> and <code>HOST_GID</code> is important when using the <code>dev</code> service, which mounts the host repository directory into the container. Without these, files created inside the container (e.g. build artifacts) will be owned by root on the host.</p>
 </blockquote>
-<p>After building, see the <a href="#hardware">Hardware</a> section for post-build setup (udev rules, device mapping, and running the robot).</p>
+<p>After building the image and you're working on a Physical Robot, see the <a href="#hardware">Hardware</a> section for post-build setup (udev rules, device mapping, and running the robot).</p>
 <hr />
 <h2 id="web-visualization">Web Visualization<a class="headerlink" href="#web-visualization" title="Permanent link">&para;</a></h2>
 <p>All tmuxinator configs in <code>docker/profiles</code> (<code>dev</code>, <code>hardware</code>, <code>sim</code>) route GUI output (including Gazebo, RViz, and any other ROS GUI tools) to a virtual display at <code>:200</code>. A <a href="https://github.com/kasmtech/KasmVNC">KasmVNC</a> server captures that display and streams it to a browser at:</p>

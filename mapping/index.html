@@ -786,23 +786,23 @@
 <p>If you get the warning <code>slam_toolbox: Message Filter dropping message: frame 'laser'</code>, increase <code>transform_timeout</code> by 0.1 until it disappears.</p>
 <h2 id="creating-a-map">Creating a Map<a class="headerlink" href="#creating-a-map" title="Permanent link">&para;</a></h2>
 <p>Make sure the robot is fully booted and all topics (laser scan, odometry) are publishing before starting SLAM.</p>
-<p><strong>Terminal 1 — Boot the robot</strong> (Physical Robot):</p>
+<p><strong>Terminal 1: Boot the robot</strong> (Physical Robot):</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>ros2<span class="w"> </span>launch<span class="w"> </span>linorobot2_bringup<span class="w"> </span>bringup.launch.py
 </code></pre></div>
 <p>Or for Simulated Robot:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>ros2<span class="w"> </span>launch<span class="w"> </span>linorobot2_gazebo<span class="w"> </span>gazebo.launch.py
 </code></pre></div>
-<p><strong>Terminal 2 — Start SLAM Toolbox:</strong></p>
+<p><strong>Terminal 2: Start SLAM Toolbox:</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>ros2<span class="w"> </span>launch<span class="w"> </span>linorobot2_navigation<span class="w"> </span>slam.launch.py
 </code></pre></div>
 <p>For the Simulated Robot:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>ros2<span class="w"> </span>launch<span class="w"> </span>linorobot2_navigation<span class="w"> </span>slam.launch.py<span class="w"> </span>sim:<span class="o">=</span><span class="nb">true</span><span class="w"> </span>rviz:<span class="o">=</span><span class="nb">true</span>
 </code></pre></div>
-<p><strong>Terminal 3 — Visualize (from host machine ideal when working with Physical Robot):</strong></p>
+<p><strong>Terminal 3: Visualize (from host machine, ideally when working with Physical Robot):</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>ros2<span class="w"> </span>launch<span class="w"> </span>linorobot2_viz<span class="w"> </span>slam.launch.py
 </code></pre></div>
 <p>In RViz you should see the laser scan (colored dots) and the map building up as the robot moves.</p>
-<p><strong>Terminal 4 — Drive the robot:</strong></p>
+<p><strong>Terminal 4: Drive the robot:</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>ros2<span class="w"> </span>run<span class="w"> </span>teleop_twist_keyboard<span class="w"> </span>teleop_twist_keyboard
 </code></pre></div>
 <p>Drive the robot slowly and methodically through the entire area you want to map. Cover all rooms, hallways, and corners. Move at a moderate pace. Going too fast gives SLAM Toolbox less time to match scans and can cause drift.</p>
@@ -815,8 +815,8 @@
 <a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>ros2<span class="w"> </span>run<span class="w"> </span>nav2_map_server<span class="w"> </span>map_saver_cli<span class="w"> </span>-f<span class="w"> </span>&lt;map_name&gt;<span class="w"> </span>--ros-args<span class="w"> </span>-p<span class="w"> </span>save_map_timeout:<span class="o">=</span><span class="m">10000</span>.
 </code></pre></div>
 <p>Replace <code>&lt;map_name&gt;</code> with a descriptive name (e.g., <code>office</code>, <code>lab</code>, <code>home</code>). This creates two files:
-- <code>&lt;map_name&gt;.yaml</code> — metadata: resolution, origin, and the image file location
-- <code>&lt;map_name&gt;.pgm</code> — the map image (white = free, black = obstacle, grey = unknown)</p>
+- <code>&lt;map_name&gt;.yaml</code>: metadata (resolution, origin, and the image file location)
+- <code>&lt;map_name&gt;.pgm</code>: the map image (white = free, black = obstacle, grey = unknown)</p>
 <p>Keep both files in the same directory. The YAML references the PGM by path.</p>
 <h2 id="whats-next">What's Next<a class="headerlink" href="#whats-next" title="Permanent link">&para;</a></h2>
 <p>With a map in hand, the robot has everything it needs for autonomous navigation. The next step is to load the map and start Nav2, which will use the map for path planning and AMCL for localization. See <a href="08_navigation.md">Navigation</a>.</p>

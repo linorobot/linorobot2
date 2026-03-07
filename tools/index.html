@@ -831,7 +831,7 @@
 
 
 <h1 id="create-custom-gazebo-worlds-from-images-floor-plans-or-occupancy-grid-map">Create custom Gazebo worlds from images, floor plans, or occupancy grid map<a class="headerlink" href="#create-custom-gazebo-worlds-from-images-floor-plans-or-occupancy-grid-map" title="Permanent link">&para;</a></h1>
-<p>linorobot2 includes two tools for generating Gazebo worlds from real-world sources: a floor plan image or a SLAM-generated map. Both produce a Gazebo world that reflects the actual geometry of your physical environment, so you can develop and test ROS2 applications in simulation with full confidence in the obstacle layout before deploying to the real robot.</p>
+<p>linorobot2 includes two tools for generating Gazebo worlds from real-world sources: a floor plan image or a SLAM-generated map. Both produce a Gazebo world that reflects the actual geometry of your physical environment, so you can develop and test ROS2 applications in simulation with full confidence in the obstacle layout before deploying to the Physical Robot.</p>
 <hr />
 <h2 id="image_to_gazebo">image_to_gazebo<a class="headerlink" href="#image_to_gazebo" title="Permanent link">&para;</a></h2>
 <p>A GUI tool that converts any floor plan or building layout image (PNG, JPG, BMP, etc.) into a ready-to-use Gazebo world. You calibrate the image's real-world scale and set the coordinate origin interactively, then the tool generates the 3D wall mesh, model SDF, and world SDF automatically.</p>
@@ -845,7 +845,7 @@
 <hr />
 <p><strong>1. Load Image</strong></p>
 <p>Click <strong>Load Image</strong> and select your floor plan file (PNG, JPG, JPEG, BMP, GIF, or TIFF).</p>
-<p>The file dialog opens at <code>linorobot2_gazebo/linorobot2_gazebo/images/</code> by default — place your floor plan images there for easy access.</p>
+<p>The file dialog opens at <code>linorobot2_gazebo/linorobot2_gazebo/images/</code> by default. Place your floor plan images there for easy access.</p>
 <p>The image is displayed on the canvas. X (red, pointing right) and Y (green, pointing up) reference axes are drawn in the bottom-left corner.</p>
 <hr />
 <p><strong>2. Set Meters Per Pixel</strong></p>
@@ -919,7 +919,7 @@
 </code></pre></div>
 <hr />
 <h2 id="create_worlds_from_maps">create_worlds_from_maps<a class="headerlink" href="#create_worlds_from_maps" title="Permanent link">&para;</a></h2>
-<p>A batch CLI tool that converts all SLAM maps in <code>linorobot2_navigation/maps/</code> into Gazebo worlds in one command. It is the non-interactive counterpart to <code>image_to_gazebo</code> — useful for keeping simulation worlds in sync after a mapping session or when maps have been updated.</p>
+<p>A batch CLI tool that converts all SLAM maps in <code>linorobot2_navigation/maps/</code> into Gazebo worlds in one command. It is the non-interactive counterpart to <code>image_to_gazebo</code>, useful for keeping simulation worlds in sync after a mapping session or when maps have been updated.</p>
 <p>For each YAML file it reads the occupancy grid image, extrudes the occupied cells into a 3D wall mesh, and writes the model SDF and world SDF.</p>
 <h3 id="running_1">Running<a class="headerlink" href="#running_1" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>ros2<span class="w"> </span>run<span class="w"> </span>linorobot2_gazebo<span class="w"> </span>create_worlds_from_maps
@@ -943,11 +943,11 @@
 </code></pre></div>
 <h3 id="typical-workflow">Typical Workflow<a class="headerlink" href="#typical-workflow" title="Permanent link">&para;</a></h3>
 <ol>
-<li>Drive your real robot and build a map with SLAM Toolbox (see <a href="07_mapping.md">Mapping</a>).</li>
+<li>Drive your Physical Robot and build a map with SLAM Toolbox (see <a href="07_mapping.md">Mapping</a>).</li>
 <li>Save the map to <code>linorobot2_navigation/maps/</code>.</li>
 <li>Run <code>create_worlds_from_maps</code> to generate the Gazebo world.</li>
 <li>Rebuild the workspace and launch the world in Gazebo.</li>
-<li>Develop and test your Nav2 application in the simulation, then deploy to the real robot.</li>
+<li>Develop and test your Nav2 application with the Simulated Robot, then deploy to the Physical Robot.</li>
 </ol>
 
 

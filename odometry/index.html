@@ -396,10 +396,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#real-robot" class="md-nav__link">
+  <a href="#physical-robot" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Real Robot
+        Physical Robot
       
     </span>
   </a>
@@ -407,10 +407,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#simulation" class="md-nav__link">
+  <a href="#simulated-robot" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Simulation
+        Simulated Robot
       
     </span>
   </a>
@@ -736,10 +736,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#real-robot" class="md-nav__link">
+  <a href="#physical-robot" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Real Robot
+        Physical Robot
       
     </span>
   </a>
@@ -747,10 +747,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#simulation" class="md-nav__link">
+  <a href="#simulated-robot" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Simulation
+        Simulated Robot
       
     </span>
   </a>
@@ -881,8 +881,8 @@
 <p>Odometry is the robot's best estimate of where it is, based on how much it has moved. Every time a wheel turns, the encoder counts the pulses. From the pulse count, the firmware computes how fast each wheel is spinning, then uses the robot's kinematics to figure out the robot's linear and angular velocity, and finally integrates those velocities over time to estimate the robot's current position and orientation.</p>
 <p>Think of it like navigating with a car's trip odometer: you know how fast you've been going and for how long, so you can estimate how far you've traveled, even without GPS.</p>
 <h2 id="how-odometry-is-computed">How Odometry Is Computed<a class="headerlink" href="#how-odometry-is-computed" title="Permanent link">&para;</a></h2>
-<h3 id="real-robot">Real Robot<a class="headerlink" href="#real-robot" title="Permanent link">&para;</a></h3>
-<p>On the real robot, odometry is calculated inside the microcontroller firmware. The full implementation is in <a href="https://github.com/linorobot/linorobot2_hardware/blob/jazzy/firmware/lib/odometry/odometry.cpp">odometry.cpp</a>. In summary:</p>
+<h3 id="physical-robot">Physical Robot<a class="headerlink" href="#physical-robot" title="Permanent link">&para;</a></h3>
+<p>On the Physical Robot, odometry is calculated inside the microcontroller firmware. The full implementation is in <a href="https://github.com/linorobot/linorobot2_hardware/blob/jazzy/firmware/lib/odometry/odometry.cpp">odometry.cpp</a>. In summary:</p>
 <ol>
 <li>Encoder pulses are counted for each wheel since the last update.</li>
 <li>Pulse counts are converted to wheel displacement using the wheel circumference and encoder resolution.</li>
@@ -890,15 +890,15 @@
 <li>The resulting linear and angular velocities are integrated to update the robot's pose.</li>
 </ol>
 <p>The computed odometry is published to <code>odom/unfiltered</code> via micro-ROS.</p>
-<h3 id="simulation">Simulation<a class="headerlink" href="#simulation" title="Permanent link">&para;</a></h3>
+<h3 id="simulated-robot">Simulated Robot<a class="headerlink" href="#simulated-robot" title="Permanent link">&para;</a></h3>
 <p>In Gazebo, the <code>gz-sim-diff-drive-system</code> plugin in <code>linorobot2_description/urdf/controllers/diff_drive.urdf.xacro</code> handles this. It reads the simulated joint states of the left and right wheel joints, applies the same differential drive kinematics using the configured <code>wheel_separation</code> and <code>wheel_radius</code>, and publishes the result to <code>odom/unfiltered</code> at 50 Hz. The upstream consumers (EKF, SLAM, Nav2) see no difference.</p>
 <p>In ROS2, odometry is published as a <code>nav_msgs/Odometry</code> message, which contains the robot's estimated pose (position + orientation) and its current velocity.</p>
 <h2 id="why-wheel-odometry-alone-isnt-enough">Why Wheel Odometry Alone Isn't Enough<a class="headerlink" href="#why-wheel-odometry-alone-isnt-enough" title="Permanent link">&para;</a></h2>
 <p>Wheel odometry works well in short bursts, but it accumulates errors over time. The main culprits are:</p>
 <ul>
-<li><strong>Wheel slip</strong> — wheels sliding on smooth or slippery surfaces produce encoder counts that don't correspond to actual motion.</li>
-<li><strong>Uneven surfaces</strong> — bumps and ramps tilt the robot, so straight-line motion in 3D gets projected incorrectly onto the 2D floor plane.</li>
-<li><strong>Mechanical tolerances</strong> — small differences in wheel diameter or encoder resolution cause the robot to drift even when driving in a straight line.</li>
+<li><strong>Wheel slip:</strong> wheels sliding on smooth or slippery surfaces produce encoder counts that don't correspond to actual motion.</li>
+<li><strong>Uneven surfaces:</strong> bumps and ramps tilt the robot, so straight-line motion in 3D gets projected incorrectly onto the 2D floor plane.</li>
+<li><strong>Mechanical tolerances:</strong> small differences in wheel diameter or encoder resolution cause the robot to drift even when driving in a straight line.</li>
 </ul>
 <p>Over a long mapping session or navigation run, these errors accumulate. The robot thinks it's at position X, but it's actually somewhere slightly different. SLAM Toolbox and AMCL can compensate for some of this using their sensor matching, but giving them a better starting estimate makes their job much easier.</p>
 <h2 id="improving-odometry-with-an-imu">Improving Odometry with an IMU<a class="headerlink" href="#improving-odometry-with-an-imu" title="Permanent link">&para;</a></h2>
@@ -939,11 +939,11 @@
 </code></pre></div>
 <p><strong>Key parameters explained:</strong></p>
 <ul>
-<li><code>frequency: 50.0</code> — The EKF runs at 50 Hz, producing filtered odometry 50 times per second.</li>
-<li><code>two_d_mode: true</code> — Tells the filter to ignore roll and pitch, appropriate for ground robots.</li>
-<li><code>publish_tf: true</code> — The EKF publishes the <code>odom → base_footprint</code> transform directly, which is required by Nav2.</li>
-<li><code>odom0: odom/unfiltered</code> — The raw wheel odometry input, published directly by the microcontroller firmware (real robot) or the Gazebo diff drive plugin (simulation).</li>
-<li><code>imu0: imu/data</code> — The IMU input. By default this is the raw IMU data; if you enable the Madgwick filter, this becomes the orientation-fused output.</li>
+<li><code>frequency: 50.0</code>: The EKF runs at 50 Hz, producing filtered odometry 50 times per second.</li>
+<li><code>two_d_mode: true</code>: Tells the filter to ignore roll and pitch, appropriate for ground robots.</li>
+<li><code>publish_tf: true</code>: The EKF publishes the <code>odom → base_footprint</code> transform directly, which is required by Nav2.</li>
+<li><code>odom0: odom/unfiltered</code>: The raw wheel odometry input, published directly by the microcontroller firmware (Physical Robot) or the Gazebo diff drive plugin (Simulated Robot).</li>
+<li><code>imu0: imu/data</code>: The IMU input. By default this is the raw IMU data; if you enable the Madgwick filter, this becomes the orientation-fused output.</li>
 <li>The <code>_config</code> arrays select which states to use from each sensor. The <code>true</code> entries tell the EKF which measurements to trust from each source.</li>
 </ul>
 <h3 id="topics">Topics<a class="headerlink" href="#topics" title="Permanent link">&para;</a></h3>

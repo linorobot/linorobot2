@@ -961,7 +961,7 @@
 <p>With a map in hand, Nav2 can navigate the robot autonomously. This section gives an overview of Nav2's components (AMCL, global planner, local controller, costmaps, behavior tree), walks through launching navigation with a pre-built map, and explains how to set the robot's initial pose and send navigation goals in RViz. Importantly, it covers the <strong>robot footprint</strong>, the one parameter you must configure to match your robot's actual size.</p>
 <hr />
 <h3 id="8-docker">8. <a href="09_docker.md">Docker</a><a class="headerlink" href="#8-docker" title="Permanent link">&para;</a></h3>
-<p>Covers running linorobot2 without a native ROS2 installation using Docker. Includes configuring the Docker environment for hardware, simulation, or CUDA-accelerated simulation; building the image; web-based visualization via KasmVNC (accessible in any browser at <code>http://&lt;host_ip&gt;:3000</code>); running the real robot or Gazebo simulation via Tmuxinator profiles; and creating custom profiles for your own workflow.</p>
+<p>Covers running linorobot2 without a native ROS2 installation using Docker. Includes configuring the Docker environment for hardware, simulation, or CUDA-accelerated simulation; building the image; web-based visualization via KasmVNC (accessible in any browser at <code>http://&lt;host_ip&gt;:3000</code>); running the Physical Robot or Simulated Robot via Tmuxinator profiles; and creating custom profiles for your own workflow.</p>
 <hr />
 <h3 id="9-simulation-tools">9. <a href="10_tools.md">Simulation Tools</a><a class="headerlink" href="#9-simulation-tools" title="Permanent link">&para;</a></h3>
 <p>Documents the two Gazebo world generation tools in <code>linorobot2_gazebo</code>. <code>image_to_gazebo</code> is a GUI tool that converts any floor plan image into a Gazebo world by calibrating its scale and origin interactively. <code>create_worlds_from_maps</code> is a batch CLI tool that converts all saved SLAM maps into Gazebo worlds in one command. Both let you simulate in the exact same environment your robot operates in physically.</p>
@@ -1012,11 +1012,11 @@
 <tbody>
 <tr>
 <td><code>ros2 launch linorobot2_bringup bringup.launch.py</code></td>
-<td>Boot the real robot</td>
+<td>Boot the Physical Robot</td>
 </tr>
 <tr>
 <td><code>ros2 launch linorobot2_gazebo gazebo.launch.py</code></td>
-<td>Start Gazebo simulation</td>
+<td>Start Simulated Robot</td>
 </tr>
 <tr>
 <td><code>ros2 launch linorobot2_navigation slam.launch.py</code></td>

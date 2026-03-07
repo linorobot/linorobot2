@@ -686,15 +686,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#simulation" class="md-nav__link">
+  <a href="#simulated-robot" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Simulation
+        Simulated Robot
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Simulation">
+    <nav class="md-nav" aria-label="Simulated Robot">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1014,15 +1014,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#simulation" class="md-nav__link">
+  <a href="#simulated-robot" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Simulation
+        Simulated Robot
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Simulation">
+    <nav class="md-nav" aria-label="Simulated Robot">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1153,16 +1153,16 @@
 </blockquote>
 <hr />
 <h2 id="web-visualization">Web Visualization<a class="headerlink" href="#web-visualization" title="Permanent link">&para;</a></h2>
-<p>All tmuxinator configs in <code>docker/profiles</code> (<code>dev</code>, <code>hardware</code>, <code>sim</code>) route GUI output — including Gazebo, RViz, and any other ROS GUI tools — to a virtual display at <code>:200</code>. A <a href="https://github.com/kasmtech/KasmVNC">KasmVNC</a> server captures that display and streams it to a browser at:</p>
+<p>All tmuxinator configs in <code>docker/profiles</code> (<code>dev</code>, <code>hardware</code>, <code>sim</code>) route GUI output (including Gazebo, RViz, and any other ROS GUI tools) to a virtual display at <code>:200</code>. A <a href="https://github.com/kasmtech/KasmVNC">KasmVNC</a> server captures that display and streams it to a browser at:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>http://&lt;host_ip&gt;:3000
 </code></pre></div>
 <p>On machines with an NVIDIA GPU, the <code>gazebo-cuda</code> image uses <strong>VirtualGL</strong> to intercept OpenGL calls from Gazebo and redirect them to the GPU for hardware-accelerated rendering. Without this, a headless server falls back to software rendering, bypassing the GPU entirely.</p>
 <h3 id="why-run-headless-with-a-browser-interface">Why run headless with a browser interface?<a class="headerlink" href="#why-run-headless-with-a-browser-interface" title="Permanent link">&para;</a></h3>
-<p>This setup is particularly well-suited for <strong>cloud simulation</strong> on instances such as GCP or AWS, where no monitor is physically attached. The entire simulation stack — Gazebo, Nav2, sensor processing — runs on the remote machine. The browser is the only local interface needed, with no local ROS installation required. Compute can be scaled on demand simply by upgrading the instance, without being constrained by local hardware.</p>
-<p>It is also more efficient for <strong>remote visualization</strong> than the conventional approach. In a typical ROS setup, tools like RViz running on a remote machine receive raw topic data (point clouds, laser scans, images) over the network, which can be extremely bandwidth-intensive. With VNC, only a compressed video stream of the rendered display is transmitted — significantly reducing network usage, especially with data-heavy sensors like 3D LiDARs or RGBD cameras.</p>
+<p>This setup is particularly well-suited for <strong>cloud simulation</strong> on instances such as GCP or AWS, where no monitor is physically attached. The entire simulation stack (Gazebo, Nav2, sensor processing) runs on the remote machine. The browser is the only local interface needed, with no local ROS installation required. Compute can be scaled on demand simply by upgrading the instance, without being constrained by local hardware.</p>
+<p>It is also more efficient for <strong>remote visualization</strong> than the conventional approach. In a typical ROS setup, tools like RViz running on a remote machine receive raw topic data (point clouds, laser scans, images) over the network, which can be extremely bandwidth-intensive. With VNC, only a compressed video stream of the rendered display is transmitted, significantly reducing network usage, especially with data-heavy sensors like 3D LiDARs or RGBD cameras.</p>
 <hr />
 <h2 id="development">Development<a class="headerlink" href="#development" title="Permanent link">&para;</a></h2>
-<p>The <code>dev</code> service mounts the entire <code>linorobot2</code> repository from the host into the container at <code>/home/ros/linorobot2_ws/src/linorobot2</code>. You can edit code on the host with your preferred editor and changes are immediately visible inside the container — no image rebuild needed. Once changes are made, rebuild the workspace from inside the container with:</p>
+<p>The <code>dev</code> service mounts the entire <code>linorobot2</code> repository from the host into the container at <code>/home/ros/linorobot2_ws/src/linorobot2</code>. You can edit code on the host with your preferred editor and changes are immediately visible inside the container, with no image rebuild needed. Once changes are made, rebuild the workspace from inside the container with:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>colcon<span class="w"> </span>build
 </code></pre></div>
 <h3 id="option-1-dev-single-terminal-gui-forwarded-to-host">Option 1: ./dev (single terminal, GUI forwarded to host)<a class="headerlink" href="#option-1-dev-single-terminal-gui-forwarded-to-host" title="Permanent link">&para;</a></h3>
@@ -1172,7 +1172,7 @@
 </code></pre></div>
 <p>In this mode, GUI applications (e.g. RViz, rqt) are forwarded to the host machine's screen via the <code>$DISPLAY</code> environment variable.</p>
 <h3 id="option-2-tmuxinator-multi-pane-gui-at-httphost_ip3000">Option 2: Tmuxinator (multi-pane, GUI at http://\&lt;host_ip&gt;:3000)<a class="headerlink" href="#option-2-tmuxinator-multi-pane-gui-at-httphost_ip3000" title="Permanent link">&para;</a></h3>
-<p><a href="https://github.com/tmuxinator/tmuxinator">Tmuxinator</a> manages named tmux sessions from a YAML config. In this project it acts like a launch file for multiple Docker services: a single command starts all the required containers and arranges their output into named panes inside one terminal. Each pane runs a different service — Gazebo, Nav2, KasmVNC, an interactive shell — so you have everything visible and reachable without juggling multiple SSH sessions or terminal windows.</p>
+<p><a href="https://github.com/tmuxinator/tmuxinator">Tmuxinator</a> manages named tmux sessions from a YAML config. In this project it acts like a launch file for multiple Docker services: a single command starts all the required containers and arranges their output into named panes inside one terminal. Each pane runs a different service (Gazebo, Nav2, KasmVNC, an interactive shell) so you have everything visible and reachable without juggling multiple SSH sessions or terminal windows.</p>
 <p>A Tmuxinator config at <code>docker/profiles/dev.yml</code> opens a tmux window with four panes, each exec'd into the <code>dev</code> container, alongside a KasmVNC server. In this mode, any GUI application launched from inside the container appears in the browser at <code>http://&lt;host_ip&gt;:3000</code> (see <a href="#web-visualization">Web Visualization</a>).</p>
 <p><strong>1. Install Tmuxinator</strong></p>
 <p>Follow the installation instructions <a href="https://github.com/tmuxinator/tmuxinator?tab=readme-ov-file#installation">here</a>.</p>
@@ -1191,8 +1191,8 @@
 </code></pre></div>
 <p>This starts the <code>dev</code> container and KasmVNC, then opens a tmux window with four bash panes ready for development.</p>
 <p>Useful tmux key bindings:
-- <code>Ctrl+B</code> then arrow keys — navigate between panes
-- <code>Ctrl+B</code> then <code>D</code> — detach from the session (containers keep running)</p>
+- <code>Ctrl+B</code> then arrow keys: navigate between panes
+- <code>Ctrl+B</code> then <code>D</code>: detach from the session (containers keep running)</p>
 <p><strong>4. Stop the session</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>tmuxinator<span class="w"> </span>stop<span class="w"> </span>dev
 </code></pre></div>
@@ -1201,13 +1201,13 @@
 <a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>docker<span class="w"> </span>compose<span class="w"> </span>down
 </code></pre></div>
 <blockquote>
-<p>Inside the container each pane behaves exactly like a native ROS 2 installation. You can run any ROS 2 command directly — for example:
+<p>Inside the container each pane behaves exactly like a native ROS 2 installation. You can run any ROS 2 command directly, for example:
 <div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>ros2<span class="w"> </span>topic<span class="w"> </span>list
 <a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>ros2<span class="w"> </span>topic<span class="w"> </span><span class="nb">echo</span><span class="w"> </span>/cmd_vel
 <a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>ros2<span class="w"> </span>node<span class="w"> </span>list
 <a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>ros2<span class="w"> </span>run<span class="w"> </span>teleop_twist_keyboard<span class="w"> </span>teleop_twist_keyboard
 </code></pre></div>
-No extra setup is needed — <code>/opt/ros/&lt;ros_distro&gt;/setup.bash</code> is sourced automatically when the shell starts. To use workspace packages, run <code>source install/setup.bash</code> inside <code>linorobot2_ws</code>.</p>
+No extra setup is needed. <code>/opt/ros/&lt;ros_distro&gt;/setup.bash</code> is sourced automatically when the shell starts. To use workspace packages, run <code>source install/setup.bash</code> inside <code>linorobot2_ws</code>.</p>
 </blockquote>
 <hr />
 <h2 id="hardware">Hardware<a class="headerlink" href="#hardware" title="Permanent link">&para;</a></h2>
@@ -1216,7 +1216,7 @@ No extra setup is needed — <code>/opt/ros/&lt;ros_distro&gt;/setup.bash</code>
 </blockquote>
 <h3 id="1-install-udev-rules-on-the-host">1. Install udev rules on the host<a class="headerlink" href="#1-install-udev-rules-on-the-host" title="Permanent link">&para;</a></h3>
 <p>The Docker image already contains the sensor drivers (installed during build). To create the <code>/dev/&lt;sensor&gt;</code> symlinks on the <strong>host</strong> machine, run <code>install.bash</code> with <code>--udev-only</code>.</p>
-<p><code>--udev-only</code> is required — it forces the script to only copy udev rules and skip driver installation (which is not needed since drivers are already inside the container).</p>
+<p><code>--udev-only</code> is required: it forces the script to only copy udev rules and skip driver installation (which is not needed since drivers are already inside the container).</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>bash<span class="w"> </span>install.bash<span class="w"> </span>--laser<span class="w"> </span>&lt;laser_sensor&gt;<span class="w"> </span>--udev-only
 <a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="c1"># and/or</span>
 <a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>bash<span class="w"> </span>install.bash<span class="w"> </span>--depth<span class="w"> </span>&lt;depth_sensor&gt;<span class="w"> </span>--udev-only
@@ -1288,7 +1288,7 @@ No extra setup is needed — <code>/opt/ros/&lt;ros_distro&gt;/setup.bash</code>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>tmuxinator<span class="w"> </span>stop<span class="w"> </span>hardware
 </code></pre></div>
 <hr />
-<h2 id="simulation">Simulation<a class="headerlink" href="#simulation" title="Permanent link">&para;</a></h2>
+<h2 id="simulated-robot">Simulated Robot<a class="headerlink" href="#simulated-robot" title="Permanent link">&para;</a></h2>
 <blockquote>
 <p>Before continuing, complete the <a href="#build">Build</a> steps with <code>BASE_IMAGE</code> set to <code>gazebo</code> or <code>gazebo-cuda</code>.</p>
 </blockquote>
@@ -1325,11 +1325,11 @@ No extra setup is needed — <code>/opt/ros/&lt;ros_distro&gt;/setup.bash</code>
 <tbody>
 <tr>
 <td><code>kasmvnc</code></td>
-<td>KasmVNC server — streams the virtual display (<code>:200</code>) to a browser at <code>http://&lt;host_ip&gt;:3000</code>. Should be included in every profile that uses GUI tools.</td>
+<td>KasmVNC server: streams the virtual display (<code>:200</code>) to a browser at <code>http://&lt;host_ip&gt;:3000</code>. Should be included in every profile that uses GUI tools.</td>
 </tr>
 <tr>
 <td><code>dev</code></td>
-<td>Development container — mounts the host <code>linorobot2</code> repo into the container so edits are reflected immediately without rebuilding the image. Runs <code>sleep infinity</code> so you can exec into it as needed.</td>
+<td>Development container: mounts the host <code>linorobot2</code> repo into the container so edits are reflected immediately without rebuilding the image. Runs <code>sleep infinity</code> so you can exec into it as needed.</td>
 </tr>
 <tr>
 <td><code>gazebo</code></td>

@@ -413,15 +413,15 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#simulation" class="md-nav__link">
+  <a href="#simulated-robot" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Simulation
+        Simulated Robot
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Simulation">
+    <nav class="md-nav" aria-label="Simulated Robot">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -769,15 +769,15 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#simulation" class="md-nav__link">
+  <a href="#simulated-robot" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Simulation
+        Simulated Robot
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Simulation">
+    <nav class="md-nav" aria-label="Simulated Robot">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -920,7 +920,7 @@
 <li>Configuration for different robot base types (2WD, 4WD, Mecanum) as well as for different motor controllers and sensors</li>
 </ul>
 <h2 id="booting-up">Booting Up<a class="headerlink" href="#booting-up" title="Permanent link">&para;</a></h2>
-<p>In the next steps of this guide — mapping, navigation — you will always start by booting the Robot Computer first. Depending on your setup, you'll run one of the following:</p>
+<p>In the next steps of this guide (mapping, navigation), you will always start by booting the Robot Computer first. Depending on your setup, you'll run one of the following:</p>
 <p><strong>Physical Robot:</strong>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>ros2<span class="w"> </span>launch<span class="w"> </span>linorobot2_bringup<span class="w"> </span>bringup.launch.py
 </code></pre></div></p>
@@ -946,8 +946,8 @@
 <a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="c1"># WiFi transport (UDP)</span>
 <a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>ros2<span class="w"> </span>launch<span class="w"> </span>linorobot2_bringup<span class="w"> </span>bringup.launch.py<span class="w"> </span>micro_ros_transport:<span class="o">=</span>udp4<span class="w"> </span>micro_ros_port:<span class="o">=</span><span class="m">8888</span>
 </code></pre></div>
-<h3 id="simulation">Simulation<a class="headerlink" href="#simulation" title="Permanent link">&para;</a></h3>
-<p>In Gazebo, there is no physical microcontroller — but the same interface is preserved. Gazebo uses <strong>plugins</strong> defined in the robot's URDF to simulate the base controller and IMU, publishing on the same topics so the rest of the stack (EKF, SLAM, Nav2) works identically.</p>
+<h3 id="simulated-robot">Simulated Robot<a class="headerlink" href="#simulated-robot" title="Permanent link">&para;</a></h3>
+<p>In Gazebo, there is no physical microcontroller, but the same interface is preserved. Gazebo uses <strong>plugins</strong> defined in the robot's URDF to simulate the base controller and IMU, publishing on the same topics so the rest of the stack (EKF, SLAM, Nav2) works identically.</p>
 <h4 id="differential-drive-controller">Differential Drive Controller<a class="headerlink" href="#differential-drive-controller" title="Permanent link">&para;</a></h4>
 <p>The drive controller is defined in <code>linorobot2_description/urdf/controllers/diff_drive.urdf.xacro</code>:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nt">&lt;plugin</span>
@@ -977,7 +977,7 @@
 <a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">  </span><span class="nt">&lt;update_rate&gt;</span>50<span class="nt">&lt;/update_rate&gt;</span>
 <a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="nt">&lt;/sensor&gt;</span>
 </code></pre></div>
-<p>It publishes directly to <code>imu/data</code> at 50 Hz — the same topic the EKF reads in <code>ekf.yaml</code>. Both the diff drive controller and the IMU are already included in every robot URDF under <code>linorobot2_description/urdf/robots/</code>, so no extra configuration is needed to run the simulation.</p>
+<p>It publishes directly to <code>imu/data</code> at 50 Hz, the same topic the EKF reads in <code>ekf.yaml</code>. Both the diff drive controller and the IMU are already included in every robot URDF under <code>linorobot2_description/urdf/robots/</code>, so no extra configuration is needed to run the Simulated Robot.</p>
 <h2 id="magnetometer-support-physical-robot">Magnetometer Support (Physical Robot)<a class="headerlink" href="#magnetometer-support-physical-robot" title="Permanent link">&para;</a></h2>
 <p>The IMU includes a magnetometer that can provide absolute heading (compass direction). How IMU data reaches the EKF depends on whether the magnetometer is enabled.</p>
 <p><strong>Without Madgwick (default):</strong></p>

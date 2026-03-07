@@ -925,8 +925,9 @@
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>ros2<span class="w"> </span>launch<span class="w"> </span>linorobot2_bringup<span class="w"> </span>bringup.launch.py
 </code></pre></div></p>
 <p><strong>Simulated Robot:</strong>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>ros2<span class="w"> </span>launch<span class="w"> </span>linorobot2_gazebo<span class="w"> </span>gazebo.launch.py
-</code></pre></div></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>ros2<span class="w"> </span>launch<span class="w"> </span>linorobot2_gazebo<span class="w"> </span>gazebo.launch.py<span class="w"> </span>spawn_x:<span class="o">=</span><span class="m">0</span>.5
+</code></pre></div>
+- <code>spawn_y</code>, <code>spawn_z</code>, can also be used to set the initial position of the Simulated Robot in Gazebo.</p>
 <p>The rest of this section covers what each of these actually does under the hood.</p>
 <h3 id="physical-robot">Physical Robot<a class="headerlink" href="#physical-robot" title="Permanent link">&para;</a></h3>
 <p>When you run <code>bringup.launch.py</code>, the Robot Computer starts a micro-ROS agent that opens a serial connection to the microcontroller and bridges its topics into the ROS2 network.</p>

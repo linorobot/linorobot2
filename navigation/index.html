@@ -825,11 +825,13 @@
 <h2 id="sending-navigation-goals">Sending Navigation Goals<a class="headerlink" href="#sending-navigation-goals" title="Permanent link">&para;</a></h2>
 <p>Once the robot is localized, you can send it anywhere on the map:</p>
 <p>In RViz, click <strong>"2D Goal Pose"</strong>, then click on the map where you want the robot to go and drag to set the desired final orientation.</p>
-<p>Nav2 will:
-1. Plan a path from the current position to the goal
-2. Begin following the path
-3. Avoid any new obstacles detected along the way
-4. Declare success when it arrives within the goal tolerance (default: 35 cm)</p>
+<p>Nav2 will:</p>
+<ol>
+<li>Plan a path from the current position to the goal</li>
+<li>Begin following the path</li>
+<li>Avoid any new obstacles detected along the way</li>
+<li>Declare success when it arrives within the goal tolerance (default: 35 cm)</li>
+</ol>
 <p>For a detailed walkthrough of the RViz navigation interface, see the <a href="https://docs.nav2.org/tutorials/docs/navigation2_on_real_turtlebot3.html#initialize-the-location-of-turtlebot-3">Nav2 tutorial on real robot navigation</a>.</p>
 <h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h2>
 <p><strong><code>Invalid frame ID "map"</code> errors</strong> — Nav2 is running but AMCL hasn't localized yet. Set the 2D Pose Estimate in RViz.</p>

@@ -402,10 +402,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#real-robot" class="md-nav__link">
+  <a href="#physical-robot" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Real Robot
+        Physical Robot
       
     </span>
   </a>
@@ -457,10 +457,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#magnetometer-support-real-robot" class="md-nav__link">
+  <a href="#magnetometer-support-physical-robot" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Magnetometer Support (Real Robot)
+        Magnetometer Support (Physical Robot)
       
     </span>
   </a>
@@ -758,10 +758,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#real-robot" class="md-nav__link">
+  <a href="#physical-robot" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Real Robot
+        Physical Robot
       
     </span>
   </a>
@@ -813,10 +813,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#magnetometer-support-real-robot" class="md-nav__link">
+  <a href="#magnetometer-support-physical-robot" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Magnetometer Support (Real Robot)
+        Magnetometer Support (Physical Robot)
       
     </span>
   </a>
@@ -921,14 +921,14 @@
 </ul>
 <h2 id="booting-up">Booting Up<a class="headerlink" href="#booting-up" title="Permanent link">&para;</a></h2>
 <p>In the next steps of this guide — mapping, navigation — you will always start by booting the robot first. Depending on your setup, you'll run one of the following:</p>
-<p><strong>Real robot:</strong>
+<p><strong>Physical Robot:</strong>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>ros2<span class="w"> </span>launch<span class="w"> </span>linorobot2_bringup<span class="w"> </span>bringup.launch.py
 </code></pre></div></p>
 <p><strong>Simulation:</strong>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>ros2<span class="w"> </span>launch<span class="w"> </span>linorobot2_gazebo<span class="w"> </span>gazebo.launch.py
 </code></pre></div></p>
 <p>The rest of this section covers what each of these actually does under the hood.</p>
-<h3 id="real-robot">Real Robot<a class="headerlink" href="#real-robot" title="Permanent link">&para;</a></h3>
+<h3 id="physical-robot">Physical Robot<a class="headerlink" href="#physical-robot" title="Permanent link">&para;</a></h3>
 <p>When you run <code>bringup.launch.py</code>, the robot computer starts a micro-ROS agent that opens a serial connection to the microcontroller and bridges its topics into the ROS2 network.</p>
 <p>Always wait for the agent to confirm a successful connection before running SLAM or navigation. You'll see something like:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>| Root.cpp             | create_client     | create
@@ -962,7 +962,7 @@
 <a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="w">  </span><span class="nt">&lt;odom_publish_frequency&gt;</span>50<span class="nt">&lt;/odom_publish_frequency&gt;</span>
 <a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="nt">&lt;/plugin&gt;</span>
 </code></pre></div>
-<p>This plugin does what the microcontroller firmware does on the real robot:
+<p>This plugin does what the microcontroller firmware does on the Physical Robot:
 - Subscribes to <code>cmd_vel</code> for incoming <code>Twist</code> velocity commands
 - Converts them to per-wheel velocities using the kinematic model, driven by <code>wheel_separation</code> and <code>wheel_radius</code>
 - Publishes wheel odometry to <code>odom/unfiltered</code> at 50 Hz</p>
@@ -977,7 +977,7 @@
 <a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="nt">&lt;/sensor&gt;</span>
 </code></pre></div>
 <p>It publishes directly to <code>imu/data</code> at 50 Hz — the same topic the EKF reads in <code>ekf.yaml</code>. Both the diff drive controller and the IMU are already included in every robot URDF under <code>linorobot2_description/urdf/robots/</code>, so no extra configuration is needed to run the simulation.</p>
-<h2 id="magnetometer-support-real-robot">Magnetometer Support (Real Robot)<a class="headerlink" href="#magnetometer-support-real-robot" title="Permanent link">&para;</a></h2>
+<h2 id="magnetometer-support-physical-robot">Magnetometer Support (Physical Robot)<a class="headerlink" href="#magnetometer-support-physical-robot" title="Permanent link">&para;</a></h2>
 <p>The IMU includes a magnetometer that can provide absolute heading (compass direction). How IMU data reaches the EKF depends on whether the magnetometer is enabled.</p>
 <p><strong>Without Madgwick (default):</strong></p>
 <pre class="mermaid"><code>flowchart LR

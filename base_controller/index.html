@@ -857,7 +857,7 @@
 <h1 id="base-controller">Base Controller<a class="headerlink" href="#base-controller" title="Permanent link">&para;</a></h1>
 <h2 id="what-is-the-base-controller">What Is the Base Controller?<a class="headerlink" href="#what-is-the-base-controller" title="Permanent link">&para;</a></h2>
 <p>The base controller is the bridge between the ROS2 world and your robot's wheels. When Nav2 wants the robot to move, it publishes a velocity command. Something has to take that command and turn it into actual motor signals, spinning wheels at the right speed in the right direction. That's the base controller's job.</p>
-<p>In linorobot2, the base controller lives on a microcontroller (such as a Pico) that is separate from the main robot computer. The microcontroller runs <a href="https://micro.ros.org/">micro-ROS</a>, a lightweight version of the ROS2 client library designed for resource-constrained embedded systems. This lets the microcontroller act as a first-class ROS2 node, publishing and subscribing to topics just like any other node on the network.</p>
+<p>In linorobot2, the base controller lives on a microcontroller (such as a Pico) that is separate from the main Robot Computer. The microcontroller runs <a href="https://micro.ros.org/">micro-ROS</a>, a lightweight version of the ROS2 client library designed for resource-constrained embedded systems. This lets the microcontroller act as a first-class ROS2 node, publishing and subscribing to topics just like any other node on the network.</p>
 <p><img alt="Base controller architecture" src="../assets/microcontroller_architecture.png" /></p>
 <h2 id="what-it-does">What It Does<a class="headerlink" href="#what-it-does" title="Permanent link">&para;</a></h2>
 <p>The base controller's primary job is to translate high-level velocity commands into low-level motor control:</p>
@@ -920,7 +920,7 @@
 <li>Configuration for different robot base types (2WD, 4WD, Mecanum) as well as for different motor controllers and sensors</li>
 </ul>
 <h2 id="booting-up">Booting Up<a class="headerlink" href="#booting-up" title="Permanent link">&para;</a></h2>
-<p>In the next steps of this guide — mapping, navigation — you will always start by booting the robot first. Depending on your setup, you'll run one of the following:</p>
+<p>In the next steps of this guide — mapping, navigation — you will always start by booting the Robot Computer first. Depending on your setup, you'll run one of the following:</p>
 <p><strong>Physical Robot:</strong>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>ros2<span class="w"> </span>launch<span class="w"> </span>linorobot2_bringup<span class="w"> </span>bringup.launch.py
 </code></pre></div></p>
@@ -929,7 +929,7 @@
 </code></pre></div></p>
 <p>The rest of this section covers what each of these actually does under the hood.</p>
 <h3 id="physical-robot">Physical Robot<a class="headerlink" href="#physical-robot" title="Permanent link">&para;</a></h3>
-<p>When you run <code>bringup.launch.py</code>, the robot computer starts a micro-ROS agent that opens a serial connection to the microcontroller and bridges its topics into the ROS2 network.</p>
+<p>When you run <code>bringup.launch.py</code>, the Robot Computer starts a micro-ROS agent that opens a serial connection to the microcontroller and bridges its topics into the ROS2 network.</p>
 <p>Always wait for the agent to confirm a successful connection before running SLAM or navigation. You'll see something like:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>| Root.cpp             | create_client     | create
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>| SessionManager.hpp   | establish_session | session established

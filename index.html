@@ -940,7 +940,7 @@
 <p>Here's the full path from hardware to autonomous navigation, in order:</p>
 <hr />
 <h3 id="1-installation">1. <a href="02_installation.md">Installation</a><a class="headerlink" href="#1-installation" title="Permanent link">&para;</a></h3>
-<p>Get linorobot2 installed on both your robot computer and your host/development machine. Covers the one-command <code>install.bash</code> setup script, the supported robot types and sensors, and how to install the RViz visualization package for remote debugging. Also covers the Gazebo simulation setup and the Docker option for host machines not running Ubuntu 24.04.</p>
+<p>Get linorobot2 installed on both your robot computer and your host/development machine. Covers the one-command <code>install.bash</code> setup script, the supported robot types and sensors, points to documentation on how to install the on-robot firmware for motor control, and how to install the RViz visualization package for remote debugging. Also covers the Gazebo simulation setup and the Docker option for host machines not running Ubuntu 24.04.</p>
 <hr />
 <h3 id="2-base-controller">2. <a href="03_base_controller.md">Base Controller</a><a class="headerlink" href="#2-base-controller" title="Permanent link">&para;</a></h3>
 <p>The base controller is the bridge between ROS2 and your robot's motors. A microcontroller (e.g., Teensy) running micro-ROS handles the low-level work: receiving <code>/cmd_vel</code> velocity commands, driving the motor controllers, reading wheel encoders, and publishing raw odometry and IMU data. This section explains the hardware architecture, the published/subscribed topics, and how to bring up the microcontroller agent.</p>

@@ -926,8 +926,10 @@
 </code></pre></div></p>
 <p><strong>Simulated Robot:</strong>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>ros2<span class="w"> </span>launch<span class="w"> </span>linorobot2_gazebo<span class="w"> </span>gazebo.launch.py<span class="w"> </span>spawn_x:<span class="o">=</span><span class="m">0</span>.5
-</code></pre></div>
-- <code>spawn_y</code>, <code>spawn_z</code>, can also be used to set the initial position of the Simulated Robot in Gazebo.</p>
+</code></pre></div></p>
+<ul>
+<li><code>spawn_y</code>, <code>spawn_z</code>, can also be used to set the initial position of the Simulated Robot in Gazebo.</li>
+</ul>
 <p>The rest of this section covers what each of these actually does under the hood.</p>
 <h3 id="physical-robot">Physical Robot<a class="headerlink" href="#physical-robot" title="Permanent link">&para;</a></h3>
 <p>When you run <code>bringup.launch.py</code>, the Robot Computer starts a micro-ROS agent that opens a serial connection to the microcontroller and bridges its topics into the ROS2 network.</p>
@@ -963,10 +965,12 @@
 <a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="w">  </span><span class="nt">&lt;odom_publish_frequency&gt;</span>50<span class="nt">&lt;/odom_publish_frequency&gt;</span>
 <a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="nt">&lt;/plugin&gt;</span>
 </code></pre></div>
-<p>This plugin does what the microcontroller firmware does on the Physical Robot:
-- Subscribes to <code>cmd_vel</code> for incoming <code>Twist</code> velocity commands
-- Converts them to per-wheel velocities using the kinematic model, driven by <code>wheel_separation</code> and <code>wheel_radius</code>
-- Publishes wheel odometry to <code>odom/unfiltered</code> at 50 Hz</p>
+<p>This plugin does what the microcontroller firmware does on the Physical Robot:</p>
+<ul>
+<li>Subscribes to <code>cmd_vel</code> for incoming <code>Twist</code> velocity commands</li>
+<li>Converts them to per-wheel velocities using the kinematic model, driven by <code>wheel_separation</code> and <code>wheel_radius</code></li>
+<li>Publishes wheel odometry to <code>odom/unfiltered</code> at 50 Hz</li>
+</ul>
 <p>The <code>wheel_separation</code> and <code>wheel_radius</code> values are passed in from the robot's URDF (e.g. <code>linorobot2_description/urdf/robots/2wd.urdf.xacro</code>) using the values defined in <code>&lt;robot_type&gt;_properties.urdf.xacro</code>. If you change the robot's dimensions in the properties file, the controller picks them up automatically.</p>
 <h4 id="imu">IMU<a class="headerlink" href="#imu" title="Permanent link">&para;</a></h4>
 <p>The simulated IMU is defined in <code>linorobot2_description/urdf/sensors/imu.urdf.xacro</code>:</p>

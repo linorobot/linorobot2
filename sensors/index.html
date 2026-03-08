@@ -970,19 +970,25 @@
 <p>In Gazebo, sensors are defined in URDF/xacro files and are already configured for each robot type. You don't need to install any additional drivers. Gazebo simulates the sensors and publishes on the same topics as real hardware.</p>
 <h3 id="sensor-urdf-files">Sensor URDF Files<a class="headerlink" href="#sensor-urdf-files" title="Permanent link">&para;</a></h3>
 <p>Sensor definitions live in <code>linorobot2_description/urdf/sensors/</code>:</p>
-<p><strong><code>generic_laser.urdf.xacro</code>:</strong> Simulates a 360° 2D lidar:
-- 360 rays, full 360° sweep
-- Range: 0.08 m to 12.0 m
-- Update rate: 10 Hz
-- Publishes to: <code>/scan</code> (topic name: <code>scan</code>, frame ID: <code>laser</code>)</p>
-<p><strong><code>depth_sensor.urdf.xacro</code>:</strong> Simulates an RGBD camera:
-- Resolution: 640 × 480
-- Update rate: 30 Hz
-- Horizontal FOV: ~86°
-- Depth range: 0.3 m to 100 m
-- Publishes to: <code>/camera</code> topics</p>
-<p><strong><code>imu.urdf.xacro</code>:</strong> Simulates an IMU:
-- Publishes to: <code>/imu/data</code> at 50 Hz</p>
+<p><strong><code>generic_laser.urdf.xacro</code>:</strong> Simulates a 360° 2D lidar:</p>
+<ul>
+<li>360 rays, full 360° sweep</li>
+<li>Range: 0.08 m to 12.0 m</li>
+<li>Update rate: 10 Hz</li>
+<li>Publishes to: <code>/scan</code> (topic name: <code>scan</code>, frame ID: <code>laser</code>)</li>
+</ul>
+<p><strong><code>depth_sensor.urdf.xacro</code>:</strong> Simulates an RGBD camera:</p>
+<ul>
+<li>Resolution: 640 × 480</li>
+<li>Update rate: 30 Hz</li>
+<li>Horizontal FOV: ~86°</li>
+<li>Depth range: 0.3 m to 100 m</li>
+<li>Publishes to: <code>/camera</code> topics</li>
+</ul>
+<p><strong><code>imu.urdf.xacro</code>:</strong> Simulates an IMU:</p>
+<ul>
+<li>Publishes to: <code>/imu/data</code> at 50 Hz</li>
+</ul>
 <h3 id="how-sensors-are-included">How Sensors Are Included<a class="headerlink" href="#how-sensors-are-included" title="Permanent link">&para;</a></h3>
 <p>Each robot type's URDF (<code>linorobot2_description/urdf/robots/&lt;robot_type&gt;.urdf.xacro</code>) already includes the laser and depth sensor:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">&lt;xacro:generic_laser&gt;</span>

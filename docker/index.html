@@ -1133,26 +1133,19 @@
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>BASE_IMAGE=gazebo        # Simulated Robot
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>BASE_IMAGE=gazebo-cuda   # Gazebo simulation with CUDA support (recommended if you have an NVIDIA GPU)
 </code></pre></div>
-<p>If you are using <code>gazebo-cuda</code>, set the GPU to use for rendering:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>GPU_ID=0  # GPU index to use for rendering
-</code></pre></div>
-<p>The GPU index may not always start at <code>0</code>. To find the correct value, run:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>ls<span class="w"> </span>/dev/dri/card*
-</code></pre></div>
-<p>The number at the end of each path (e.g. <code>card0</code>, <code>card1</code>) corresponds to a GPU index. Set <code>GPU_ID</code> to the index of the GPU you want to use.</p>
 <p>If you are working with Physical Robot, also set the following:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>ROBOT_BASE=&lt;robot_type&gt;      # 2wd, 4wd, or mecanum
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>LASER_SENSOR=&lt;laser_sensor&gt;  # e.g. ld06, a1, ydlidar  (leave blank if not used)
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>DEPTH_SENSOR=&lt;depth_sensor&gt;  # e.g. realsense, oakd     (leave blank if not used)
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>ROBOT_BASE=&lt;robot_type&gt;      # 2wd, 4wd, or mecanum
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>LASER_SENSOR=&lt;laser_sensor&gt;  # e.g. ld06, a1, ydlidar  (leave blank if not used)
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>DEPTH_SENSOR=&lt;depth_sensor&gt;  # e.g. realsense, oakd     (leave blank if not used)
 </code></pre></div>
 <h3 id="2-build-the-image">2. Build the image<a class="headerlink" href="#2-build-the-image" title="Permanent link">&para;</a></h3>
 <p>Run the build script, which automatically passes your host user's UID and GID so that files created inside the container are owned by your user:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nb">cd</span><span class="w"> </span>docker
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>./build
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nb">cd</span><span class="w"> </span>docker
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>./build
 </code></pre></div>
 <p>Alternatively, run the build manually:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nb">cd</span><span class="w"> </span>docker
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="nv">HOST_UID</span><span class="o">=</span><span class="k">$(</span>id<span class="w"> </span>-u<span class="k">)</span><span class="w"> </span><span class="nv">HOST_GID</span><span class="o">=</span><span class="k">$(</span>id<span class="w"> </span>-g<span class="k">)</span><span class="w"> </span>docker<span class="w"> </span>compose<span class="w"> </span>build
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nb">cd</span><span class="w"> </span>docker
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="nv">HOST_UID</span><span class="o">=</span><span class="k">$(</span>id<span class="w"> </span>-u<span class="k">)</span><span class="w"> </span><span class="nv">HOST_GID</span><span class="o">=</span><span class="k">$(</span>id<span class="w"> </span>-g<span class="k">)</span><span class="w"> </span>docker<span class="w"> </span>compose<span class="w"> </span>build
 </code></pre></div>
 <blockquote>
 <p>Passing <code>HOST_UID</code> and <code>HOST_GID</code> is important when using the <code>dev</code> service, which mounts the host repository directory into the container. Without these, files created inside the container (e.g. build artifacts) will be owned by root on the host.</p>
@@ -1161,7 +1154,7 @@
 <hr />
 <h2 id="web-visualization">Web Visualization<a class="headerlink" href="#web-visualization" title="Permanent link">&para;</a></h2>
 <p>All tmuxinator configs in <code>docker/profiles</code> (<code>dev</code>, <code>hardware</code>, <code>sim</code>) route GUI output (including Gazebo, RViz, and any other ROS GUI tools) to a virtual display at <code>:200</code>. A <a href="https://github.com/kasmtech/KasmVNC">KasmVNC</a> server captures that display and streams it to a browser at:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>http://&lt;host_ip&gt;:3000
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>http://&lt;host_ip&gt;:3000
 </code></pre></div>
 <p>On machines with an NVIDIA GPU, the <code>gazebo-cuda</code> image uses <strong>VirtualGL</strong> to intercept OpenGL calls from Gazebo and redirect them to the GPU for hardware-accelerated rendering. Without this, a headless server falls back to software rendering, bypassing the GPU entirely.</p>
 <h3 id="why-run-headless-with-a-browser-interface">Why run headless with a browser interface?<a class="headerlink" href="#why-run-headless-with-a-browser-interface" title="Permanent link">&para;</a></h3>
@@ -1170,12 +1163,12 @@
 <hr />
 <h2 id="development">Development<a class="headerlink" href="#development" title="Permanent link">&para;</a></h2>
 <p>The <code>dev</code> service mounts the entire <code>linorobot2</code> repository from the host into the container at <code>/home/ros/linorobot2_ws/src/linorobot2</code>. You can edit code on the host with your preferred editor and changes are immediately visible inside the container, with no image rebuild needed. Once changes are made, rebuild the workspace from inside the container with:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>colcon<span class="w"> </span>build
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>colcon<span class="w"> </span>build
 </code></pre></div>
 <h3 id="option-1-dev-single-terminal-gui-forwarded-to-host">Option 1: ./dev (single terminal, GUI forwarded to host)<a class="headerlink" href="#option-1-dev-single-terminal-gui-forwarded-to-host" title="Permanent link">&para;</a></h3>
 <p>The <code>./dev</code> script starts the <code>dev</code> container if it is not already running, then opens an interactive bash shell inside it:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nb">cd</span><span class="w"> </span>docker
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>./dev
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nb">cd</span><span class="w"> </span>docker
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>./dev
 </code></pre></div>
 <p>In this mode, GUI applications (e.g. RViz, rqt) are forwarded to the host machine's screen via the <code>$DISPLAY</code> environment variable.</p>
 <h3 id="option-2-tmuxinator-multi-pane-gui-at-httphost_ip3000">Option 2: Tmuxinator (multi-pane, GUI at http://\&lt;host_ip&gt;:3000)<a class="headerlink" href="#option-2-tmuxinator-multi-pane-gui-at-httphost_ip3000" title="Permanent link">&para;</a></h3>
@@ -1184,17 +1177,17 @@
 <p><strong>1. Install Tmuxinator</strong></p>
 <p>Follow the installation instructions <a href="https://github.com/tmuxinator/tmuxinator?tab=readme-ov-file#installation">here</a>.</p>
 <p><strong>2. Set the config path</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nb">source</span><span class="w"> </span>docker/setup_tmux.bash
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nb">source</span><span class="w"> </span>docker/setup_tmux.bash
 </code></pre></div>
 <p>Verify the profiles are detected:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>tmuxinator<span class="w"> </span>ls
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>tmuxinator<span class="w"> </span>ls
 </code></pre></div>
 <p>Expected output:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>tmuxinator projects:
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>dev       hardware  sim
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>tmuxinator projects:
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>dev       hardware  sim
 </code></pre></div>
 <p><strong>3. Start the session</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>tmuxinator<span class="w"> </span>start<span class="w"> </span>dev
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>tmuxinator<span class="w"> </span>start<span class="w"> </span>dev
 </code></pre></div>
 <p>This starts the <code>dev</code> container and KasmVNC, then opens a tmux window with four bash panes ready for development.</p>
 <p>Useful tmux key bindings:</p>
@@ -1203,18 +1196,18 @@
 <li><code>Ctrl+B</code> then <code>D</code>: detach from the session (containers keep running)</li>
 </ul>
 <p><strong>4. Stop the session</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>tmuxinator<span class="w"> </span>stop<span class="w"> </span>dev
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>tmuxinator<span class="w"> </span>stop<span class="w"> </span>dev
 </code></pre></div>
 <p>Or to stop and remove all containers:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nb">cd</span><span class="w"> </span>docker
-<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>docker<span class="w"> </span>compose<span class="w"> </span>down
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nb">cd</span><span class="w"> </span>docker
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>docker<span class="w"> </span>compose<span class="w"> </span>down
 </code></pre></div>
 <blockquote>
 <p>Inside the container each pane behaves exactly like a native ROS 2 installation. You can run any ROS 2 command directly, for example:
-<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>ros2<span class="w"> </span>topic<span class="w"> </span>list
-<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>ros2<span class="w"> </span>topic<span class="w"> </span><span class="nb">echo</span><span class="w"> </span>/cmd_vel
-<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>ros2<span class="w"> </span>node<span class="w"> </span>list
-<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>ros2<span class="w"> </span>run<span class="w"> </span>teleop_twist_keyboard<span class="w"> </span>teleop_twist_keyboard
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>ros2<span class="w"> </span>topic<span class="w"> </span>list
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>ros2<span class="w"> </span>topic<span class="w"> </span><span class="nb">echo</span><span class="w"> </span>/cmd_vel
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>ros2<span class="w"> </span>node<span class="w"> </span>list
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>ros2<span class="w"> </span>run<span class="w"> </span>teleop_twist_keyboard<span class="w"> </span>teleop_twist_keyboard
 </code></pre></div>
 No extra setup is needed. <code>/opt/ros/&lt;ros_distro&gt;/setup.bash</code> is sourced automatically when the shell starts. To use workspace packages, run <code>source install/setup.bash</code> inside <code>linorobot2_ws</code>.</p>
 </blockquote>
@@ -1226,22 +1219,22 @@ No extra setup is needed. <code>/opt/ros/&lt;ros_distro&gt;/setup.bash</code> is
 <h3 id="1-install-udev-rules-on-the-host">1. Install udev rules on the host<a class="headerlink" href="#1-install-udev-rules-on-the-host" title="Permanent link">&para;</a></h3>
 <p>The Docker image already contains the sensor drivers (installed during build). To create the <code>/dev/&lt;sensor&gt;</code> symlinks on the <strong>host</strong> machine, run <code>install.bash</code> with <code>--udev-only</code>.</p>
 <p><code>--udev-only</code> is required: it forces the script to only copy udev rules and skip driver installation (which is not needed since drivers are already inside the container).</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>bash<span class="w"> </span>install.bash<span class="w"> </span>--laser<span class="w"> </span>&lt;laser_sensor&gt;<span class="w"> </span>--udev-only
-<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="c1"># and/or</span>
-<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>bash<span class="w"> </span>install.bash<span class="w"> </span>--depth<span class="w"> </span>&lt;depth_sensor&gt;<span class="w"> </span>--udev-only
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>bash<span class="w"> </span>install.bash<span class="w"> </span>--laser<span class="w"> </span>&lt;laser_sensor&gt;<span class="w"> </span>--udev-only
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="c1"># and/or</span>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>bash<span class="w"> </span>install.bash<span class="w"> </span>--depth<span class="w"> </span>&lt;depth_sensor&gt;<span class="w"> </span>--udev-only
 </code></pre></div>
 <h3 id="2-reload-udev-rules">2. Reload udev rules<a class="headerlink" href="#2-reload-udev-rules" title="Permanent link">&para;</a></h3>
 <p>After installing, apply the rules without rebooting:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>sudo<span class="w"> </span>udevadm<span class="w"> </span>control<span class="w"> </span>--reload-rules<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>sudo<span class="w"> </span>udevadm<span class="w"> </span>trigger
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>sudo<span class="w"> </span>udevadm<span class="w"> </span>control<span class="w"> </span>--reload-rules<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>sudo<span class="w"> </span>udevadm<span class="w"> </span>trigger
 </code></pre></div>
 <h3 id="3-verify-the-device-symlinks">3. Verify the device symlinks<a class="headerlink" href="#3-verify-the-device-symlinks" title="Permanent link">&para;</a></h3>
 <p><strong>Microcontroller:</strong></p>
 <p>Plug in the microcontroller (for example Raspberry Pi Pico), then confirm the device node exists on the host:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>ls<span class="w"> </span>/dev/ttyACM0
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>ls<span class="w"> </span>/dev/ttyACM0
 </code></pre></div>
 <p><strong>Sensors:</strong></p>
 <p>Plug in the sensor, then confirm the udev symlink exists on the host:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>ls<span class="w"> </span>/dev/&lt;sensor_name&gt;
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>ls<span class="w"> </span>/dev/&lt;sensor_name&gt;
 </code></pre></div>
 <p>Expected <code>/dev</code> paths after udev rules are installed:</p>
 <table>
@@ -1272,29 +1265,29 @@ No extra setup is needed. <code>/opt/ros/&lt;ros_distro&gt;/setup.bash</code> is
 </table>
 <h3 id="4-update-the-bringup-service-devices">4. Update the bringup service devices<a class="headerlink" href="#4-update-the-bringup-service-devices" title="Permanent link">&para;</a></h3>
 <p>Edit <code>docker/docker-compose.yaml</code> and update the <code>bringup</code> service's <code>devices</code> section to map the correct host devices into the container:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="w">  </span><span class="nt">bringup</span><span class="p">:</span>
-<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">...</span>
-<a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">devices</span><span class="p p-Indicator">:</span>
-<a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dev/ttyACM0:/dev/ttyACM0</span><span class="w"> </span><span class="c1"># Robot&#39;s microcontroller (e.g. Pico)</span>
-<a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dev/ldlidar:/dev/ldlidar</span><span class="w"> </span><span class="c1"># Laser sensor (adjust to match your sensor symlink)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="w">  </span><span class="nt">bringup</span><span class="p">:</span>
+<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">...</span>
+<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">devices</span><span class="p p-Indicator">:</span>
+<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dev/ttyACM0:/dev/ttyACM0</span><span class="w"> </span><span class="c1"># Robot&#39;s microcontroller (e.g. Pico)</span>
+<a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dev/ldlidar:/dev/ldlidar</span><span class="w"> </span><span class="c1"># Laser sensor (adjust to match your sensor symlink)</span>
 </code></pre></div>
 <h3 id="5-run-the-robot">5. Run the robot<a class="headerlink" href="#5-run-the-robot" title="Permanent link">&para;</a></h3>
 <p><strong>5.1. Set the tmuxinator config path:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="nb">source</span><span class="w"> </span>docker/setup_tmux.bash
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="nb">source</span><span class="w"> </span>docker/setup_tmux.bash
 </code></pre></div>
 <p>Verify the profiles are detected:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>tmuxinator<span class="w"> </span>ls
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>tmuxinator<span class="w"> </span>ls
 </code></pre></div>
 <p>Expected output:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>tmuxinator projects:
-<a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>dev       hardware  sim
+<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>tmuxinator projects:
+<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>dev       hardware  sim
 </code></pre></div>
 <p><strong>5.2. Start the robot:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>tmuxinator<span class="w"> </span>start<span class="w"> </span>hardware
+<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>tmuxinator<span class="w"> </span>start<span class="w"> </span>hardware
 </code></pre></div>
 <p>Once running, visualization is available at: <code>http://&lt;robot_ip&gt;:3000</code></p>
 <p>To stop, press <code>Ctrl+B</code> then <code>D</code> to detach from the tmux session, then run:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>tmuxinator<span class="w"> </span>stop<span class="w"> </span>hardware
+<div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>tmuxinator<span class="w"> </span>stop<span class="w"> </span>hardware
 </code></pre></div>
 <hr />
 <h2 id="simulated-robot">Simulated Robot<a class="headerlink" href="#simulated-robot" title="Permanent link">&para;</a></h2>
@@ -1304,21 +1297,21 @@ No extra setup is needed. <code>/opt/ros/&lt;ros_distro&gt;/setup.bash</code> is
 <h3 id="1-install-tmuxinator">1. Install Tmuxinator<a class="headerlink" href="#1-install-tmuxinator" title="Permanent link">&para;</a></h3>
 <p>Follow the installation instructions for Tmuxinator <a href="https://github.com/tmuxinator/tmuxinator?tab=readme-ov-file#installation">here</a>.</p>
 <h3 id="2-set-the-tmuxinator-config-path">2. Set the tmuxinator config path<a class="headerlink" href="#2-set-the-tmuxinator-config-path" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="nb">source</span><span class="w"> </span>docker/setup_tmux.bash
+<div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="nb">source</span><span class="w"> </span>docker/setup_tmux.bash
 </code></pre></div>
 <p>Verify the profiles are detected:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>tmuxinator<span class="w"> </span>ls
+<div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>tmuxinator<span class="w"> </span>ls
 </code></pre></div>
 <p>Expected output:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>tmuxinator projects:
-<a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>dev       hardware  sim
+<div class="highlight"><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>tmuxinator projects:
+<a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>dev       hardware  sim
 </code></pre></div>
 <h3 id="3-run-the-nav2-demo-in-gazebo">3. Run the Nav2 demo in Gazebo<a class="headerlink" href="#3-run-the-nav2-demo-in-gazebo" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>tmuxinator<span class="w"> </span>start<span class="w"> </span>sim
+<div class="highlight"><pre><span></span><code><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>tmuxinator<span class="w"> </span>start<span class="w"> </span>sim
 </code></pre></div>
 <p>Once running, visualization is available at: <code>http://&lt;host_ip&gt;:3000</code></p>
 <p>To stop the simulation, press <code>Ctrl+B</code> then <code>D</code> to detach from the tmux session, then run:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a>tmuxinator<span class="w"> </span>stop<span class="w"> </span>sim
+<div class="highlight"><pre><span></span><code><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>tmuxinator<span class="w"> </span>stop<span class="w"> </span>sim
 </code></pre></div>
 <hr />
 <h2 id="custom-profiles">Custom Profiles<a class="headerlink" href="#custom-profiles" title="Permanent link">&para;</a></h2>
@@ -1372,30 +1365,30 @@ No extra setup is needed. <code>/opt/ros/&lt;ros_distro&gt;/setup.bash</code> is
 </table>
 <h3 id="creating-a-new-profile">Creating a new profile<a class="headerlink" href="#creating-a-new-profile" title="Permanent link">&para;</a></h3>
 <p>Copy the closest existing profile and edit it:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a>cp<span class="w"> </span>docker/profiles/sim.yml<span class="w"> </span>docker/profiles/my-profile.yml
+<div class="highlight"><pre><span></span><code><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>cp<span class="w"> </span>docker/profiles/sim.yml<span class="w"> </span>docker/profiles/my-profile.yml
 </code></pre></div>
 <p>A minimal profile looks like this:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-profile</span>
-<a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a><span class="nt">root</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;%= ENV[&quot;TMUXINATOR_CONFIG&quot;] %&gt;</span>
-<a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a>
-<a id="__codelineno-32-4" name="__codelineno-32-4" href="#__codelineno-32-4"></a><span class="nt">pre_window</span><span class="p">:</span>
-<a id="__codelineno-32-5" name="__codelineno-32-5" href="#__codelineno-32-5"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">export DISPLAY=:200</span>
-<a id="__codelineno-32-6" name="__codelineno-32-6" href="#__codelineno-32-6"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">export SIM=true</span><span class="w">        </span><span class="c1"># set any env vars your services need</span>
-<a id="__codelineno-32-7" name="__codelineno-32-7" href="#__codelineno-32-7"></a>
-<a id="__codelineno-32-8" name="__codelineno-32-8" href="#__codelineno-32-8"></a><span class="nt">on_project_stop</span><span class="p">:</span>
-<a id="__codelineno-32-9" name="__codelineno-32-9" href="#__codelineno-32-9"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker compose down</span>
-<a id="__codelineno-32-10" name="__codelineno-32-10" href="#__codelineno-32-10"></a>
-<a id="__codelineno-32-11" name="__codelineno-32-11" href="#__codelineno-32-11"></a><span class="nt">windows</span><span class="p">:</span>
-<a id="__codelineno-32-12" name="__codelineno-32-12" href="#__codelineno-32-12"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">main</span><span class="p">:</span>
-<a id="__codelineno-32-13" name="__codelineno-32-13" href="#__codelineno-32-13"></a><span class="w">      </span><span class="nt">panes</span><span class="p">:</span>
-<a id="__codelineno-32-14" name="__codelineno-32-14" href="#__codelineno-32-14"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker compose up kasmvnc</span><span class="w">   </span><span class="c1"># always include this for GUI</span>
-<a id="__codelineno-32-15" name="__codelineno-32-15" href="#__codelineno-32-15"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker compose up gazebo</span>
-<a id="__codelineno-32-16" name="__codelineno-32-16" href="#__codelineno-32-16"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker compose up slam</span>
-<a id="__codelineno-32-17" name="__codelineno-32-17" href="#__codelineno-32-17"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker compose up rviz-nav</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-profile</span>
+<a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a><span class="nt">root</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;%= ENV[&quot;TMUXINATOR_CONFIG&quot;] %&gt;</span>
+<a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a>
+<a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a><span class="nt">pre_window</span><span class="p">:</span>
+<a id="__codelineno-30-5" name="__codelineno-30-5" href="#__codelineno-30-5"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">export DISPLAY=:200</span>
+<a id="__codelineno-30-6" name="__codelineno-30-6" href="#__codelineno-30-6"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">export SIM=true</span><span class="w">        </span><span class="c1"># set any env vars your services need</span>
+<a id="__codelineno-30-7" name="__codelineno-30-7" href="#__codelineno-30-7"></a>
+<a id="__codelineno-30-8" name="__codelineno-30-8" href="#__codelineno-30-8"></a><span class="nt">on_project_stop</span><span class="p">:</span>
+<a id="__codelineno-30-9" name="__codelineno-30-9" href="#__codelineno-30-9"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker compose down</span>
+<a id="__codelineno-30-10" name="__codelineno-30-10" href="#__codelineno-30-10"></a>
+<a id="__codelineno-30-11" name="__codelineno-30-11" href="#__codelineno-30-11"></a><span class="nt">windows</span><span class="p">:</span>
+<a id="__codelineno-30-12" name="__codelineno-30-12" href="#__codelineno-30-12"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">main</span><span class="p">:</span>
+<a id="__codelineno-30-13" name="__codelineno-30-13" href="#__codelineno-30-13"></a><span class="w">      </span><span class="nt">panes</span><span class="p">:</span>
+<a id="__codelineno-30-14" name="__codelineno-30-14" href="#__codelineno-30-14"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker compose up kasmvnc</span><span class="w">   </span><span class="c1"># always include this for GUI</span>
+<a id="__codelineno-30-15" name="__codelineno-30-15" href="#__codelineno-30-15"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker compose up gazebo</span>
+<a id="__codelineno-30-16" name="__codelineno-30-16" href="#__codelineno-30-16"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker compose up slam</span>
+<a id="__codelineno-30-17" name="__codelineno-30-17" href="#__codelineno-30-17"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker compose up rviz-nav</span>
 </code></pre></div>
 <p>Each entry under <code>panes</code> becomes one tmux pane running that command. Use <code>docker compose up &lt;service&gt;</code> to start a service in the foreground, or <code>docker compose exec &lt;service&gt; bash</code> to open an interactive shell into an already-running container.</p>
 <p>Start your profile with:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a>tmuxinator<span class="w"> </span>start<span class="w"> </span>my-profile
+<div class="highlight"><pre><span></span><code><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a>tmuxinator<span class="w"> </span>start<span class="w"> </span>my-profile
 </code></pre></div>
 
 

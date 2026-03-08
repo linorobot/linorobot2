@@ -968,6 +968,7 @@
 </table>
 <h2 id="simulated-robot">Simulated Robot<a class="headerlink" href="#simulated-robot" title="Permanent link">&para;</a></h2>
 <p>In Gazebo, sensors are defined in URDF/xacro files and are already configured for each robot type. You don't need to install any additional drivers. Gazebo simulates the sensors and publishes on the same topics as real hardware.</p>
+<p><img alt="Robot in Gazebo with sensors" src="../assets/robot_in_gazebo.png" /></p>
 <h3 id="sensor-urdf-files">Sensor URDF Files<a class="headerlink" href="#sensor-urdf-files" title="Permanent link">&para;</a></h3>
 <p>Sensor definitions live in <code>linorobot2_description/urdf/sensors/</code>:</p>
 <p><strong><code>generic_laser.urdf.xacro</code>:</strong> Simulates a 360° 2D lidar:</p>
@@ -1061,6 +1062,7 @@
 <p>You can verify a sensor is publishing correctly with:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>ros2<span class="w"> </span>topic<span class="w"> </span>hz<span class="w"> </span>/scan
 </code></pre></div>
+<p><img alt="Lidar sensor scan in RViz" src="../assets/lidar_sensor.png" /></p>
 <h2 id="whats-next">What's Next<a class="headerlink" href="#whats-next" title="Permanent link">&para;</a></h2>
 <p>With sensors publishing data, the next step is to make sure the robot knows <em>where</em> those sensors are mounted in 3D space, so it can correctly interpret a laser hit at angle X as being at a specific position in the world. That's the job of the TF tree, covered in <a href="06_transforms.md">Setting Up Transforms</a>.</p>
 

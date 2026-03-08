@@ -914,6 +914,7 @@
 <a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>            └── imu_link       (IMU)
 </code></pre></div>
 <p>Each arrow (<code>└──</code>) represents a transform, a known spatial relationship between two frames. Here's what establishes each one:</p>
+<p><img alt="TF tree" src="../assets/tf.png" /></p>
 <h3 id="map-odom"><code>map → odom</code><a class="headerlink" href="#map-odom" title="Permanent link">&para;</a></h3>
 <p>This transform represents the robot's position within the global map. It accounts for the accumulated error in odometry (the difference between where odometry thinks the robot is and where it actually is).</p>
 <ul>

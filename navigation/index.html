@@ -822,6 +822,7 @@
 <p>When Nav2 starts, AMCL doesn't know where the robot is in the map. You must tell it.</p>
 <p>In RViz, click <strong>"2D Pose Estimate"</strong> in the toolbar, then click on the map where the robot actually is and drag in the direction the robot is facing. You should see the laser scan snap into alignment with the walls on the map, which confirms AMCL has correctly localized the robot.</p>
 <p>If the scan doesn't align, try setting the pose estimate again. The particle filter needs a few seconds to converge; drive the robot slowly for a moment to help it localize.</p>
+<p><img alt="Setting the initial pose in RViz" src="../assets/set_initial_pose.gif" /></p>
 <h2 id="sending-navigation-goals">Sending Navigation Goals<a class="headerlink" href="#sending-navigation-goals" title="Permanent link">&para;</a></h2>
 <p>Once the robot is localized, you can send it anywhere on the map:</p>
 <p>In RViz, click <strong>"2D Goal Pose"</strong>, then click on the map where you want the robot to go and drag to set the desired final orientation.</p>
@@ -832,6 +833,7 @@
 <li>Avoid any new obstacles detected along the way</li>
 <li>Declare success when it arrives within the goal tolerance (default: 35 cm)</li>
 </ol>
+<p><img alt="Sending a navigation goal in RViz" src="../assets/set_navigation_goal.gif" /></p>
 <p>For a detailed walkthrough of the RViz navigation interface, see the <a href="https://docs.nav2.org/tutorials/docs/navigation2_on_real_turtlebot3.html#initialize-the-location-of-turtlebot-3">Nav2 tutorial on Physical Robot navigation</a>.</p>
 <h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h2>
 <p><strong><code>Invalid frame ID "map"</code> errors:</strong> Nav2 is running but AMCL hasn't localized yet. Set the 2D Pose Estimate in RViz.</p>

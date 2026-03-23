@@ -21,7 +21,7 @@
       
       
       <link rel="icon" href="assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.4">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
@@ -939,31 +939,31 @@
 <h2 id="the-journey-bare-robot-autonomous-robot">The Journey: Bare Robot → Autonomous Robot<a class="headerlink" href="#the-journey-bare-robot-autonomous-robot" title="Permanent link">&para;</a></h2>
 <p>Here's the full path from hardware to autonomous navigation, in order:</p>
 <hr />
-<h3 id="1-installation">1. <a href="02_installation.md">Installation</a><a class="headerlink" href="#1-installation" title="Permanent link">&para;</a></h3>
+<h3 id="1-installation">1. <a href="installation/">Installation</a><a class="headerlink" href="#1-installation" title="Permanent link">&para;</a></h3>
 <p>Get linorobot2 installed on both your robot computer and your host/development machine. Covers the one-command <code>install.bash</code> setup script, the supported robot types and sensors, points to documentation on how to install the on-robot firmware for motor control, and how to install the RViz visualization package for remote debugging. Also covers the Gazebo simulation setup and the Docker option for host machines not running Ubuntu 24.04.</p>
 <hr />
-<h3 id="2-base-controller">2. <a href="03_base_controller.md">Base Controller</a><a class="headerlink" href="#2-base-controller" title="Permanent link">&para;</a></h3>
+<h3 id="2-base-controller">2. <a href="base_controller/">Base Controller</a><a class="headerlink" href="#2-base-controller" title="Permanent link">&para;</a></h3>
 <p>The base controller is the bridge between ROS2 and your robot's motors. A microcontroller (e.g., Teensy) running micro-ROS handles the low-level work: receiving <code>/cmd_vel</code> velocity commands, driving the motor controllers, reading wheel encoders, and publishing raw odometry and IMU data. This section explains the hardware architecture, the published/subscribed topics, and how to bring up the microcontroller agent.</p>
 <hr />
-<h3 id="3-odometry">3. <a href="04_odometry.md">Odometry</a><a class="headerlink" href="#3-odometry" title="Permanent link">&para;</a></h3>
+<h3 id="3-odometry">3. <a href="odometry/">Odometry</a><a class="headerlink" href="#3-odometry" title="Permanent link">&para;</a></h3>
 <p>Odometry is the robot's estimate of its position based on how far its wheels have turned. Wheel odometry alone drifts over time, as slip, uneven terrain, and mechanical tolerances all accumulate errors. This section explains how the <code>robot_localization</code> package uses an Extended Kalman Filter (EKF) to fuse wheel odometry with IMU data, producing a much more reliable filtered odometry on <code>/odometry/filtered</code>. It also covers how to verify your odometry before running SLAM.</p>
 <hr />
-<h3 id="4-setting-up-sensors">4. <a href="05_sensors.md">Setting Up Sensors</a><a class="headerlink" href="#4-setting-up-sensors" title="Permanent link">&para;</a></h3>
+<h3 id="4-setting-up-sensors">4. <a href="sensors/">Setting Up Sensors</a><a class="headerlink" href="#4-setting-up-sensors" title="Permanent link">&para;</a></h3>
 <p>Sensors are what let the robot perceive its environment. linorobot2 uses 2D lidar (LaserScan) as the primary sensor for mapping and obstacle detection, with optional depth cameras (RGBD) for detecting obstacles outside the lidar's scan plane. This section covers the supported real hardware sensors and how to configure them via the install script, as well as how simulation sensors are defined in URDF/xacro files and how to adjust their positions on the robot.</p>
 <hr />
-<h3 id="5-setting-up-transforms-tf">5. <a href="06_transforms.md">Setting Up Transforms (TF)</a><a class="headerlink" href="#5-setting-up-transforms-tf" title="Permanent link">&para;</a></h3>
+<h3 id="5-setting-up-transforms-tf">5. <a href="transforms/">Setting Up Transforms (TF)</a><a class="headerlink" href="#5-setting-up-transforms-tf" title="Permanent link">&para;</a></h3>
 <p>TF2 is the ROS2 system that tracks the spatial relationship between every coordinate frame on the robot, from the global map frame down to each individual sensor. This section explains the full frame hierarchy (<code>map → odom → base_footprint → base_link → sensors</code>), what publishes each transform, and how to configure sensor positions in the URDF properties files. Includes verification steps using <code>view_frames</code> and RViz.</p>
 <hr />
-<h3 id="6-mapping">6. <a href="07_mapping.md">Mapping</a><a class="headerlink" href="#6-mapping" title="Permanent link">&para;</a></h3>
+<h3 id="6-mapping">6. <a href="mapping/">Mapping</a><a class="headerlink" href="#6-mapping" title="Permanent link">&para;</a></h3>
 <p>Before autonomous navigation is possible, the robot needs a map. This section covers SLAM (Simultaneous Localization and Mapping) using SLAM Toolbox, including how it works conceptually (scan matching and loop closure), the key configuration parameters in <code>slam.yaml</code>, and the step-by-step process for driving the robot through an environment, building the map, and saving it to disk.</p>
 <hr />
-<h3 id="7-navigation">7. <a href="08_navigation.md">Navigation</a><a class="headerlink" href="#7-navigation" title="Permanent link">&para;</a></h3>
+<h3 id="7-navigation">7. <a href="navigation/">Navigation</a><a class="headerlink" href="#7-navigation" title="Permanent link">&para;</a></h3>
 <p>With a map in hand, Nav2 can navigate the robot autonomously. This section gives an overview of Nav2's components (AMCL, global planner, local controller, costmaps, behavior tree), walks through launching navigation with a pre-built map, and explains how to set the robot's initial pose and send navigation goals in RViz. Importantly, it covers the <strong>robot footprint</strong>, the one parameter you must configure to match your robot's actual size.</p>
 <hr />
-<h3 id="8-docker">8. <a href="09_docker.md">Docker</a><a class="headerlink" href="#8-docker" title="Permanent link">&para;</a></h3>
+<h3 id="8-docker">8. <a href="docker/">Docker</a><a class="headerlink" href="#8-docker" title="Permanent link">&para;</a></h3>
 <p>Covers running linorobot2 without a native ROS2 installation using Docker. Includes configuring the Docker environment for hardware, simulation, or CUDA-accelerated simulation; building the image; web-based visualization via KasmVNC (accessible in any browser at <code>http://&lt;host_ip&gt;:3000</code>); running the Physical Robot or Simulated Robot via Tmuxinator profiles; and creating custom profiles for your own workflow.</p>
 <hr />
-<h3 id="9-simulation-tools">9. <a href="10_tools.md">Simulation Tools</a><a class="headerlink" href="#9-simulation-tools" title="Permanent link">&para;</a></h3>
+<h3 id="9-simulation-tools">9. <a href="tools/">Simulation Tools</a><a class="headerlink" href="#9-simulation-tools" title="Permanent link">&para;</a></h3>
 <p>Documents the two Gazebo world generation tools in <code>linorobot2_gazebo</code>. <code>image_to_gazebo</code> is a GUI tool that converts any floor plan image into a Gazebo world by calibrating its scale and origin interactively. <code>create_worlds_from_maps</code> is a batch CLI tool that converts all saved SLAM maps into Gazebo worlds in one command. Both let you simulate in the exact same environment your robot operates in physically.</p>
 <hr />
 <h2 id="quick-reference-key-files">Quick Reference: Key Files<a class="headerlink" href="#quick-reference-key-files" title="Permanent link">&para;</a></h2>

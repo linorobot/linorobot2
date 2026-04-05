@@ -562,23 +562,26 @@ class MapImageProcessor(tk.Tk):
         return s.lower()                                      # lowercase
 
     def _show_result_dialog(self, title: str, message: str, is_error: bool = False):
-        """Small centered modal result dialog, similar in size to _ask_float_dialog."""
+        """Centered modal result dialog that auto-sizes to its content."""
         dialog = tk.Toplevel(self)
         dialog.title(title)
         dialog.resizable(False, False)
         dialog.transient(self)
 
-        self.update_idletasks()
-        px = self.winfo_x() + self.winfo_width() // 2 - 130
-        py = self.winfo_y() + self.winfo_height() // 2 - 55
-        dialog.geometry(f"260x110+{px}+{py}")
-        dialog.wait_visibility()
-        dialog.grab_set()
-
         color = "red" if is_error else "black"
-        ttk.Label(dialog, text=message, wraplength=230, justify=tk.LEFT,
+        ttk.Label(dialog, text=message, wraplength=380, justify=tk.LEFT,
                   foreground=color).pack(padx=15, pady=(15, 10))
         ttk.Button(dialog, text="OK", command=dialog.destroy).pack(pady=(0, 10))
+
+        dialog.update_idletasks()
+        w = dialog.winfo_reqwidth()
+        h = dialog.winfo_reqheight()
+        self.update_idletasks()
+        px = self.winfo_x() + self.winfo_width() // 2 - w // 2
+        py = self.winfo_y() + self.winfo_height() // 2 - h // 2
+        dialog.geometry(f"+{px}+{py}")
+        dialog.wait_visibility()
+        dialog.grab_set()
 
         dialog.bind("<Return>", lambda e: dialog.destroy())
         dialog.bind("<Escape>", lambda e: dialog.destroy())

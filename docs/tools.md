@@ -1,10 +1,10 @@
 # Create custom Gazebo worlds from images, floor plans, or occupancy grid map
 
-linorobot2 includes two tools for generating Gazebo worlds from real-world sources: a floor plan image or a SLAM-generated map. Both produce a Gazebo world that reflects the actual geometry of your physical environment, so you can develop and test ROS2 applications in simulation with full confidence in the obstacle layout before deploying to the Physical Robot.
+linorobot2 includes a GUI tool for generating Gazebo worlds from real-world sources: a floor plan image or a SLAM-generated map. It produces a Gazebo world that reflects the actual geometry of your physical environment, so you can develop and test ROS2 applications in simulation with full confidence in the obstacle layout before deploying to the Physical Robot.
 
 ---
 
-## image_to_gazebo
+## world_creator
 
 A GUI tool that converts a SLAM-generated map or any floor plan image (PNG, JPG, BMP, etc.) into a ready-to-use Gazebo world. The tool generates the 3D wall mesh, model SDF, and world SDF automatically.
 
@@ -13,7 +13,7 @@ Under the hood, it traces every dark (occupied) pixel in the image and extrudes 
 ### Running
 
 ```bash
-ros2 run linorobot2_gazebo image_to_gazebo
+ros2 run linorobot2_gazebo world_creator
 ```
 
 The **Map Image Processor** window opens with a **Controls** sidebar on the left and an **Image View** canvas on the right.
@@ -132,50 +132,10 @@ To use a world SDF located outside the package, pass the full path instead:
 ros2 launch linorobot2_gazebo gazebo.launch.py world_path:=/absolute/path/to/my_map.sdf
 ```
 
----
-
-## create_worlds_from_maps
-
-A batch CLI tool that converts all SLAM maps in `linorobot2_navigation/maps/` into Gazebo worlds in one command. It is the non-interactive counterpart to `image_to_gazebo`, useful for keeping simulation worlds in sync after a mapping session or when maps have been updated.
-
-For each YAML file it reads the occupancy grid image, extrudes the occupied cells into a 3D wall mesh, and writes the model SDF and world SDF.
-
-### Running
-
-```bash
-ros2 run linorobot2_gazebo create_worlds_from_maps
-```
-
-The tool automatically locates `linorobot2_navigation/maps/` by searching the workspace, then writes all generated models to `linorobot2_gazebo/models/` and all world SDF files to `linorobot2_gazebo/worlds/`. No arguments are needed.
-
-### Output Files
-
-For each map YAML named `<map_name>.yaml` the following files are created:
-
-```
-linorobot2_gazebo/models/
-└── <map_name>/
-    ├── model.config
-    ├── <map_name>.sdf
-    └── meshes/
-        └── <map_name>.stl
-
-linorobot2_gazebo/worlds/
-└── <map_name>.sdf
-```
-
-### Launching a Generated World
-
-After rebuilding (or with `--symlink-install`), launch any generated world with:
-
-```bash
-ros2 launch linorobot2_gazebo gazebo.launch.py world_name:=<map_name>
-```
-
 ### Typical Workflow
 
 1. Drive your Physical Robot and build a map with SLAM Toolbox (see [Mapping](07_mapping.md)).
 2. Save the map to `linorobot2_navigation/maps/`.
-3. Run `create_worlds_from_maps` to generate Gazebo worlds for all saved maps in one command, or open `image_to_gazebo` and use **Load Map** to generate a world for a single map interactively.
+3. Open `world_creator`, click **Load Map**, select the saved map YAML, set the wall height, and generate the world.
 4. Rebuild the workspace and launch the world in Gazebo.
 5. Develop and test your Nav2 application with the Simulated Robot, then deploy to the Physical Robot.

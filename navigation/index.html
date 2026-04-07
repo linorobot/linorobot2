@@ -259,6 +259,33 @@
   
   
     <li class="md-nav__item">
+      <a href="../system_configurations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    System Configurations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../installation/" class="md-nav__link">
         
   
@@ -525,13 +552,41 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#running-navigation" class="md-nav__link">
+  <a href="#launch-the-navigation-software-components" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Running Navigation
+        Launch the Navigation Software Components
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Launch the Navigation Software Components">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#physical-robot" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Physical Robot
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulated-robot" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Simulated Robot
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -701,13 +756,41 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#running-navigation" class="md-nav__link">
+  <a href="#launch-the-navigation-software-components" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Running Navigation
+        Launch the Navigation Software Components
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Launch the Navigation Software Components">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#physical-robot" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Physical Robot
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simulated-robot" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Simulated Robot
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -800,26 +883,28 @@
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nb">cd</span><span class="w"> </span>&lt;robot_computer_ws&gt;
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>colcon<span class="w"> </span>build
 </code></pre></div>
-<h2 id="running-navigation">Running Navigation<a class="headerlink" href="#running-navigation" title="Permanent link">&para;</a></h2>
+<h2 id="launch-the-navigation-software-components">Launch the Navigation Software Components<a class="headerlink" href="#launch-the-navigation-software-components" title="Permanent link">&para;</a></h2>
 <p>You need a map saved from the <a href="07_mapping.md">Mapping</a> step before proceeding.</p>
-<p><strong>Terminal 1: Boot the robot</strong> (Physical Robot):</p>
+<h3 id="physical-robot">Physical Robot<a class="headerlink" href="#physical-robot" title="Permanent link">&para;</a></h3>
+<p><strong>Terminal 1: Launch the Physical Robot bringup</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>ros2<span class="w"> </span>launch<span class="w"> </span>linorobot2_bringup<span class="w"> </span>bringup.launch.py
 </code></pre></div>
-<p>Or for Simulated Robot:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>ros2<span class="w"> </span>launch<span class="w"> </span>linorobot2_gazebo<span class="w"> </span>gazebo.launch.py
+<p><strong>Terminal 2: Launch Nav2:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>ros2<span class="w"> </span>launch<span class="w"> </span>linorobot2_navigation<span class="w"> </span>navigation.launch.py<span class="w"> </span>map:<span class="o">=</span>&lt;path_to_map&gt;/&lt;map_name&gt;.yaml
+</code></pre></div>
+<p><strong>Terminal 3: Visualize (from Workstation):</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>ros2<span class="w"> </span>launch<span class="w"> </span>linorobot2_viz<span class="w"> </span>navigation.launch.py
+</code></pre></div>
+<h3 id="simulated-robot">Simulated Robot<a class="headerlink" href="#simulated-robot" title="Permanent link">&para;</a></h3>
+<p><strong>Terminal 1: Launch the Simulated Robot bringup, including Gazebo</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>ros2<span class="w"> </span>launch<span class="w"> </span>linorobot2_gazebo<span class="w"> </span>gazebo.launch.py
 </code></pre></div>
 <p><strong>Terminal 2: Launch Nav2:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>ros2<span class="w"> </span>launch<span class="w"> </span>linorobot2_navigation<span class="w"> </span>navigation.launch.py<span class="w"> </span>map:<span class="o">=</span>&lt;path_to_map&gt;/&lt;map_name&gt;.yaml
-</code></pre></div>
-<p>For Simulated Robot:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>ros2<span class="w"> </span>launch<span class="w"> </span>linorobot2_navigation<span class="w"> </span>navigation.launch.py<span class="w"> </span>map:<span class="o">=</span>&lt;path_to_map&gt;/&lt;map_name&gt;.yaml<span class="w"> </span>sim:<span class="o">=</span><span class="nb">true</span><span class="w"> </span>rviz:<span class="o">=</span><span class="nb">true</span>
-</code></pre></div>
-<p>Nav2 will start and print <code>Timed out waiting for transform from base_link to map</code>. This is normal. It means AMCL is waiting for the robot's initial pose before it can publish the <code>map → odom</code> transform.</p>
-<p><strong>Terminal 3: Visualize (from host machine, ideally when working with Physical Robot):</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>ros2<span class="w"> </span>launch<span class="w"> </span>linorobot2_viz<span class="w"> </span>navigation.launch.py
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>ros2<span class="w"> </span>launch<span class="w"> </span>linorobot2_navigation<span class="w"> </span>navigation.launch.py<span class="w"> </span>map:<span class="o">=</span>&lt;path_to_map&gt;/&lt;map_name&gt;.yaml<span class="w"> </span>sim:<span class="o">=</span><span class="nb">true</span><span class="w"> </span>rviz:<span class="o">=</span><span class="nb">true</span>
 </code></pre></div>
 <h2 id="setting-the-initial-pose">Setting the Initial Pose<a class="headerlink" href="#setting-the-initial-pose" title="Permanent link">&para;</a></h2>
 <p>When Nav2 starts, AMCL doesn't know where the robot is in the map. You must tell it.</p>
+<p>Nav2 will start and print <code>Timed out waiting for transform from base_link to map</code>. This is normal. It means AMCL is waiting for the robot's initial pose before it can publish the <code>map → odom</code> transform.</p>
 <p>In RViz, click <strong>"2D Pose Estimate"</strong> in the toolbar, then click on the map where the robot actually is and drag in the direction the robot is facing. You should see the laser scan snap into alignment with the walls on the map, which confirms AMCL has correctly localized the robot.</p>
 <p>If the scan doesn't align, try setting the pose estimate again. The particle filter needs a few seconds to converge; drive the robot slowly for a moment to help it localize.</p>
 <p><img alt="Setting the initial pose in RViz" src="../assets/set_initial_pose.gif" /></p>

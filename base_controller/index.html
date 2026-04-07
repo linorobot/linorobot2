@@ -259,6 +259,33 @@
   
   
     <li class="md-nav__item">
+      <a href="../system_configurations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    System Configurations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../installation/" class="md-nav__link">
         
   
@@ -983,12 +1010,13 @@
 </code></pre></div>
 <p>It publishes directly to <code>imu/data</code> at 50 Hz, the same topic the EKF reads in <code>ekf.yaml</code>. Both the diff drive controller and the IMU are already included in every robot URDF under <code>linorobot2_description/urdf/robots/</code>, so no extra configuration is needed to run the Simulated Robot.</p>
 <h2 id="magnetometer-support-physical-robot">Magnetometer Support (Physical Robot)<a class="headerlink" href="#magnetometer-support-physical-robot" title="Permanent link">&para;</a></h2>
-<p>The IMU includes a magnetometer that can provide absolute heading (compass direction). How IMU data reaches the EKF depends on whether the magnetometer is enabled.</p>
-<p><strong>Without Madgwick (default):</strong></p>
+<p>The sensor suite for a Physical Robot can include a magnetometer that can provide
+absolute heading (compass direction). How IMU data reaches the EKF depends on whether the magnetometer is enabled.</p>
+<p><strong>Without Magnetometer (default):</strong></p>
 <pre class="mermaid"><code>flowchart LR
     IMU["IMU Sensor"] --&gt; D["/imu/data"]
     D --&gt; EKF["EKF (robot_localization)"]</code></pre>
-<p><strong>With Madgwick enabled (<code>madgwick:=true</code>):</strong></p>
+<p><strong>With Magnetometer enabled (<code>madgwick:=true</code>):</strong></p>
 <pre class="mermaid"><code>flowchart LR
     IMU["IMU Sensor"] --&gt; R["/imu/data_raw"]
     Mag["Magnetometer"] --&gt; M["/imu/mag"]

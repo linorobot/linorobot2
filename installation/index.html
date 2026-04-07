@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://linorobot.github.io/linorobot2/installation/">
       
       
-        <link rel="prev" href="..">
+        <link rel="prev" href="../system_configurations/">
       
       
         <link rel="next" href="../base_controller/">
@@ -256,6 +256,33 @@
       
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../system_configurations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    System Configurations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
     
   
   
@@ -342,10 +369,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#hardware-and-robot-firmware" class="md-nav__link">
+  <a href="#workstation-and-robot-computer-installation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Hardware and Robot Firmware
+        Workstation and Robot Computer Installation
       
     </span>
   </a>
@@ -353,10 +380,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#robot-computer-installation" class="md-nav__link">
+  <a href="#workstation-rviz-remote-visualization-support" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Robot Computer Installation
+        Workstation: RVIZ (Remote Visualization) Support
       
     </span>
   </a>
@@ -364,13 +391,52 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#host-machine-rviz-remote-visualization" class="md-nav__link">
+  <a href="#workstation-install-robot-firmware-and-build-system" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Host Machine: RVIZ (Remote Visualization)
+        Workstation: Install Robot Firmware and Build System
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Workstation: Install Robot Firmware and Build System">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#install-platformio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Install PlatformIO
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#download-and-build-robot-firmware" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Download and build Robot Firmware
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deprecated-teensy-udev-rule" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        (Deprecated) Teensy UDEV Rule
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -392,32 +458,22 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#21-install-linorobot2-package" class="md-nav__link">
+  <a href="#21-install-robot-software-packages" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2.1 Install linorobot2 Package
+        2.1 Install Robot Software Packages
       
     </span>
   </a>
   
-</li>
+    <nav class="md-nav" aria-label="2.1 Install Robot Software Packages">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#22-define-robot-type" class="md-nav__link">
+  <a href="#define-robot-type" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2.2 Define Robot Type
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#docker-option" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Docker Option
+        Define Robot Type
       
     </span>
   </a>
@@ -426,6 +482,22 @@
         
       </ul>
     </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#docker-option" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Docker Option
+      
+    </span>
+  </a>
   
 </li>
       
@@ -703,10 +775,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#hardware-and-robot-firmware" class="md-nav__link">
+  <a href="#workstation-and-robot-computer-installation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Hardware and Robot Firmware
+        Workstation and Robot Computer Installation
       
     </span>
   </a>
@@ -714,10 +786,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#robot-computer-installation" class="md-nav__link">
+  <a href="#workstation-rviz-remote-visualization-support" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Robot Computer Installation
+        Workstation: RVIZ (Remote Visualization) Support
       
     </span>
   </a>
@@ -725,13 +797,52 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#host-machine-rviz-remote-visualization" class="md-nav__link">
+  <a href="#workstation-install-robot-firmware-and-build-system" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Host Machine: RVIZ (Remote Visualization)
+        Workstation: Install Robot Firmware and Build System
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Workstation: Install Robot Firmware and Build System">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#install-platformio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Install PlatformIO
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#download-and-build-robot-firmware" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Download and build Robot Firmware
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deprecated-teensy-udev-rule" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        (Deprecated) Teensy UDEV Rule
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -753,32 +864,22 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#21-install-linorobot2-package" class="md-nav__link">
+  <a href="#21-install-robot-software-packages" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2.1 Install linorobot2 Package
+        2.1 Install Robot Software Packages
       
     </span>
   </a>
   
-</li>
+    <nav class="md-nav" aria-label="2.1 Install Robot Software Packages">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#22-define-robot-type" class="md-nav__link">
+  <a href="#define-robot-type" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2.2 Define Robot Type
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#docker-option" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Docker Option
+        Define Robot Type
       
     </span>
   </a>
@@ -787,6 +888,22 @@
         
       </ul>
     </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#docker-option" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Docker Option
+      
+    </span>
+  </a>
   
 </li>
       
@@ -811,19 +928,44 @@
 
 
 <h1 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h1>
-<p>This guide walks you through installing linorobot2, whether you're setting up a Physical Robot or running the Gazebo simulation on your desktop.</p>
+<p>This guide walks you through installing linorobot2, whether you're setting up a Physical Robot or running a Simulated Robot in the Gazebo simulator on your desktop
+or in the cloud.</p>
+<p>There are two repos you will need to clone and install:</p>
+<ol>
+<li><a href="https://github.com/linorobot/linorobot2">linorobot2</a>. This repo is needed
+for all supported configurations and contains the linorobot2-specific part
+of Robot Software.</li>
+<li><a href="https://github.com/linorobot/linorobot2_hardware">linorobot2_hardware</a>. This
+repo is only needed for Physical Robot configurations, and contains Robot Firmware.</li>
+</ol>
+<p>The following steps walk you through the installation of each.</p>
 <h2 id="physical-robot">Physical Robot<a class="headerlink" href="#physical-robot" title="Permanent link">&para;</a></h2>
+<p>You need to install Robot Software on the Workstation when you are building a
+Physical Robot because the build of Robot Firmware depends on it. It is also
+needed to run the Robot Wifi Configuration.</p>
+<p>If you are building the Onboard Robot Computer configuration, you also need
+to install Robot Software on the onboard Robot Computer.</p>
+<p>See <a href="../system_configurations/">here</a> for definitions of the configurations.</p>
 <h3 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h3>
-<p>The Robot Computer needs ROS2 Jazzy. If you haven't installed it yet, use the <a href="https://github.com/linorobot/ros2me">ros2me</a> installer script, which has been tested on x86 and ARM boards including Raspberry Pi 4 and Nvidia Jetson series.</p>
-<h3 id="hardware-and-robot-firmware">Hardware and Robot Firmware<a class="headerlink" href="#hardware-and-robot-firmware" title="Permanent link">&para;</a></h3>
-<p>Before diving into software, you'll need to build the robot and flash the microcontroller firmware. All hardware documentation (schematics, wiring, firmware) is at <a href="https://github.com/linorobot/linorobot2_hardware">linorobot2_hardware</a>.</p>
-<h3 id="robot-computer-installation">Robot Computer Installation<a class="headerlink" href="#robot-computer-installation" title="Permanent link">&para;</a></h3>
-<p>The easiest way to get everything installed on the robot computer is to run the provided bash script from the root of this repository. It installs all dependencies, sets the required environment variables, and creates a <code>linorobot2_ws</code> in your <code>$HOME</code> directory.</p>
+<p>The Workstation and Robot Computer need supported versions of Ubuntu
+and ROS2. See the System Requirements section of the main page
+for supported versions. If you haven't installed it yet,
+use the <a href="https://github.com/linorobot/ros2me">ros2me</a> installer script,
+which has been tested on x86 and ARM boards including Raspberry Pi 4
+and Nvidia Jetson series.</p>
+<h3 id="workstation-and-robot-computer-installation">Workstation and Robot Computer Installation<a class="headerlink" href="#workstation-and-robot-computer-installation" title="Permanent link">&para;</a></h3>
+<p>The easiest way to get Robot Software installed on the robot computer
+is to run the provided bash script from the root of this repository. It
+installs all dependencies, sets the required environment variables,
+and creates a <code>linorobot2_ws</code> in your <code>$HOME</code> directory.</p>
+<p>The <em>colcon build</em> step should complete without errors.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nb">source</span><span class="w"> </span>/opt/ros/&lt;ros_distro&gt;/setup.bash
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nb">cd</span><span class="w"> </span>/tmp
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>wget<span class="w"> </span>https://raw.githubusercontent.com/linorobot/linorobot2/<span class="si">${</span><span class="nv">ROS_DISTRO</span><span class="si">}</span>/install.bash
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>bash<span class="w"> </span>install.bash<span class="w"> </span>--base<span class="w"> </span>&lt;robot_type&gt;<span class="w"> </span><span class="o">[</span>--laser<span class="w"> </span>&lt;laser_sensor&gt;<span class="o">]</span><span class="w"> </span><span class="o">[</span>--depth<span class="w"> </span>&lt;depth_sensor&gt;<span class="o">]</span><span class="w"> </span><span class="o">[</span>--workspace<span class="w"> </span>&lt;path&gt;<span class="o">]</span>
 <a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="nb">source</span><span class="w"> </span>~/.bashrc
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="nb">cd</span><span class="w"> </span>~/linorobot2_ws
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>colcon<span class="w"> </span>build
 </code></pre></div>
 <p>Passing <code>--base</code> runs the full installation: workspace setup, sensor drivers, micro-ROS, and the linorobot2 package, and exports the required env variables to <code>~/.bashrc</code>. Omitting <code>--base</code> installs only the specified sensor drivers, which is useful when integrating into an existing workspace.</p>
 <p><strong>robot_type:</strong> choose the base that matches your hardware:</p>
@@ -837,11 +979,11 @@
 <tbody>
 <tr>
 <td><code>2wd</code></td>
-<td>2 wheel drive robot</td>
+<td>2 wheel differential drive robot</td>
 </tr>
 <tr>
 <td><code>4wd</code></td>
-<td>4 wheel drive robot</td>
+<td>4 wheel or tracked skid-steer robot</td>
 </tr>
 <tr>
 <td><code>mecanum</code></td>
@@ -972,8 +1114,12 @@
 </tr>
 </tbody>
 </table>
-<h3 id="host-machine-rviz-remote-visualization">Host Machine: RVIZ (Remote Visualization)<a class="headerlink" href="#host-machine-rviz-remote-visualization" title="Permanent link">&para;</a></h3>
-<p>When working with a Physical Robot, you'll want to visualize what's happening from a separate machine (the laser scan, the map being built, and the robot's pose) without running a full simulation. Install <a href="https://github.com/linorobot/linorobot2_viz">linorobot2_viz</a> on your host machine for this purpose:</p>
+<h3 id="workstation-rviz-remote-visualization-support">Workstation: RVIZ (Remote Visualization) Support<a class="headerlink" href="#workstation-rviz-remote-visualization-support" title="Permanent link">&para;</a></h3>
+<p>When working with a Physical Robot, you'll want to visualize what's
+happening from the Workstation (the laser scan, the map being built,
+and the robot's pose) without running a simulation. Install
+<a href="https://github.com/linorobot/linorobot2_viz">linorobot2_viz</a> on your
+host machine for this purpose:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">cd</span><span class="w"> </span>&lt;host_machine_ws&gt;
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/linorobot/linorobot2_viz<span class="w"> </span>src/linorobot2_viz
 <a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>rosdep<span class="w"> </span>update<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>rosdep<span class="w"> </span>install<span class="w"> </span>--from-path<span class="w"> </span>src<span class="w"> </span>--ignore-src<span class="w"> </span>-y
@@ -981,50 +1127,87 @@
 <a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="nb">source</span><span class="w"> </span>install/setup.bash
 </code></pre></div>
 <p>This package is kept separate from the main installation to keep the Robot Computer lean. Both machines must be on the same ROS2 network (same <code>ROS_DOMAIN_ID</code>).</p>
+<h3 id="workstation-install-robot-firmware-and-build-system">Workstation: Install Robot Firmware and Build System<a class="headerlink" href="#workstation-install-robot-firmware-and-build-system" title="Permanent link">&para;</a></h3>
+<p>Robot Firmware is build with the PlatformIO build system. First, you install
+PlatformIO, then you clone and build Robot Firmware.</p>
+<h4 id="install-platformio">Install PlatformIO<a class="headerlink" href="#install-platformio" title="Permanent link">&para;</a></h4>
+<p>Download and install <a href="https://platformio.org/">Platformio</a> - it
+allows you to develop, configure, and upload Robot Firmware to the
+Microcontroller without the Arduino IDE. This means that you can upload
+the firmware using a USB serial cable, or even remotely using OTA (Over The
+Air update).</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="w">    </span>curl<span class="w"> </span>-fsSL<span class="w"> </span>-o<span class="w"> </span>get-platformio.py<span class="w"> </span>https://raw.githubusercontent.com/platformio/platformio-core-installer/master/get-platformio.py
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span>python3<span class="w"> </span>get-platformio.py
+</code></pre></div>
+<p>Add PlatformIO to your $PATH:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;PATH=\&quot;\$PATH:\$HOME/.platformio/penv/bin\&quot;&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span><span class="nv">$HOME</span>/.bashrc
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span><span class="nb">source</span><span class="w"> </span><span class="nv">$HOME</span>/.bashrc
+</code></pre></div>
+<h4 id="download-and-build-robot-firmware">Download and build Robot Firmware<a class="headerlink" href="#download-and-build-robot-firmware" title="Permanent link">&para;</a></h4>
+<p>Clone Robot Firmware from the linorobot2_hardware repo and build it. The
+build should complete without errors.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="w">    </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$HOME</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/linorobot/linorobot2_hardware
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">    </span><span class="nb">cd</span><span class="w"> </span>linorobot2_hardware/firmware
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span>pio<span class="w"> </span>run<span class="w"> </span>-e<span class="w"> </span>esp32
+</code></pre></div>
+<h4 id="deprecated-teensy-udev-rule">(Deprecated) Teensy UDEV Rule<a class="headerlink" href="#deprecated-teensy-udev-rule" title="Permanent link">&para;</a></h4>
+<p>Download the udev rules from Teensy's website:</p>
+<div class="highlight"><pre><span></span><code>wget https://www.pjrc.com/teensy/00-teensy.rules
+</code></pre></div>
+<p>and copy the file to /etc/udev/rules.d :</p>
+<div class="highlight"><pre><span></span><code>sudo cp 00-teensy.rules /etc/udev/rules.d/
+</code></pre></div>
 <hr />
 <h2 id="simulated-robot">Simulated Robot<a class="headerlink" href="#simulated-robot" title="Permanent link">&para;</a></h2>
-<p>The simulation runs on your host/development machine and does not require a Physical Robot at all. It's a great way to tune Nav2 parameters and test your configuration before deploying to hardware.</p>
-<h3 id="21-install-linorobot2-package">2.1 Install linorobot2 Package<a class="headerlink" href="#21-install-linorobot2-package" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nb">cd</span><span class="w"> </span>&lt;host_machine_ws&gt;
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>git<span class="w"> </span>clone<span class="w"> </span>-b<span class="w"> </span><span class="nv">$ROS_DISTRO</span><span class="w"> </span>https://github.com/linorobot/linorobot2<span class="w"> </span>src/linorobot2
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>rosdep<span class="w"> </span>update<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>rosdep<span class="w"> </span>install<span class="w"> </span>--from-path<span class="w"> </span>src<span class="w"> </span>--ignore-src<span class="w"> </span>-y<span class="w"> </span>--skip-keys<span class="w"> </span>microxrcedds_agent<span class="w"> </span>--skip-keys<span class="w"> </span>micro_ros_agent
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>colcon<span class="w"> </span>build
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="nb">source</span><span class="w"> </span>install/setup.bash
+<p>The simulation runs on your Workstation or in the cloud and does not
+require a Physical Robot at all. It's a great way to tune Nav2 parameters
+and test your configuration before deploying to hardware. If you only
+intend to run simulations, and not build a Physical Robot, you can use
+the following simplified Robot Software installation procedure.</p>
+<h3 id="21-install-robot-software-packages">2.1 Install Robot Software Packages<a class="headerlink" href="#21-install-robot-software-packages" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nb">cd</span><span class="w"> </span>&lt;host_machine_ws&gt;
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>git<span class="w"> </span>clone<span class="w"> </span>-b<span class="w"> </span><span class="nv">$ROS_DISTRO</span><span class="w"> </span>https://github.com/linorobot/linorobot2<span class="w"> </span>src/linorobot2
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>rosdep<span class="w"> </span>update<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>rosdep<span class="w"> </span>install<span class="w"> </span>--from-path<span class="w"> </span>src<span class="w"> </span>--ignore-src<span class="w"> </span>-y<span class="w"> </span>--skip-keys<span class="w"> </span>microxrcedds_agent<span class="w"> </span>--skip-keys<span class="w"> </span>micro_ros_agent
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>colcon<span class="w"> </span>build
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="nb">source</span><span class="w"> </span>install/setup.bash
 </code></pre></div>
 <blockquote>
 <p>The <code>--skip-keys</code> flags prevent a known <a href="https://github.com/micro-ROS/micro_ros_setup/issues/138">rosdep issue</a> with micro-ROS keys. Always include them when running <code>rosdep install</code> on this workspace.</p>
 </blockquote>
-<h3 id="22-define-robot-type">2.2 Define Robot Type<a class="headerlink" href="#22-define-robot-type" title="Permanent link">&para;</a></h3>
+<h4 id="define-robot-type">Define Robot Type<a class="headerlink" href="#define-robot-type" title="Permanent link">&para;</a></h4>
 <p>Set the <code>LINOROBOT2_BASE</code> environment variable to match the robot base you want to simulate:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;export LINOROBOT2_BASE=2wd&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>~/.bashrc
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="nb">source</span><span class="w"> </span>~/.bashrc
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;export LINOROBOT2_BASE=2wd&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>~/.bashrc
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="nb">source</span><span class="w"> </span>~/.bashrc
 </code></pre></div>
 <p>Available values: <code>2wd</code>, <code>4wd</code>, <code>mecanum</code>.</p>
 <p>The simulation package already includes RVIZ configurations, so you do not need to install <code>linorobot2_viz</code> separately when using the simulation.</p>
-<h3 id="docker-option">Docker Option<a class="headerlink" href="#docker-option" title="Permanent link">&para;</a></h3>
-<p>If you're not running Ubuntu 24.04 with ROS2 Jazzy, Docker is a convenient alternative for running the simulation.</p>
+<h2 id="docker-option">Docker Option<a class="headerlink" href="#docker-option" title="Permanent link">&para;</a></h2>
+<p>If you're not running a supported combination of Ubuntu and ROS2 versions,
+or if you're running simulation in the cloud where you don't even have Ubuntu,
+Docker is a convenient alternative for running simulation.</p>
 <p>Install Docker using the <a href="https://docs.docker.com/engine/install/">official instructions</a> and follow the <a href="https://docs.docker.com/engine/install/linux-postinstall/">post-install steps</a> to run Docker without <code>sudo</code>.</p>
 <p>Customize <code>docker/.env</code> if needed (e.g., to change the robot type), then build the image:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/linorobot/linorobot2.git
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="nb">cd</span><span class="w"> </span>linorobot2/docker
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>docker<span class="w"> </span>compose<span class="w"> </span>build
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/linorobot/linorobot2.git
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="nb">cd</span><span class="w"> </span>linorobot2/docker
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>docker<span class="w"> </span>compose<span class="w"> </span>build
 </code></pre></div>
 <p>To start the simulation in Docker:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Start Gazebo</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>gazebo
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="c1"># In another terminal, start navigation</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SIM</span><span class="o">=</span><span class="nb">true</span>
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>navigate
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>
-<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="c1"># In another terminal, open RViz</span>
-<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>rviz-nav
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># Start Gazebo</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>gazebo
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="c1"># In another terminal, start navigation</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SIM</span><span class="o">=</span><span class="nb">true</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>navigate
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="c1"># In another terminal, open RViz</span>
+<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>rviz-nav
 </code></pre></div>
 <p>If you see "Unable to create rendering window" errors with Gazebo, run <code>xhost +</code> first.</p>
 <p>You can also run everything in daemon mode:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SIM</span><span class="o">=</span><span class="nb">true</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">RVIZ</span><span class="o">=</span><span class="nb">true</span>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d<span class="w"> </span>gazebo<span class="w"> </span>navigate
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SIM</span><span class="o">=</span><span class="nb">true</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">RVIZ</span><span class="o">=</span><span class="nb">true</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d<span class="w"> </span>gazebo<span class="w"> </span>navigate
 </code></pre></div>
 <p>Shut everything down with <code>docker compose down</code>. View logs with <code>docker compose logs</code>.</p>
 <blockquote>
@@ -1065,7 +1248,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href=".." class="md-footer__link md-footer__link--prev" aria-label="Previous: Overview">
+          <a href="../system_configurations/" class="md-footer__link md-footer__link--prev" aria-label="Previous: System Configurations">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1075,7 +1258,7 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                Overview
+                System Configurations
               </div>
             </div>
           </a>

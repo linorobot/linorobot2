@@ -47,7 +47,7 @@
     <xacro:caster_wheel 
       side="front"
       mass="0.1"
-      base_length="${base_length}" 
+      base_length="${caster_pos_x}" 
       wheel_radius="${wheel_radius}" 
       wheel_pos_z="${wheel_pos_z}" 
     />

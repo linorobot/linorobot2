@@ -3,11 +3,11 @@
   <xacro:macro name="caster_wheel" params="side mass base_length wheel_radius wheel_pos_z">
     <xacro:property name="caster_wheel_radius" value="${(wheel_radius - wheel_pos_z) / 2}" />
     <xacro:if value="${side == 'front'}">
-        <xacro:property name="caster_wheel_x" value="${(base_length / 2) - caster_wheel_radius}" />
+        <xacro:property name="caster_wheel_x" value="${base_length - caster_wheel_radius}" />
     </xacro:if>
     
     <xacro:if value="${side == 'rear'}">
-        <xacro:property name="caster_wheel_x" value="${-(base_length / 2) + caster_wheel_radius}" />
+        <xacro:property name="caster_wheel_x" value="${-base_length + caster_wheel_radius}" />
     </xacro:if>
     
     <link name="${side}_caster_wheel_link">

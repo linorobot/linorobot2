@@ -13,17 +13,17 @@
   <!-- Caster wheel position: 19 inch from driving axle = 0.4826 m -->
   <xacro:property name="wheel_pos_x" value="0.0" />
   <xacro:property name="wheel_pos_y" value="0.2794" /> <!-- base_width / 2 -->
-  <xacro:property name="wheel_pos_z" value="0.0" />
+  <xacro:property name="wheel_pos_z" value="-0.0508" />
   
   <!-- Caster wheel diameter: 3.5 inch -> radius: 1.75 inch = 0.04445 m -->
   <xacro:property name="caster_radius" value="0.04445" />
-  <xacro:property name="caster_pos_x" value="0.4826" />
+  <xacro:property name="caster_pos_x" value="0.5334" />
   <xacro:property name="caster_pos_y" value="0.0" />
   <xacro:property name="caster_pos_z" value="0.0" />
 
   <!-- Base dimensions -->
-  <xacro:property name="base_length" value="0.71" />
-  <xacro:property name="base_height" value="0.15" />
+  <xacro:property name="base_length" value="0.737" />
+  <xacro:property name="base_height" value="0.2667" />
   <xacro:property name="base_mass" value="20.0" />
   <xacro:property name="base_mesh_file" value="" />
 

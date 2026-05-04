@@ -5,7 +5,7 @@
     
     <link name="base_link">
       <visual>
-        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <origin xyz="${(length/2) - 0.1327} 0 0" rpy="0 0 0"/>
         <geometry>
           <xacro:if value="${mesh_file == ''}">
             <box size="${length} ${width} ${height}"/>
@@ -20,7 +20,7 @@
       </visual>
       
       <collision>
-        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <origin xyz="${(length/2) - 0.0127} 0 0" rpy="0 0 0"/>
         <geometry>
           <box size="${length} ${width} ${height}"/>
         </geometry>

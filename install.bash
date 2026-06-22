@@ -462,7 +462,7 @@ if [[ -n "$BASE" ]] && [ "$UDEV_ONLY" != "true" ]
             then
                 echo "export LINOROBOT2_DEPTH_SENSOR=$DEPTH_SENSOR" >> ~/.bashrc
         fi
-        echo "source \$HOME/linorobot2_ws/install/setup.bash" >> ~/.bashrc
+        echo "source $WORKSPACE/install/setup.bash" >> ~/.bashrc
 fi
 
 echo

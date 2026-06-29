@@ -32,27 +32,80 @@ flashed the Teensy joins the ROS 2 graph automatically.
 3. `SPIN_KP / SPIN_KD / SPIN_TORQUE_FF` — copied from the bench test. If
    low-speed motion is jerky during SLAM, lower `SPIN_TORQUE_FF`.
 
-## Build & flash
+## Host setup (one time)
 
-Requires [PlatformIO](https://platformio.org/) (`pip install platformio`).
+This was set up on the Jetson (Ubuntu 24.04, ROS 2 Jazzy). Two host-side things
+are needed before you can build/flash: **PlatformIO** and the **Teensy udev
+rules**.
+
+### 1. PlatformIO
+
+Ubuntu 24.04's system Python is "externally managed" (PEP 668), so install
+PlatformIO into its **own virtualenv** and always call `pio` by full path:
+
+```bash
+# python3.12-venv is not installed and needs sudo, so create the venv without
+# pip and bootstrap pip into it manually:
+python3 -m venv --without-pip ~/.platformio/penv
+curl -fsSL https://bootstrap.pypa.io/get-pip.py | ~/.platformio/penv/bin/python
+~/.platformio/penv/bin/python -m pip install platformio
+```
+
+From here on use **`~/.platformio/penv/bin/pio`** (a bare `pio` is not on PATH).
+Installing into `~/.platformio/penv` matters: micro-ROS's build sources that
+venv (`penv/bin/activate`) to install its own Python helpers.
+
+### 2. Teensy udev rules (needed to flash without sudo)
+
+```bash
+sudo cp 00-teensy.rules /etc/udev/rules.d/   # or get it from https://www.pjrc.com/teensy/00-teensy.rules
+sudo udevadm control --reload-rules && sudo udevadm trigger
+```
+
+## Build & flash
 
 ```bash
 cd firmware
-pio run -e teensy41 -t upload
+~/.platformio/penv/bin/pio run -e teensy41 -t upload
 ```
 
 The first build downloads micro-ROS for the `jazzy` distro
 (`board_microros_distro` in `platformio.ini`) — **this must match the ROS 2
 distro on your robot computer.**
 
+Notes:
+- **arm-gcc 15 fix.** Teensy platform 5.x ships arm-gcc 15, which makes
+  `implicit-function-declaration` a hard error and breaks the bundled micro-ROS
+  `rcutils`. `platformio.ini` carries `build_flags =
+  -Wno-error=implicit-function-declaration` to fix this; it is forwarded into
+  the micro-ROS CMake build automatically.
+- **After changing any `build_flags`** run `~/.platformio/penv/bin/pio run -e
+  teensy41 -t clean_microros` before rebuilding, or the micro-ROS CMake cache
+  keeps the old flags.
+- On flash the Teensy reboots into the firmware and appears as `/dev/ttyACM0`.
+
 ## Run it with linorobot2
 
-On the robot computer:
+You also need the **micro-ROS agent** on the robot computer (the host side of the
+serial bridge). Build it natively once (no Docker) in your linorobot2 workspace:
 
 ```bash
-# Terminal 1 — starts the micro-ROS agent and bridges the Teensy
+cd ~/linorobot2_ws
+source /opt/ros/jazzy/setup.bash && source install/setup.bash
+ros2 run micro_ros_setup create_agent_ws.sh    # clones the agent sources
+#  ^ the rosdep step may abort on unrelated workspace packages — that's fine,
+#    the sources are already cloned. Build the agent directly:
+colcon build --packages-up-to micro_ros_agent --cmake-args -DCMAKE_BUILD_TYPE=Release
+```
+
+Then bring everything up:
+
+```bash
+cd ~/linorobot2_ws && source install/setup.bash
+
+# Terminal 1 — micro-ROS agent (defaults to /dev/ttyACM0 @ 921600) + base
 ros2 launch linorobot2_bringup bringup.launch.py
-# wait for: session established
+# wait for: "session established" and the Teensy LED turning ON
 
 # Terminal 2 — drive it
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
@@ -60,6 +113,9 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard
 # Terminal 3 — map
 ros2 launch linorobot2_navigation slam.launch.py
 ```
+
+> **Put the robot on blocks for the first drive** until `config.h` geometry and
+> the `LEFT/RIGHT_MOTOR_DIR` signs are verified (see "Verify odometry" below).
 
 The onboard LED is **on** when connected to the agent, **off** otherwise. The
 motors are actively held at zero whenever the agent is disconnected or `cmd_vel`

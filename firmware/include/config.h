@@ -56,6 +56,17 @@
 #define CAN_BITRATE          1000000 // CubeMars default 1 Mbps
 
 // ---------------------------------------------------------------------------
+// Feedback decode. The motors run in SERVO mode and stream a status frame whose
+// CAN-id low byte is the motor id (0x68/0x69). Layout (8 bytes, big-endian):
+//   buf[0:1]=marker(const 0x7D00)  buf[2:3]=speed ERPM (int16)
+//   buf[4:5]=current x0.01A         buf[6]=temp C   buf[7]=error
+// Convert reported ERPM to wheel angular velocity (rad/s). The starting value is
+// empirical (steady 0.05 m/s drive -> ~99 ERPM); REFINE by driving a measured
+// distance and matching integrated odometry, together with WHEEL_DIAMETER.
+// ---------------------------------------------------------------------------
+#define ERPM_TO_WHEEL_RADPS  0.00677f   // wheel rad/s per ERPM count (TUNE)
+
+// ---------------------------------------------------------------------------
 // Behavior
 // ---------------------------------------------------------------------------
 #define CONTROL_PERIOD_MS    20      // 50 Hz control/odometry loop

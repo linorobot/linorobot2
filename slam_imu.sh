@@ -82,11 +82,31 @@ sleep 3
 
 ros2 launch slam_toolbox online_async_launch.py &
 
-# RViz in the foreground; closing it tears everything else down. Loads the
-# preconfigured view (Fixed Frame=map, LaserScan on /scan, Map on /map).
+# Visualization.
+#
+# Over SSH there is usually no display ($DISPLAY empty), so rviz2 cannot open a
+# window and would crash this script. In that case run headless: keep the SLAM
+# nodes alive in the foreground and view the map from your laptop instead (see
+# below). With a real display (local screen, or ssh -X), rviz runs as before --
+# closing it tears everything down.
 RVIZ_CFG="$(dirname "$0")/slam_imu.rviz"
-if [ -f "$RVIZ_CFG" ]; then
-    rviz2 -d "$RVIZ_CFG"
+
+if [ -n "$DISPLAY" ] && command -v rviz2 >/dev/null 2>&1; then
+    # Local/forwarded display available: rviz in the foreground.
+    if [ -f "$RVIZ_CFG" ]; then
+        rviz2 -d "$RVIZ_CFG"
+    else
+        rviz2
+    fi
 else
-    rviz2
+    echo
+    echo "[slam_imu] No display detected (\$DISPLAY is empty) -- running headless."
+    echo "[slam_imu] SLAM is mapping. To watch the map live from your LAPTOP:"
+    echo "[slam_imu]   1. Same network as the robot, and ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}"
+    echo "[slam_imu]   2. source /opt/ros/jazzy/setup.bash"
+    echo "[slam_imu]   3. rviz2 -d slam_imu.rviz   (copy slam_imu.rviz from this repo)"
+    echo "[slam_imu] Save the map when done, then Ctrl-C here to stop SLAM."
+    echo
+    # Block in the foreground so the trap tears everything down on Ctrl-C.
+    wait
 fi

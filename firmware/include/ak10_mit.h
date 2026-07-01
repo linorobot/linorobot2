@@ -75,13 +75,16 @@ public:
     bool feedbackFresh() { return millis() - last_feedback_ms_ <= FEEDBACK_STALE_MS; }
     uint8_t id() const { return id_; }
 
-    // Decode a MIT feedback frame for this motor.
+    // DIAGNOSTIC: last decoded velocity ignoring staleness, for debugging the
+    // feedback path. Returns the raw decoded value even if no fresh frame.
+    float rawDecodedVel() const { return dir_ * feedback_vel_; }
+
+    // Decode a SERVO-mode status frame for this motor: velocity is a big-endian
+    // int16 ERPM at buf[2:3]. (buf[0:1] is a constant marker, not position.)
     void handleFrame(const CAN_message_t &msg)
     {
-        uint32_t p_int = ((uint32_t)msg.buf[1] << 8) | msg.buf[2];          // 16-bit
-        uint32_t v_int = ((uint32_t)msg.buf[3] << 4) | (msg.buf[4] >> 4);   // 12-bit
-        feedback_pos_ = ak10_uint_to_float(p_int, P_MIN, P_MAX, 16);
-        feedback_vel_ = ak10_uint_to_float(v_int, V_MIN, V_MAX, 12);
+        int16_t erpm = (int16_t)(((uint16_t)msg.buf[2] << 8) | msg.buf[3]);
+        feedback_vel_ = (float)erpm * ERPM_TO_WHEEL_RADPS;   // wheel rad/s, motor frame
         last_feedback_ms_ = millis();
     }
 
@@ -145,19 +148,19 @@ inline void ak10EnterMotorMode(uint32_t cmd_id)
     ak10_can.write(msg);
 }
 
-// Drain the RX FIFO and route each MIT feedback frame to its motor by the
-// controller id in byte 0.
+// Drain the RX FIFO and route each servo-status frame to its motor. The motor
+// id is the LOW BYTE of the CAN arbitration id (e.g. 0x2968 -> 0x68), NOT buf[0].
 inline void ak10Poll(AK10 &left, AK10 &right)
 {
     CAN_message_t msg;
     while (ak10_can.read(msg))
     {
-        if (msg.len < 6)
+        if (msg.len < 4)
             continue;
-        uint8_t controller_id = msg.buf[0];
-        if (controller_id == left.id())
+        uint8_t id_low = (uint8_t)(msg.id & 0xFF);
+        if (id_low == left.id())
             left.handleFrame(msg);
-        else if (controller_id == right.id())
+        else if (id_low == right.id())
             right.handleFrame(msg);
     }
 }

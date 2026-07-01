@@ -65,37 +65,102 @@ All commands below run on the robot computer unless noted. SLAM and navigation l
 
 ### Physical Robot
 
-**Terminal 1:Boot the robot:**
+This is the exact terminal-by-terminal sequence for **this robot** (Jetson +
+Teensy 4.1 base over micro-ROS, MPU6050 IMU direct on the Jetson's I2C bus 7,
+RPLIDAR A3). **Every terminal must source ROS first:**
+
+```bash
+source /opt/ros/jazzy/setup.bash
+source ~/linorobot2_ws/install/setup.bash
+```
+
+Start the terminals in order (1 → 5).
+
+**Terminal 1 — Boot the base (micro-ROS agent + base node):**
 ```bash
 ros2 launch linorobot2_bringup bringup.launch.py
 ```
 Wait for the micro-ROS agent to print `session established` before continuing.
 
-**Terminal 2:Create a map:**
+**Terminal 2 — IMU (MPU6050 on I2C bus 7 @ 0x68):**
+```bash
+ros2 launch mpu6050_imu imu.launch.py i2c_bus:=7 i2c_addr:=104
+```
+The IMU is wired directly to the Jetson, **not** through the Teensy, so it is a
+separate launch. Note `i2c_addr:=104` (decimal 0x68) — **no trailing period**,
+or it fails with `invalid literal for int()`.
+
+**Terminal 3 — SLAM (also starts the RPLIDAR driver and the robot_localization EKF):**
 ```bash
 ros2 launch linorobot2_navigation slam.launch.py
 ```
 
-**Terminal 3:Drive to map the area:**
+**Terminal 4 — Watch the map over SSH (headless, no RViz):**
 ```bash
-ros2 run teleop_twist_keyboard teleop_twist_keyboard
+python3 ~/Desktop/map_viewer.py
 ```
+Then browse to `http://<robot-ip>:8000` from any machine on the LAN (or tunnel
+with `ssh -L 8000:localhost:8000 <user>@<robot-ip>` and open
+`http://localhost:8000`). The page renders `/map` with the robot pose and
+auto-refreshes; it shows "waiting for /map" until SLAM is publishing. See
+[Watching the map over SSH](#watching-the-map-over-ssh) below for details.
 
-**Save the map:**
+**Terminal 5 — Drive to map the area:**
 ```bash
-cd linorobot2/linorobot2_navigation/maps
+python3 ~/Desktop/drive_telem.py
+```
+Keys: `w`/`s` forward/back, `a`/`d` turn left/right, `space` stop, `q` quit.
+Speeds are fixed at 0.05 m/s / 0.20 rad/s and it prints live measured velocity
+and integrated odometry so you can confirm the wheels are actually tracking.
+
+> **Why not `./teleop_keyboard.py`?** The stock teleop publishes **one**
+> `/cmd_vel` message per keypress, but the firmware has a 200 ms cmd_vel
+> failsafe that zeroes the motors if no fresh command arrives. A single tap only
+> produces a ~200 ms twitch, and macOS Terminal's key auto-repeat is too slow to
+> sustain motion over SSH. `drive_telem.py` publishes continuously at 20 Hz and
+> latches the last command, so the robot keeps moving until you change it or hit
+> space. (Speed-adjust keys in the stock teleop *appear* to work because they
+> just mutate a printed value, not because motion is sustained.)
+
+**Save the map** (when the map looks complete):
+```bash
+cd ~/Desktop/linorobot2/linorobot2_navigation/maps
 ros2 run nav2_map_server map_saver_cli -f <map_name> --ros-args -p save_map_timeout:=10000.
 ```
 
-**Terminal 2:Navigate autonomously:**
+**Navigate autonomously** (replace Terminal 3's SLAM):
 ```bash
 ros2 launch linorobot2_navigation navigation.launch.py map:=<path_to_map>/<map_name>.yaml
 ```
 
-Visualize from your host machine at any point:
+### Watching the map over SSH
+
+Over a plain SSH session there is no display, so instead of RViz this robot
+serves the live map as a web page from `~/Desktop/map_viewer.py` (started in
+Terminal 4 above). It subscribes to `/map` and the robot pose and serves an
+auto-refreshing PNG on port 8000 — no ROS or RViz needed on the viewing machine.
+
 ```bash
-ros2 launch linorobot2_viz slam.launch.py        # during mapping
-ros2 launch linorobot2_viz navigation.launch.py  # during navigation
+# On the robot (Terminal 4):
+python3 ~/Desktop/map_viewer.py
+
+# From your laptop, either browse directly (same LAN):
+#   http://<robot-ip>:8000
+# ...or tunnel the port over SSH and use localhost:
+ssh -L 8000:localhost:8000 <user>@<robot-ip>
+#   then open http://localhost:8000
+```
+
+If you'd rather use RViz on your **laptop** (both machines on the same LAN and
+same `ROS_DOMAIN_ID`, default `0`; `/map` and `/scan` are discovered over DDS):
+
+```bash
+# On the laptop (one-time): copy the saved view config from the robot
+scp jetson1@<robot-ip>:~/Desktop/linorobot2/slam_imu.rviz .
+
+# On the laptop, each time you want to watch:
+source /opt/ros/jazzy/setup.bash
+rviz2 -d slam_imu.rviz
 ```
 
 ### Simulated Robot

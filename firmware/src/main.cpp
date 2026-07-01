@@ -222,9 +222,11 @@ void setup()
     set_microros_serial_transports(Serial);
 
     ak10Begin();
-    // If the motors don't respond, uncomment to enter MIT motor mode on boot:
-    // ak10EnterMotorMode(LEFT_MOTOR_CMD_ID);
-    // ak10EnterMotorMode(RIGHT_MOTOR_CMD_ID);
+    // AK10-9 only streams MIT feedback frames while in motor mode, so enter it
+    // explicitly on boot (required for encoder odometry, not just commanding).
+    delay(200);
+    ak10EnterMotorMode(LEFT_MOTOR_CMD_ID);
+    ak10EnterMotorMode(RIGHT_MOTOR_CMD_ID);
     imu.init();
 
     geometry_msgs__msg__Twist__init(&twist_msg);

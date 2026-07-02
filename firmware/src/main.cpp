@@ -25,6 +25,7 @@
 #include <geometry_msgs/msg/twist.h>
 #include <nav_msgs/msg/odometry.h>
 #include <sensor_msgs/msg/imu.h>
+#include <std_msgs/msg/float32_multi_array.h>
 
 #include "config.h"
 #include "ak10_mit.h"
@@ -69,8 +70,13 @@ rclc_executor_t executor;
 rcl_subscription_t twist_subscriber;
 rcl_publisher_t odom_publisher;
 rcl_publisher_t imu_publisher;
+rcl_publisher_t motor_current_publisher;
 
 geometry_msgs__msg__Twist twist_msg;
+// /motor_current : [left, right] motor current draw in amps. Backed by a static
+// array so no dynamic allocation is needed for the micro-ROS sequence.
+std_msgs__msg__Float32MultiArray motor_current_msg;
+static float motor_current_data[2];
 
 AK10 left_motor(LEFT_MOTOR_ID, LEFT_MOTOR_CMD_ID, LEFT_MOTOR_DIR);
 AK10 right_motor(RIGHT_MOTOR_ID, RIGHT_MOTOR_CMD_ID, RIGHT_MOTOR_DIR);
@@ -156,6 +162,10 @@ void publishData()
         stampNow(&imu_msg->header.stamp);
         RCSOFTCHECK(rcl_publish(&imu_publisher, imu_msg, NULL));
     }
+
+    motor_current_data[0] = left_motor.getCurrentAmps();
+    motor_current_data[1] = right_motor.getCurrentAmps();
+    RCSOFTCHECK(rcl_publish(&motor_current_publisher, &motor_current_msg, NULL));
 }
 
 void controlCallback(rcl_timer_t *timer, int64_t last_call_time)
@@ -182,6 +192,10 @@ bool createEntities()
         &imu_publisher, &node,
         ROSIDL_GET_MSG_TYPE_SUPPORT(sensor_msgs, msg, Imu),
         "imu/data"));
+    RCCHECK(rclc_publisher_init_default(
+        &motor_current_publisher, &node,
+        ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Float32MultiArray),
+        "motor_current"));
     RCCHECK(rclc_subscription_init_default(
         &twist_subscriber, &node,
         ROSIDL_GET_MSG_TYPE_SUPPORT(geometry_msgs, msg, Twist),
@@ -210,6 +224,7 @@ void destroyEntities()
     RCSOFTCHECK(rcl_subscription_fini(&twist_subscriber, &node));
     RCSOFTCHECK(rcl_publisher_fini(&odom_publisher, &node));
     RCSOFTCHECK(rcl_publisher_fini(&imu_publisher, &node));
+    RCSOFTCHECK(rcl_publisher_fini(&motor_current_publisher, &node));
     RCSOFTCHECK(rcl_timer_fini(&control_timer));
     rclc_executor_fini(&executor);
     RCSOFTCHECK(rcl_node_fini(&node));
@@ -230,6 +245,13 @@ void setup()
     imu.init();
 
     geometry_msgs__msg__Twist__init(&twist_msg);
+
+    // Point the Float32MultiArray at its static backing store: [left, right].
+    std_msgs__msg__Float32MultiArray__init(&motor_current_msg);
+    motor_current_msg.data.data = motor_current_data;
+    motor_current_msg.data.size = 2;
+    motor_current_msg.data.capacity = 2;
+
     pinMode(LED_BUILTIN, OUTPUT);
 }
 

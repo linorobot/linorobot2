@@ -1,0 +1,12 @@
+# pack-refs with: peeled fully-peeled sorted 
+983458655e1536d9ae267808468660067370e044 refs/remotes/origin/224-installer-fix
+ffc0e53a868841634b96eca8bb9705e8171bef16 refs/remotes/origin/add-gpu-id
+caed5c52bbb3ecd8ff884a57bded83672d251eeb refs/remotes/origin/additional-panes
+58cd224df0df6afee3e9054b0482563c76e20b18 refs/remotes/origin/change-distro-var
+f769ed0b6811db4299c0072b67d2efaa2a321260 refs/remotes/origin/default-build
+96d16cc8271cb49b0036ed3d229560545eb7f4ff refs/remotes/origin/docs
+d9d3f5b040c497bed9ea6f510c325842e3fa6594 refs/remotes/origin/gh-pages
+6b7ae2ebd5e3782560363dca136c3a92864f5a46 refs/remotes/origin/humble
+b96aa42fbfa4390a77e0aab90935fe55d66d04ba refs/remotes/origin/jazzy
+33feecbf549ae43705251ad7aee19d9be35c0d35 refs/remotes/origin/kasm-fix
+21f1a546bf4bccee4ac9d25bd6c97c555612d327 refs/remotes/origin/map_to_gazebo

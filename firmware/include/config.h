@@ -66,6 +66,11 @@
 // ---------------------------------------------------------------------------
 #define ERPM_TO_WHEEL_RADPS  0.00677f   // wheel rad/s per ERPM count (TUNE)
 
+// Servo-mode status frame reports motor phase current at buf[4:5] as a signed
+// int16 in units of 0.01 A (per the CubeMars manual). CONFIRM against a clamp
+// meter / datasheet the same way ERPM_TO_WHEEL_RADPS still needs calibration.
+#define CURRENT_LSB_TO_AMP   0.01f      // amps per current LSB (CONFIRM)
+
 // ---------------------------------------------------------------------------
 // Behavior
 // ---------------------------------------------------------------------------

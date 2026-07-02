@@ -41,6 +41,7 @@ Moving around:
    j : rotate left      l : rotate right
    u/o : forward + turn     m/. : backward + turn
 
+<space> : HARD STOP (immediate zero, bypasses the ramp)
 anything else : stop (ramps down to zero)
 
 q/z : increase/decrease all speeds by 10%
@@ -171,6 +172,21 @@ def main():
               % (linear_accel, angular_accel, publish_rate))
         while True:
             key = getKey(settings)
+            if key == ' ':
+                # HARD STOP: slam the command to zero right now, skipping the
+                # ramp. Zero both target and current so the ramp timer has
+                # nothing left to ease toward, and publish a zero twist
+                # immediately instead of waiting for the next timer tick.
+                with lock:
+                    state['target_lin'] = 0.0
+                    state['target_ang'] = 0.0
+                    state['cur_lin'] = 0.0
+                    state['cur_ang'] = 0.0
+                pub.publish(geometry_msgs.msg.Twist())
+                x = 0.0
+                th = 0.0
+                print('*** HARD STOP ***')
+                continue
             if key in moveBindings.keys():
                 x = moveBindings[key][0]
                 th = moveBindings[key][3]

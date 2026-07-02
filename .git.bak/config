@@ -1,0 +1,15 @@
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = false
+	logallrefupdates = true
+[remote "origin"]
+	url = git@github.com:AGV-Warehouse/linorobot2.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
+[branch "jazzy"]
+	remote = origin
+	merge = refs/heads/jazzy
+	vscode-merge-base = origin/jazzy
+[remote "upstream"]
+	url = git@github.com:linorobot/linorobot2.git
+	fetch = +refs/heads/*:refs/remotes/upstream/*

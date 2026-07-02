@@ -105,22 +105,49 @@ with `ssh -L 8000:localhost:8000 <user>@<robot-ip>` and open
 auto-refreshes; it shows "waiting for /map" until SLAM is publishing. See
 [Watching the map over SSH](#watching-the-map-over-ssh) below for details.
 
-**Terminal 5 — Drive to map the area:**
+**Terminal 5 — Drive to map the area (ramped keyboard teleop):**
 ```bash
-python3 ~/Desktop/drive_telem.py
+cd ~/Desktop/linorobot2 && ./teleop_keyboard.py
 ```
-Keys: `w`/`s` forward/back, `a`/`d` turn left/right, `space` stop, `q` quit.
-Speeds are fixed at 0.05 m/s / 0.20 rad/s and it prints live measured velocity
-and integrated odometry so you can confirm the wheels are actually tracking.
+Keys: `i`/`k` forward/back, `j`/`l` rotate left/right, `u`/`o`/`m`/`.` drive +
+turn, any other key stops, `Ctrl-C` quits. `q/z` scale all speeds, `w/x` linear
+only, `e/c` angular only. This robot's `+linear.x` drives it physically
+backward, so the script flips the sign internally — `i` really is forward.
 
-> **Why not `./teleop_keyboard.py`?** The stock teleop publishes **one**
-> `/cmd_vel` message per keypress, but the firmware has a 200 ms cmd_vel
-> failsafe that zeroes the motors if no fresh command arrives. A single tap only
-> produces a ~200 ms twitch, and macOS Terminal's key auto-repeat is too slow to
-> sustain motion over SSH. `drive_telem.py` publishes continuously at 20 Hz and
-> latches the last command, so the robot keeps moving until you change it or hit
-> space. (Speed-adjust keys in the stock teleop *appear* to work because they
-> just mutate a printed value, not because motion is sustained.)
+This teleop is **acceleration-ramped**: keypresses set a *target* velocity and a
+50 Hz loop eases the published `/cmd_vel` toward it at a capped rate (default
+`0.05 m/s²` linear, `0.1 rad/s²` angular), so the drivetrain never sees an
+instant jump — it ramps smoothly through zero on a forward↔reverse reversal and
+ramps down to a stop. This protects the gears from shock loads. Override the
+ramp without editing the file:
+```bash
+./teleop_keyboard.py --ros-args -p linear_accel:=0.1 -p angular_accel:=0.5
+```
+
+> **Note:** an earlier `drive_telem.py` existed because the *original*
+> `teleop_keyboard.py` published only **one** `/cmd_vel` per keypress, which the
+> firmware's 200 ms cmd_vel failsafe would zero out between taps. The ramped
+> `teleop_keyboard.py` above now publishes continuously at 50 Hz, so it sustains
+> motion and satisfies the failsafe on its own — use it instead.
+
+**Terminal 6 — Log IMU signals to CSV (optional):**
+```bash
+ros2 run mpu6050_imu imu_logger
+```
+Subscribes to `/imu/data` and, per recording session, writes **two separate
+CSVs** to `~/imu_logs/`:
+1. `imu_z_displacement_<timestamp>.csv` — the z (up) acceleration,
+   gravity-corrected and double-integrated into vertical displacement
+   (`t_s, dt_s, az_raw, az_dynamic, vel_z, disp_z`).
+2. `imu_xz_accel_<timestamp>.csv` — the magnitude of the x+z (forward+up)
+   acceleration vector (`t_s, dt_s, ax_dynamic, az_dynamic, accel_xz_magnitude`).
+
+Press **Enter** to start/stop recording — each ON→OFF cycle produces a new,
+timestamped CSV pair. `q`+Enter quits. Gravity/bias is estimated while idle, so
+keep the robot still for ~1 s before the first record. Override the output
+location with `--ros-args -p output_dir:=<dir> -p file_prefix:=<name>`.
+> Note: double-integrated MEMS displacement drifts over time; keep runs short
+> for meaningful `disp_z`. Velocity and displacement reset to zero each session.
 
 **Save the map** (when the map looks complete):
 ```bash

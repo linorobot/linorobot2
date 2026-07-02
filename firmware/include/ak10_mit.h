@@ -41,7 +41,8 @@ class AK10
 public:
     AK10(uint8_t id, uint32_t cmd_id, float dir)
         : id_(id), cmd_id_(cmd_id), dir_(dir),
-          feedback_vel_(0.0f), feedback_pos_(0.0f), last_feedback_ms_(0) {}
+          feedback_vel_(0.0f), feedback_pos_(0.0f), feedback_cur_(0.0f),
+          last_feedback_ms_(0) {}
 
     // Command a wheel angular velocity (rad/s, robot-forward convention).
     // KP=0 => velocity control; torque feedforward overcomes stiction.
@@ -72,6 +73,16 @@ public:
         return dir_ * feedback_vel_;
     }
 
+    // Measured motor current draw (amps). Signed in the motor frame (sign
+    // follows torque direction); take abs() if you only care about magnitude.
+    // Returns 0 if no fresh feedback, so stale data isn't reported as draw.
+    float getCurrentAmps()
+    {
+        if (millis() - last_feedback_ms_ > FEEDBACK_STALE_MS)
+            return 0.0f;
+        return feedback_cur_;
+    }
+
     bool feedbackFresh() { return millis() - last_feedback_ms_ <= FEEDBACK_STALE_MS; }
     uint8_t id() const { return id_; }
 
@@ -80,11 +91,17 @@ public:
     float rawDecodedVel() const { return dir_ * feedback_vel_; }
 
     // Decode a SERVO-mode status frame for this motor: velocity is a big-endian
-    // int16 ERPM at buf[2:3]. (buf[0:1] is a constant marker, not position.)
+    // int16 ERPM at buf[2:3], current a big-endian int16 (x0.01A) at buf[4:5].
+    // (buf[0:1] is a constant marker, not position.)
     void handleFrame(const CAN_message_t &msg)
     {
         int16_t erpm = (int16_t)(((uint16_t)msg.buf[2] << 8) | msg.buf[3]);
         feedback_vel_ = (float)erpm * ERPM_TO_WHEEL_RADPS;   // wheel rad/s, motor frame
+        if (msg.len >= 6)
+        {
+            int16_t cur_raw = (int16_t)(((uint16_t)msg.buf[4] << 8) | msg.buf[5]);
+            feedback_cur_ = (float)cur_raw * CURRENT_LSB_TO_AMP;   // amps, motor frame
+        }
         last_feedback_ms_ = millis();
     }
 
@@ -123,6 +140,7 @@ private:
     float dir_;
     volatile float feedback_vel_;       // rad/s, motor frame
     volatile float feedback_pos_;       // rad, motor frame
+    volatile float feedback_cur_;       // amps, motor frame
     volatile uint32_t last_feedback_ms_;
 };
 

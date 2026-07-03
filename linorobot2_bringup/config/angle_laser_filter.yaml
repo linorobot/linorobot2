@@ -1,0 +1,12 @@
+scan_to_scan_filter_chain:
+  ros__parameters:
+    filter1:
+      name: angle_bounds
+      type: laser_filters/LaserScanAngularBoundsFilter
+      params:
+        # Keep -135 to +135 deg (270 deg FOV), dropping the rear 90 deg
+        # facing the wall behind the robot. Angles are in the laser frame,
+        # which is mounted with zero yaw (laser x = robot forward), so the
+        # rear of the robot is at +/-180 deg in the scan.
+        lower_angle: -2.3562
+        upper_angle: 2.3562

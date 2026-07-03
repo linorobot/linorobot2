@@ -13,12 +13,12 @@
 # limitations under the License.
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, OpaqueFunction
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, OpaqueFunction, GroupAction
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, EqualsSubstitution
 from launch_ros.substitutions import FindPackageShare
 from launch.conditions import IfCondition
-from launch_ros.actions import Node
+from launch_ros.actions import Node, SetRemap
 
 
 def launch_rplidar(context, *args, **kwargs):
@@ -32,18 +32,40 @@ def launch_rplidar(context, *args, **kwargs):
         's2',
         's3',
     ]
-    
+
     if lidar_str in rplidar_sensors:
         launch_file = f'sllidar_{lidar_str}_launch.py'
-        return [IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(PathJoinSubstitution(
-                [FindPackageShare('sllidar_ros2'), 'launch', launch_file]
-            )),
-            launch_arguments={
-                'serial_port': '/dev/rplidar', 
-                'frame_id': LaunchConfiguration('frame_id'),
-            }.items()   
-        )]
+        angle_filter_config_path = PathJoinSubstitution(
+            [FindPackageShare('linorobot2_bringup'), 'config', 'angle_laser_filter.yaml']
+        )
+        return [
+            # The sllidar driver always publishes the full 360 deg scan, so
+            # publish it on a raw topic and crop the rear 90 deg (wall behind
+            # the robot) with an angular bounds filter before republishing.
+            GroupAction([
+                SetRemap(src='scan', dst='scan_raw'),
+                IncludeLaunchDescription(
+                    PythonLaunchDescriptionSource(PathJoinSubstitution(
+                        [FindPackageShare('sllidar_ros2'), 'launch', launch_file]
+                    )),
+                    launch_arguments={
+                        'serial_port': '/dev/rplidar',
+                        'frame_id': LaunchConfiguration('frame_id'),
+                    }.items()
+                ),
+            ]),
+            Node(
+                package='laser_filters',
+                executable='scan_to_scan_filter_chain',
+                name='angle_laser_filter',
+                output='screen',
+                parameters=[angle_filter_config_path],
+                remappings=[
+                    ('scan', 'scan_raw'),
+                    ('scan_filtered', LaunchConfiguration('topic_name')),
+                ],
+            ),
+        ]
     else:
         return []
 

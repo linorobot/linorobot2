@@ -41,7 +41,7 @@ amcl:
 bt_navigator:
   ros__parameters:
     global_frame: map
-    robot_base_frame: base_link
+    robot_base_frame: base_footprint
     odom_topic: /odom
     bt_loop_duration: 10
     default_server_timeout: 20
@@ -100,36 +100,39 @@ controller_server:
       angular_dist_threshold: 0.785
       angular_disengage_threshold: 0.3925
       forward_sampling_distance: 0.5
-      rotate_to_heading_angular_vel: 1.8
-      max_angular_accel: 3.2
+      rotate_to_heading_angular_vel: 0.25
+      max_angular_accel: 0.5
       simulate_ahead_time: 1.0
       rotate_to_goal_heading: false
       rotate_to_heading_once: true
       use_path_orientations: false
     # FollowPath:
     #   plugin: "nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController"
-      desired_linear_vel: 0.4
+      # SPEED CAP: keep autonomous linear speed at/below 0.05 m/s (drivetrain
+      # protection). The velocity_smoother max_velocity below enforces the same
+      # cap as the final gate before /cmd_vel -- change BOTH to go faster.
+      desired_linear_vel: 0.05
       lookahead_dist: 0.6
       min_lookahead_dist: 0.3
       max_lookahead_dist: 0.9
       lookahead_time: 1.5
-      rotate_to_heading_angular_vel: 0.75
+      rotate_to_heading_angular_vel: 0.25
       transform_tolerance: 0.1
       use_velocity_scaled_lookahead_dist: false
-      min_approach_linear_velocity: 0.05
+      min_approach_linear_velocity: 0.025
       approach_velocity_scaling_dist: 0.6
       use_collision_detection: true
       max_allowed_time_to_collision_up_to_carrot: 1.0
       use_regulated_linear_velocity_scaling: true
       use_cost_regulated_linear_velocity_scaling: true
       regulated_linear_scaling_min_radius: 0.9
-      regulated_linear_scaling_min_speed: 0.25
+      regulated_linear_scaling_min_speed: 0.025
       use_fixed_curvature_lookahead: false
       curvature_lookahead_dist: 0.6
       use_rotate_to_heading: true
       allow_reversing: false
       rotate_to_heading_min_angle: 0.785
-      max_angular_accel: 3.2
+      max_angular_accel: 0.5
       max_robot_pose_search_dist: 10.0
       stateful: true
 
@@ -139,12 +142,13 @@ local_costmap:
       update_frequency: 5.0
       publish_frequency: 2.0
       global_frame: odom
-      robot_base_frame: base_link
+      robot_base_frame: base_footprint
       rolling_window: true
       width: 3
       height: 3
       resolution: 0.05
-      robot_radius: 0.22
+      # 550mm x 550mm square chassis, centered on base_footprint
+      footprint: "[[0.275, 0.275], [0.275, -0.275], [-0.275, -0.275], [-0.275, 0.275]]"
       plugins: ["voxel_layer", "inflation_layer"]
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
@@ -181,8 +185,9 @@ global_costmap:
       update_frequency: 1.0
       publish_frequency: 1.0
       global_frame: map
-      robot_base_frame: base_link
-      robot_radius: 0.22
+      robot_base_frame: base_footprint
+      # 550mm x 550mm square chassis, centered on base_footprint
+      footprint: "[[0.275, 0.275], [0.275, -0.275], [-0.275, -0.275], [-0.275, 0.275]]"
       resolution: 0.05
       track_unknown_space: true
       plugins: ["static_layer", "obstacle_layer", "inflation_layer"]
@@ -263,12 +268,13 @@ behavior_server:
       plugin: "nav2_behaviors::AssistedTeleop"
     local_frame: odom
     global_frame: map
-    robot_base_frame: base_link
+    robot_base_frame: base_footprint
     transform_tolerance: 0.1
     simulate_ahead_time: 2.0
-    max_rotational_vel: 1.0
-    min_rotational_vel: 0.4
-    rotational_acc_lim: 3.2
+    # SPEED CAP: recovery spins/backups limited to match the 0.05 m/s regime.
+    max_rotational_vel: 0.25
+    min_rotational_vel: 0.1
+    rotational_acc_lim: 0.5
 
 waypoint_follower:
   ros__parameters:
@@ -286,10 +292,12 @@ velocity_smoother:
     smoothing_frequency: 20.0
     scale_velocities: False
     feedback: "OPEN_LOOP"
-    max_velocity: [0.5, 0.0, 2.5]
-    min_velocity: [-0.5, 0.0, -2.5]
-    max_accel: [2.5, 0.0, 3.2]
-    max_decel: [-2.5, 0.0, -3.2]
+    # SPEED CAP: final gate before /cmd_vel. Nothing in autonomous mode can
+    # exceed 0.05 m/s linear / 0.25 rad/s angular, whatever upstream commands.
+    max_velocity: [0.05, 0.0, 0.25]
+    min_velocity: [-0.05, 0.0, -0.25]
+    max_accel: [0.1, 0.0, 0.5]
+    max_decel: [-0.5, 0.0, -1.0]
     odom_topic: "odom"
     odom_duration: 0.1
     deadband_velocity: [0.0, 0.0, 0.0]
@@ -335,7 +343,7 @@ docking_server:
     undock_linear_tolerance: 0.05
     undock_angular_tolerance: 0.1
     max_retries: 3
-    base_frame: "base_link"
+    base_frame: "base_footprint"
     fixed_frame: "odom"
     dock_backwards: false
     dock_prestaging_tolerance: 0.5

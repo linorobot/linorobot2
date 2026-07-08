@@ -2,11 +2,10 @@
 #define CONFIG_H
 
 // ---------------------------------------------------------------------------
-// Robot geometry -- MOCK PLACEHOLDER VALUES so the firmware builds and runs.
-// Replace with real measurements before trusting odometry / SLAM.
+// Robot geometry -- measured on the real robot (chassis is 550mm x 550mm).
 // ---------------------------------------------------------------------------
-#define WHEEL_DIAMETER       0.150   // meters (mock). Measure your wheel.
-#define LR_WHEELS_DISTANCE   0.350   // meters, center-to-center (mock). Measure.
+#define WHEEL_DIAMETER       0.120     // meters, measured
+#define LR_WHEELS_DISTANCE   0.37921   // meters, center-to-center, measured
 
 // ---------------------------------------------------------------------------
 // AK10-9 actuators (CubeMars, MIT mode over CAN). Values copied from the
@@ -26,6 +25,15 @@
 // On a mirrored left/right drivetrain one side is usually negated.
 #define LEFT_MOTOR_DIR        1.0f
 #define RIGHT_MOTOR_DIR      -1.0f
+
+// Body longitudinal-axis sign. With the motor DIR constants above this
+// drivetrain drives physically BACKWARD for +cmd_vel.x and reports real
+// forward motion as -odom.x -- i.e. its forward axis is reversed vs the ROS
+// convention (REP-103: +x = forward). TURNING is already correct. Flipping this
+// sign corrects BOTH the command and the odometry linear.x together, so +x =
+// forward everywhere (teleop, Nav2, SLAM). Set to 1.0f if your drivetrain is
+// already ROS-correct. After changing this, remove teleop's LINEAR_SIGN flip.
+#define BASE_LINEAR_DIR      -1.0f
 
 // MIT-mode control gains (from the bench-test sketch).
 // torque = KP*(p_des-p) + KD*(v_des-v) + t_ff.  KP=0 => pure velocity control.

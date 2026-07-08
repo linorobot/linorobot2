@@ -3,4 +3,10 @@ __pycache__
 *.pyc
 **/__pycache__/**
 **.pyc
-COLCON_IGNORE
+COLCON_IGNOREbuild/
+install/
+.git.bak/
+graphify-out/cache/
+graphify-out/20*/
+graphify-out/.graphify_python
+graphify-out/.graphify_root

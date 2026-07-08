@@ -4,9 +4,9 @@
 # Differences from the stock ros2 teleop_twist_keyboard:
 #   * i = forward, k = backward (the natural i/k axis). The stock node leaves
 #     k unbound (so it did nothing) and put reverse on the comma key.
-#   * Forward/back signs are inverted relative to stock because this robot's
-#     +linear.x drives it *backward* physically. Here i sends -x so the robot
-#     actually moves forward, and k sends +x to move backward.
+#   * Standard ROS sign convention: i sends +x (forward), k sends -x (backward).
+#     The firmware handles this robot's reversed drivetrain via BASE_LINEAR_DIR,
+#     so no sign flip is needed here anymore (see LINEAR_SIGN below).
 #   * Default linear speed starts at 0.05 m/s.
 #   * ACCELERATION RAMPING: keypresses set a *target* velocity; a fixed-rate
 #     loop eases the published /cmd_vel toward that target at a capped rate so
@@ -74,9 +74,11 @@ speedBindings = {
     'c': (1, .9),
 }
 
-# This robot's +linear.x drives it physically backward, so flip the sign once
-# here. Pressing i -> intent +1 -> published linear.x = -speed -> moves forward.
-LINEAR_SIGN = -1
+# The firmware now follows the ROS convention (+linear.x = forward) via
+# BASE_LINEAR_DIR, so teleop no longer flips the sign. Pressing i -> intent +1
+# -> published linear.x = +speed -> moves forward. (Set back to -1 only if you
+# revert the firmware BASE_LINEAR_DIR fix.)
+LINEAR_SIGN = 1
 
 # --- ramping defaults (overridable via ROS params) --------------------------
 # Max rate of change of the published command. Lower = gentler on the gears.

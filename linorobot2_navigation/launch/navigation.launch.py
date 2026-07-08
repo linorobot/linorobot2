@@ -23,7 +23,7 @@ from launch_ros.actions import Node
 from launch.conditions import IfCondition
 
 
-MAP_NAME='turtlebot3_world' #change to the name of your own map here
+MAP_NAME='apartment_map_2' #change to the name of your own map here
 
 def generate_launch_description():
     nav2_launch_path = PathJoinSubstitution(
@@ -61,23 +61,9 @@ def generate_launch_description():
             description='Navigation map path'
         ),
 
-        DeclareLaunchArgument(
-            name='initial_pose_x',
-            default_value='0.5',
-            description='Initial robot X position'
-        ),
-
-        DeclareLaunchArgument(
-            name='initial_pose_y',
-            default_value='0.0',
-            description='Initial robot Y position'
-        ),
-
-        DeclareLaunchArgument(
-            name='initial_pose_yaw',
-            default_value='0.0',
-            description='Initial robot yaw'
-        ),
+        # NOTE: nav2_bringup has no initial-pose launch arguments; AMCL takes its
+        # initial pose from the /initialpose topic. Use the map viewer's
+        # "set robot pose" button (or `ros2 topic pub /initialpose ...`).
 
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(nav2_launch_path),
@@ -85,9 +71,6 @@ def generate_launch_description():
                 'map': LaunchConfiguration("map"),
                 'use_sim_time': LaunchConfiguration("sim"),
                 'params_file': nav2_config_path,
-                'initial_pose_x': LaunchConfiguration('initial_pose_x'),
-                'initial_pose_y': LaunchConfiguration('initial_pose_y'),
-                'initial_pose_yaw': LaunchConfiguration('initial_pose_yaw')
             }.items()
         ),
 

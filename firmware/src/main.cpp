@@ -134,8 +134,11 @@ void moveBase()
         twist_msg.angular.z = 0.0;
     }
 
+    // BASE_LINEAR_DIR flips the body forward axis to the ROS convention
+    // (+x = forward). Apply it to the command here and to the odometry below so
+    // both stay consistent; angular_z is already correct and is left untouched.
     Kinematics2WD::WheelOmega req =
-        kinematics.getWheelOmega(twist_msg.linear.x, twist_msg.angular.z);
+        kinematics.getWheelOmega(BASE_LINEAR_DIR * twist_msg.linear.x, twist_msg.angular.z);
     left_motor.setWheelAngularVelocity(req.left);
     right_motor.setWheelAngularVelocity(req.right);
 
@@ -147,7 +150,7 @@ void moveBase()
     unsigned long now = millis();
     float dt = (now - prev_odom_time) / 1000.0;
     prev_odom_time = now;
-    odometry.update(dt, vel.linear_x, vel.angular_z);
+    odometry.update(dt, BASE_LINEAR_DIR * vel.linear_x, vel.angular_z);
 }
 
 void publishData()
@@ -242,6 +245,11 @@ void setup()
     delay(200);
     ak10EnterMotorMode(LEFT_MOTOR_CMD_ID);
     ak10EnterMotorMode(RIGHT_MOTOR_CMD_ID);
+    // The enable transient can twitch each shaft; on a mirrored drivetrain that
+    // reads as a slight yaw on every boot. Latch a damped zero-velocity hold
+    // right away so the motors are braked before the control loop takes over.
+    delay(50);
+    stopMotors();
     imu.init();
 
     geometry_msgs__msg__Twist__init(&twist_msg);

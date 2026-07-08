@@ -1,12 +1,30 @@
-scan_to_scan_filter_chain:
+/**:
   ros__parameters:
     filter1:
       name: angle_bounds
-      type: laser_filters/LaserScanAngularBoundsFilter
+      type: laser_filters/LaserScanAngularBoundsFilterInPlace
       params:
-        # Keep -135 to +135 deg (270 deg FOV), dropping the rear 90 deg
-        # facing the wall behind the robot. Angles are in the laser frame,
-        # which is mounted with zero yaw (laser x = robot forward), so the
-        # rear of the robot is at +/-180 deg in the scan.
-        lower_angle: -2.3562
-        upper_angle: 2.3562
+        # The lidar is mounted so that the -90..+90 deg span of the scan looks
+        # at the BATTERY on the back of the robot, not forward. So we drop that
+        # span and KEEP the opposite 180 deg half (the real forward FOV).
+        #
+        # InPlace REMOVES points within [lower_angle, upper_angle] and keeps the
+        # rest. We use it here because the good half straddles the +/-180 deg
+        # wraparound, which a single "keep" range cannot express -- removing the
+        # -90..+90 span is the equivalent, wrap-safe way to keep the other half.
+        lower_angle: -1.5708
+        upper_angle: 1.5708
+    filter2:
+      name: invalidate_cropped
+      type: laser_filters/LaserScanRangeFilter
+      params:
+        # filter1 (InPlace) marks removed points as range_max + 1 -- a FINITE
+        # value. rf2o copies ranges without checking range_max, so it treats
+        # that filler as a real 26 m arc rigidly attached to the sensor. While
+        # driving, that fake "zero motion" arc contradicts the real half of the
+        # scan and rf2o's eigensolver fails ("Pose is not updated"). Replace
+        # anything outside [range_min, range_max] with inf so rf2o's isfinite
+        # check discards it.
+        use_message_range_limits: true
+        lower_replacement_value: .inf
+        upper_replacement_value: .inf

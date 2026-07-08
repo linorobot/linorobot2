@@ -74,7 +74,51 @@ source /opt/ros/jazzy/setup.bash
 source ~/linorobot2_ws/install/setup.bash
 ```
 
-Start the terminals in order (1 → 5).
+#### Quick start — one command, 2 terminals (recommended)
+
+The whole ROS 2 mapping stack now starts from a single launch file, so you only
+need **two terminals** — the map is a browser tab, not a third terminal.
+
+**Terminal 1 — the entire robot stack.** micro-ROS agent (so teleop drives the
+motors), RPLIDAR A3 cropped to the **front 180°** (the rear is dropped so the
+battery behind the robot never appears as a phantom obstacle), MPU6050 IMU, rf2o
+laser odometry, SLAM Toolbox, and the web map viewer. One `Ctrl-C` stops all of it:
+```bash
+ros2 launch linorobot2_bringup robot.launch.py
+```
+
+**Terminal 2 — drive to map** (ramped keyboard teleop; needs its own terminal
+because it captures keystrokes):
+```bash
+cd ~/Desktop/linorobot2 && ./teleop_keyboard.py
+```
+
+**See the map — from your laptop's browser, no third terminal.** The launch
+serves the live map on **port 8000**. Open `http://<robot-ip>:8000` on the same
+LAN, or tunnel it over SSH:
+```bash
+ssh -L 8000:localhost:8000 jetson1@<robot-ip>   # then open http://localhost:8000
+```
+See [Watching the map over SSH](#watching-the-map-over-ssh) for details.
+
+Handy arguments:
+```bash
+ros2 launch linorobot2_bringup robot.launch.py micro_ros:=false    # you push the robot by hand
+ros2 launch linorobot2_bringup robot.launch.py map_viewer:=false   # don't serve port 8000
+ros2 launch linorobot2_bringup robot.launch.py rviz:=true          # local screen / ssh -X
+ros2 launch linorobot2_bringup robot.launch.py lidar_port:=/dev/ttyUSB0 base_serial_port:=/dev/ttyACM0
+```
+
+Save the map when it looks complete, then switch to navigation — both are in the
+step-by-step section below.
+
+> This uses lidar + IMU SLAM (rf2o laser odometry), which needs no wheel
+> encoders. The step-by-step sequence below is the fuller base + EKF workflow;
+> use it when you want each piece in its own terminal or need to troubleshoot.
+
+#### Step-by-step (manual) sequence
+
+Start the terminals in order (1 → 6).
 
 **Terminal 1 — Boot the base (micro-ROS agent + base node):**
 ```bash
@@ -163,9 +207,11 @@ ros2 launch linorobot2_navigation navigation.launch.py map:=<path_to_map>/<map_n
 ### Watching the map over SSH
 
 Over a plain SSH session there is no display, so instead of RViz this robot
-serves the live map as a web page from `~/Desktop/map_viewer.py` (started in
-Terminal 4 above). It subscribes to `/map` and the robot pose and serves an
-auto-refreshing PNG on port 8000 — no ROS or RViz needed on the viewing machine.
+serves the live map as a web page from `~/Desktop/map_viewer.py`. The quick-start
+`robot.launch.py` starts it automatically (disable with `map_viewer:=false`); in
+the step-by-step sequence it is Terminal 4. It subscribes to `/map` and the robot
+pose and serves an auto-refreshing PNG on port 8000 — no ROS or RViz needed on
+the viewing machine.
 
 ```bash
 # On the robot (Terminal 4):

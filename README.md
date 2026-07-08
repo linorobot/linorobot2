@@ -109,12 +109,55 @@ ros2 launch linorobot2_bringup robot.launch.py rviz:=true          # local scree
 ros2 launch linorobot2_bringup robot.launch.py lidar_port:=/dev/ttyUSB0 base_serial_port:=/dev/ttyACM0
 ```
 
-Save the map when it looks complete, then switch to navigation — both are in the
-step-by-step section below.
+Save the map when it looks complete (while SLAM is still running — the map only
+lives in slam_toolbox's memory until saved):
+```bash
+cd ~/Desktop/linorobot2/linorobot2_navigation/maps && ros2 run nav2_map_server map_saver_cli -f my_new_map --ros-args -p save_map_timeout:=10000.0
+```
+To use it for navigation, set `MAP_NAME` in
+`linorobot2_navigation/launch/navigation.launch.py` to the new name.
 
 > This uses lidar + IMU SLAM (rf2o laser odometry), which needs no wheel
 > encoders. The step-by-step sequence below is the fuller base + EKF workflow;
 > use it when you want each piece in its own terminal or need to troubleshoot.
+
+#### Autonomous navigation — 3 commands
+
+Drive the robot to goals on a saved map (AMCL localization + Nav2). Speed is
+capped at **0.05 m/s** in `linorobot2_navigation/config/navigation.yaml`
+(`desired_linear_vel` + the `velocity_smoother` limits — change both to go faster).
+
+**Terminal 1 — robot base, no SLAM** (AMCL owns localization in this mode;
+never run SLAM and navigation together):
+```bash
+ros2 launch linorobot2_bringup robot.launch.py slam:=false
+```
+
+**Terminal 2 — Nav2 with the saved map** (loads the `MAP_NAME` default from
+`navigation.launch.py`; pass `map:=/abs/path/to/map.yaml` to override):
+```bash
+ros2 launch linorobot2_navigation navigation.launch.py
+```
+
+**Browser — tell AMCL where the robot is** (do this within ~30 s of Terminal 2
+starting, or the Nav2 lifecycle nodes time out waiting for the map frame). Open
+`http://<robot-ip>:8000`, press **📍 set robot pose**, click where the robot is,
+then click a point it is facing. The red footprint snaps into place when AMCL
+localizes.
+
+**Terminal 3 — send a goal.** Click the destination on the map page and paste
+the command it generates:
+```bash
+ros2 action send_goal /navigate_to_pose nav2_msgs/action/NavigateToPose "{pose: {header: {frame_id: map}, pose: {position: {x: 1.20, y: 0.40}, orientation: {w: 1.0}}}}"
+```
+The command streams feedback and returns on arrival; a new goal preempts the
+old one. Hard stop: `Ctrl-C` the goal, or run teleop and hit space.
+
+If a goal is rejected ("Action server is inactive"), the pose was set too late —
+reactivate the stranded Nav2 nodes:
+```bash
+for n in planner_server behavior_server velocity_smoother collision_monitor bt_navigator waypoint_follower route_server docking_server; do ros2 lifecycle set /$n activate; done
+```
 
 #### Step-by-step (manual) sequence
 

@@ -68,7 +68,7 @@ public:
     // Returns 0 if no fresh feedback, so stale data cannot poison odometry.
     float getWheelAngularVelocity()
     {
-        if (millis() - last_feedback_ms_ > FEEDBACK_STALE_MS)
+        if (!feedbackFresh())
             return 0.0f;
         return dir_ * feedback_vel_;
     }
@@ -78,12 +78,18 @@ public:
     // Returns 0 if no fresh feedback, so stale data isn't reported as draw.
     float getCurrentAmps()
     {
-        if (millis() - last_feedback_ms_ > FEEDBACK_STALE_MS)
+        if (!feedbackFresh())
             return 0.0f;
         return feedback_cur_;
     }
 
-    bool feedbackFresh() { return millis() - last_feedback_ms_ <= FEEDBACK_STALE_MS; }
+    // last_feedback_ms_ == 0 means "never heard from this motor"; without that
+    // guard the check reads fresh for the first FEEDBACK_STALE_MS after boot.
+    bool feedbackFresh()
+    {
+        return last_feedback_ms_ != 0 &&
+               millis() - last_feedback_ms_ <= FEEDBACK_STALE_MS;
+    }
     uint8_t id() const { return id_; }
 
     // DIAGNOSTIC: last decoded velocity ignoring staleness, for debugging the
@@ -152,9 +158,10 @@ inline void ak10Begin()
     ak10_can.enableFIFO();
 }
 
-// OPTIONAL: send the MIT "enter motor mode" command (FF..FC). The bench-test
-// sketch does NOT use this, so it is off by default. If the motors do not
-// respond after flashing, call this once per motor right after ak10Begin().
+// Send the MIT "enter motor mode" command (FF..FC). Required once after motor
+// power-on before the motor accepts commands or streams feedback. CAUTION: the
+// enable transient twitches the shaft, so never send this to a motor that is
+// already in motor mode -- gate it on feedbackFresh() (see setup()/loop()).
 inline void ak10EnterMotorMode(uint32_t cmd_id)
 {
     CAN_message_t msg;
@@ -180,6 +187,22 @@ inline void ak10Poll(AK10 &left, AK10 &right)
             left.handleFrame(msg);
         else if (id_low == right.id())
             right.handleFrame(msg);
+    }
+}
+
+// Listen for up to window_ms for feedback from each motor, returning early once
+// both have reported. Motors already in motor mode stream feedback on their
+// own, so after this runs feedbackFresh() tells whether a motor still needs the
+// "enter motor mode" handshake -- the handshake twitches the shaft, so it must
+// only go to motors that are actually silent (a real motor power-on).
+inline void ak10ProbeFeedback(AK10 &left, AK10 &right, uint32_t window_ms)
+{
+    uint32_t start = millis();
+    while (millis() - start < window_ms)
+    {
+        ak10Poll(left, right);
+        if (left.feedbackFresh() && right.feedbackFresh())
+            return;
     }
 }
 

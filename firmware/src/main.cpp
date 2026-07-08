@@ -240,14 +240,26 @@ void setup()
     set_microros_serial_transports(Serial);
 
     ak10Begin();
-    // AK10-9 only streams MIT feedback frames while in motor mode, so enter it
-    // explicitly on boot (required for encoder odometry, not just commanding).
-    delay(200);
-    ak10EnterMotorMode(LEFT_MOTOR_CMD_ID);
-    ak10EnterMotorMode(RIGHT_MOTOR_CMD_ID);
-    // The enable transient can twitch each shaft; on a mirrored drivetrain that
-    // reads as a slight yaw on every boot. Latch a damped zero-velocity hold
-    // right away so the motors are braked before the control loop takes over.
+    // If the Teensy rebooted while the motors stayed powered (firmware upload,
+    // USB replug, watchdog), they are still executing the last MIT command.
+    // Brake right away; motors not yet in motor mode ignore the frame.
+    stopMotors();
+
+    // AK10-9 only streams feedback frames while in motor mode, so the mode is
+    // required for encoder odometry, not just commanding. But the "enter motor
+    // mode" handshake twitches each shaft the instant it lands -- on a mirrored
+    // drivetrain that reads as the robot jerking on every boot, and braking
+    // afterwards cannot undo it. So probe for feedback first and send the
+    // handshake only to motors that stay silent (a real motor power-on); on a
+    // Teensy-only reboot the motors are already in motor mode and are skipped.
+    delay(200); // let the CAN bus and motor controllers settle
+    ak10ProbeFeedback(left_motor, right_motor, 500);
+    if (!left_motor.feedbackFresh())
+        ak10EnterMotorMode(LEFT_MOTOR_CMD_ID);
+    if (!right_motor.feedbackFresh())
+        ak10EnterMotorMode(RIGHT_MOTOR_CMD_ID);
+    // Latch a damped zero-velocity hold so the motors are braked before the
+    // control loop takes over.
     delay(50);
     stopMotors();
     imu.init();
@@ -265,6 +277,28 @@ void setup()
 
 void loop()
 {
+    // Drain motor feedback even while disconnected so feedbackFresh() stays
+    // accurate for the recovery check below (the control timer only polls
+    // while the agent is connected).
+    ak10Poll(left_motor, right_motor);
+
+    // Recovery: a motor that streams no feedback is not in motor mode (powered
+    // on after the Teensy, or power-cycled), so it would ignore commands
+    // forever. Re-send the enter handshake, braked immediately. The feedback
+    // gate means a healthy motor is never re-twitched by this.
+    EXECUTE_EVERY_N_MS(
+        3000,
+        if (!left_motor.feedbackFresh())
+        {
+            ak10EnterMotorMode(LEFT_MOTOR_CMD_ID);
+            left_motor.stop();
+        }
+        if (!right_motor.feedbackFresh())
+        {
+            ak10EnterMotorMode(RIGHT_MOTOR_CMD_ID);
+            right_motor.stop();
+        });
+
     switch (agent_state)
     {
     case WAITING_AGENT:

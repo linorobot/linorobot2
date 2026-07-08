@@ -145,9 +145,14 @@ ros2 topic echo /odom/unfiltered
   byte 0. Some CubeMars firmware versions differ slightly. If `/odom/unfiltered`
   stays zero, flash the original bench-test sketch, watch the `RX ...` serial
   dump while a wheel turns, and adjust the byte layout in `handleFrame` to match.
-- **Enter motor mode**: the bench test (and this firmware by default) does not
-  send the MIT "enter motor mode" frame. If your motors ignore commands after
-  flashing, uncomment the `ak10EnterMotorMode(...)` calls in `setup()`.
+- **Enter motor mode**: the MIT "enter motor mode" handshake is required once
+  after motor power-on (for commands *and* feedback/odometry), but it twitches
+  the shaft when it lands. The firmware therefore probes for motor feedback at
+  boot and only sends the handshake to motors that are silent: on a Teensy-only
+  reboot (firmware upload, USB replug) the motors are already in motor mode and
+  the handshake is skipped, so the robot no longer jerks on every boot. A motor
+  powered on *after* the Teensy is picked up by a periodic recovery check that
+  enables it (with an immediate brake) within a few seconds.
 - This firmware does **not** depend on the linorobot2 ROS 2 packages at build
   time; it only shares their topic contract. It lives in this repo for
   convenience and version-tracking alongside the rest of your robot.

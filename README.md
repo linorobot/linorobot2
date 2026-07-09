@@ -266,6 +266,23 @@ location with `--ros-args -p output_dir:=<dir> -p file_prefix:=<name>`.
 > Note: double-integrated MEMS displacement drifts over time; keep runs short
 > for meaningful `disp_z`. Velocity and displacement reset to zero each session.
 
+**Terminal 7 — Log speed & turn rate to CSV (optional):**
+```bash
+cd ~/Desktop/linorobot2 && ./speed_recorder.py
+```
+Samples every velocity source at 20 Hz into one CSV row so commanded vs actual
+motion can be compared: laser odometry (`/odom_rf2o`), motor odometry
+(`odom/unfiltered`), gyro turn rate (`/imu/data`), and commanded `/cmd_vel`
+(`t_s, dt_s, rf2o_vx, rf2o_wz, wheel_vx, wheel_wz, imu_wz, cmd_vx, cmd_wz`).
+A live speed/turn readout prints while it runs.
+
+Same session UX as `imu_logger`: press **Enter** to start/stop recording — each
+ON→OFF cycle writes a new `speed_log_<timestamp>.csv` to `~/speed_logs/`
+(override with `--dir <dir>`). `q`+Enter quits. A cell is left empty when its
+source hasn't published for >1 s, so dropouts show as gaps instead of stale
+values. Quick sanity check on a straight run: `rf2o_vx` ≈ `cmd_vx`, and while
+turning `imu_wz` ≈ `rf2o_wz`.
+
 **Save the map** (when the map looks complete):
 ```bash
 cd ~/Desktop/linorobot2/linorobot2_navigation/maps

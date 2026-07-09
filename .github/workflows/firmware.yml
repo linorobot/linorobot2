@@ -1,0 +1,47 @@
+name: firmware
+on:
+  push:
+    # any branch: firmware breakage should surface before a PR exists
+    paths: [ 'firmware/**', '.github/workflows/firmware.yml' ]
+  pull_request:
+    branches: [ jazzy ]
+    paths: [ 'firmware/**', '.github/workflows/firmware.yml' ]
+jobs:
+  # Fast, dependency-free check: compiles the real motor driver + config
+  # headers on the host and runs the boot/stall behavior scenarios.
+  host-sim:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build and run host simulation
+        working-directory: firmware/host_sim
+        run: |
+          g++ -std=c++14 -Wall -Wextra -Werror -Istub -I../include sim_boot.cpp -o sim_boot
+          ./sim_boot
+
+  # Full Teensy 4.1 firmware build (micro-ROS lib is fetched and built by
+  # PlatformIO, so the first run is slow; the pio cache keeps reruns fast).
+  pio-build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Cache PlatformIO packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.platformio
+            firmware/.pio
+          key: pio-${{ runner.os }}-${{ hashFiles('firmware/platformio.ini') }}
+
+      - name: Install PlatformIO
+        run: pip install platformio
+
+      - name: Build firmware
+        working-directory: firmware
+        run: pio run -e teensy41

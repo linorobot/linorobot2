@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/home/jetson1/.local/bin/graphify hook-guard search"
+            "command": "g=/home/jetson1/.local/bin/graphify; [ -x \"$g\" ] || g=$(command -v graphify) || exit 0; exec \"$g\" hook-guard search"
           }
         ]
       },
@@ -15,7 +15,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/home/jetson1/.local/bin/graphify hook-guard read"
+            "command": "g=/home/jetson1/.local/bin/graphify; [ -x \"$g\" ] || g=$(command -v graphify) || exit 0; exec \"$g\" hook-guard read"
           }
         ]
       }

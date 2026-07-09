@@ -126,8 +126,9 @@ controller_server:
       # protection). The velocity_smoother max_velocity below enforces the same
       # cap as the final gate before /cmd_vel -- change BOTH to go faster.
       vx_max: 0.05
-      # No reversing: the rear 180 deg of the scan is cropped (battery), so the
-      # robot is blind backwards. Keep vx_min at 0.0.
+      # No reversing: the battery box directly behind the robot is masked out
+      # of the scan (box_laser_filter.yaml), so the robot cannot verify that
+      # space is clear. Keep vx_min at 0.0.
       vx_min: 0.0
       vy_max: 0.0
       wz_max: 0.25

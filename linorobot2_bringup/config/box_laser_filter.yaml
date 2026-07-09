@@ -1,15 +1,36 @@
-scan_to_scan_filter_chain:
+/**:
   ros__parameters:
     filter1:
-      name: box_filter
+      name: battery_box
       type: laser_filters/LaserScanBoxFilter
       params:
-        box_frame: base_laser
-        max_x: 12.
-        max_y: 12.
-        max_z: 0.5
-        min_x: 0.0
-        min_y: -12.
+        # Remove only the scan points that hit the BATTERY carried behind the
+        # robot, instead of cropping the entire rear 180 deg like the old
+        # angle_laser_filter.yaml did. This recovers most of the rear FOV for
+        # scan matching (rf2o), SLAM loop closure, AMCL, and the costmaps.
+        #
+        # The box is axis-aligned in base_footprint (robot center, +x forward),
+        # so it stays glued to the robot no matter how the lidar is mounted.
+        # Extents are deliberately generous around the battery's resting spot;
+        # shrink them once measured (see TESTING.md "Box laser filter").
+        # NOTE: the robot cannot see real obstacles inside this box, so keep it
+        # as small as the battery allows.
+        box_frame: base_footprint
+        min_x: -1.0   # 1.0 m behind robot center ...
+        max_x: -0.10  # ... up to just behind the center (clear of the wheels)
+        min_y: -0.5   # half a meter to either side
+        max_y: 0.5
         min_z: -0.5
-        
-        invert: true # activate to remove all points outside of the box
+        max_z: 0.5
+        invert: false  # remove points INSIDE the box, keep everything else
+    filter2:
+      name: invalidate_cropped
+      type: laser_filters/LaserScanRangeFilter
+      params:
+        # Belt-and-braces for downstream consumers that copy ranges without
+        # validating them (rf2o): make sure anything out of the sensor's real
+        # range limits is inf, which rf2o's isfinite check discards. (The box
+        # filter itself writes NaN, which rf2o also discards.)
+        use_message_range_limits: true
+        lower_replacement_value: .inf
+        upper_replacement_value: .inf

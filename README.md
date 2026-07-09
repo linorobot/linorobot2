@@ -80,8 +80,10 @@ The whole ROS 2 mapping stack now starts from a single launch file, so you only
 need **two terminals** — the map is a browser tab, not a third terminal.
 
 **Terminal 1 — the entire robot stack.** micro-ROS agent (so teleop drives the
-motors), RPLIDAR A3 cropped to the **front 180°** (the rear is dropped so the
-battery behind the robot never appears as a phantom obstacle), MPU6050 IMU, the
+motors), RPLIDAR A3 with the **battery masked out by a box filter** (only the
+scan points hitting the battery box behind the robot are dropped, so it never
+appears as a phantom obstacle while the rest of the rear view stays usable —
+pass `laser_filter_config` to change this), MPU6050 IMU, the
 wheel+IMU EKF odometry (rf2o laser odometry stays on as a cross-check; pass
 `use_ekf:=false` to let it own odometry again), SLAM Toolbox, and the web map
 viewer. One `Ctrl-C` stops all of it:
@@ -136,9 +138,9 @@ controller (Nav2 MPPI) samples trajectories against the live lidar costmap and
 steers around anything it marks, while the global planner (NavFn) replans the
 route around obstacles once per second. The collision monitor is the last
 resort — it hard-stops the base if something shows up inside the 1.2 s
-time-to-collision envelope. Note the lidar only sees the **front 180°**, so
-the robot never reverses autonomously and won't react to obstacles approaching
-from behind.
+time-to-collision envelope. Note the scan is blind inside the **battery box
+masked directly behind the robot** (`box_laser_filter.yaml`), which is why the
+robot never reverses autonomously.
 
 **Terminal 1 — robot base, no SLAM** (AMCL owns localization in this mode;
 never run SLAM and navigation together):
@@ -180,8 +182,8 @@ costmap updates (~0.5 s) the box appears in the local costmap and the
 trajectory bends around it; if the detour is large, the global replan (1 Hz)
 reroutes instead. If the box lands too close to dodge, the collision monitor
 stops the base — pull the box away and the robot resumes on its own. Keep the
-box tall enough for the lidar plane and approach from the front (rear 180° is
-blind).
+box tall enough for the lidar plane; any direction works except inside the
+masked battery box directly behind the robot.
 
 If a goal is rejected ("Action server is inactive"), the pose was set too late —
 reactivate the stranded Nav2 nodes:

@@ -30,7 +30,7 @@
 #
 # Pipeline:
 #   RPLIDAR A3 --360 deg--> /scan_raw
-#   angle_laser_filter --keep +/-90 deg--> /scan   (drops the rear; battery)
+#   laser_filter --remove battery box--> /scan   (full 360 minus the battery)
 #   ekf_node (robot_localization) --(odom->base_footprint)--> fuses wheel + IMU
 #   rf2o_laser_odometry --> /odom_rf2o              (diagnostic only, no TF)
 #   mpu6050_imu --> /imu/data                       (published, not owning TF)
@@ -49,7 +49,7 @@
 # 50 Hz wheel odometry (odom/unfiltered) with the IMU (imu/data) and owns
 # odom->base_footprint, republishing the fused estimate on /odom -- the topic
 # Nav2's bt_navigator and velocity_smoother expect. This replaces the old
-# rf2o-owns-TF setup: rf2o's 10 Hz scan matching on the cropped 180 deg FOV
+# rf2o-owns-TF setup: rf2o's 10 Hz scan matching on the (then-cropped) FOV
 # was noisy at the 0.05 m/s crawl speed and made autonomous motion jerky (the
 # "no wheel encoders" rationale predates the AK10 velocity feedback decoding).
 # rf2o still runs as an independent cross-check on /odom_rf2o, without TF.
@@ -79,8 +79,8 @@ from launch_ros.substitutions import FindPackageShare
 
 
 def generate_launch_description():
-    angle_filter_config_path = PathJoinSubstitution(
-        [FindPackageShare('linorobot2_bringup'), 'config', 'angle_laser_filter.yaml']
+    default_laser_filter_config_path = PathJoinSubstitution(
+        [FindPackageShare('linorobot2_bringup'), 'config', 'box_laser_filter.yaml']
     )
     rviz_config_path = PathJoinSubstitution(
         [FindPackageShare('linorobot2_bringup'), 'rviz', 'slam_imu.rviz']
@@ -112,6 +112,13 @@ def generate_launch_description():
             name='rviz',
             default_value='false',
             description='Open rviz2 (leave false over SSH / headless)'
+        ),
+        DeclareLaunchArgument(
+            name='laser_filter_config',
+            default_value=default_laser_filter_config_path,
+            description='laser_filters chain config. Default masks only the '
+                        'battery box behind the robot; point at '
+                        'angle_laser_filter.yaml for the old front-180 crop.'
         ),
         DeclareLaunchArgument(
             name='micro_ros',
@@ -171,7 +178,7 @@ def generate_launch_description():
         ),
 
         # RPLIDAR A3: the driver publishes the full 360 deg scan, so send it out
-        # on scan_raw and crop the rear with the angular bounds filter below.
+        # on scan_raw and mask the battery with the box filter below.
         GroupAction([
             SetRemap(src='scan', dst='scan_raw'),
             IncludeLaunchDescription(
@@ -186,13 +193,17 @@ def generate_launch_description():
             ),
         ]),
 
-        # Crop scan_raw to the front 180 deg (+/-90 deg) and republish as /scan.
+        # Mask the battery behind the robot out of scan_raw and republish as
+        # /scan. Default config (box_laser_filter.yaml) keeps the full 360 deg
+        # minus a box over the battery; pass
+        #   laser_filter_config:=<path to angle_laser_filter.yaml>
+        # to restore the old front-180-only crop.
         Node(
             package='laser_filters',
             executable='scan_to_scan_filter_chain',
-            name='angle_laser_filter',
+            name='laser_filter',
             output='screen',
-            parameters=[angle_filter_config_path],
+            parameters=[LaunchConfiguration('laser_filter_config')],
             remappings=[
                 ('scan', 'scan_raw'),
                 ('scan_filtered', 'scan'),
@@ -222,7 +233,7 @@ def generate_launch_description():
             remappings=[('odometry/filtered', '/odom')],
         ),
 
-        # rf2o laser odometry: matches consecutive (180 deg) scans. With the
+        # rf2o laser odometry: matches consecutive scans. With the
         # EKF active it is a diagnostic cross-check on /odom_rf2o only; with
         # use_ekf:=false it owns odom->base_footprint as before.
         Node(
@@ -243,8 +254,9 @@ def generate_launch_description():
 
         # Mounting offsets (x y z yaw pitch roll).
         # Lidar is mounted ~185mm forward of the robot's rotation center, with
-        # its 0 deg axis facing the robot's REAR (the battery sits in the scan's
-        # -90..+90 span, see angle_laser_filter.yaml) -- hence the 180 deg yaw.
+        # its 0 deg axis facing the robot's REAR -- hence the 180 deg yaw. The
+        # battery behind the robot is masked by box_laser_filter.yaml, which
+        # relies on this transform being accurate.
         Node(
             package='tf2_ros',
             executable='static_transform_publisher',
@@ -293,9 +305,18 @@ def generate_launch_description():
         # Web map viewer: serves /map as an auto-refreshing page on port 8000, so
         # you can watch the map from a browser on your laptop over SSH -- no rviz,
         # no third terminal. Off with map_viewer:=false.
+        #
+        # The script is machine-local (not in this repo), so degrade gracefully:
+        # if it is missing, log a pointer and keep the rest of the stack up
+        # instead of taking the whole launch down.
         ExecuteProcess(
             condition=IfCondition(LaunchConfiguration('map_viewer')),
-            cmd=['python3', LaunchConfiguration('map_viewer_path')],
+            cmd=['/bin/sh', '-c',
+                 'if [ -f "$0" ]; then exec python3 "$0"; else '
+                 'echo "[map_viewer] $0 not found -- skipping the web map viewer. '
+                 'Set map_viewer_path:=<path> or silence this with map_viewer:=false."; '
+                 'fi',
+                 LaunchConfiguration('map_viewer_path')],
             output='screen',
         ),
     ])

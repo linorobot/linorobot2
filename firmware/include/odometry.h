@@ -49,9 +49,13 @@ public:
         odom_msg_.twist.twist.linear.x = linear_x;
         odom_msg_.twist.twist.linear.y = 0.0;
         odom_msg_.twist.twist.angular.z = angular_z;
-        odom_msg_.twist.covariance[0] = 0.0001;
-        odom_msg_.twist.covariance[7] = 0.0001;
-        odom_msg_.twist.covariance[35] = 0.0001;
+        // Honest wheel-odom uncertainty: ERPM feedback is quantized
+        // (~0.0004 m/s per count) and jittery at crawl speeds, and a diff
+        // drive cannot measure vy at all. The old 0.0001 told the EKF to
+        // treat that jitter as near-ground-truth.
+        odom_msg_.twist.covariance[0] = 0.001;
+        odom_msg_.twist.covariance[7] = 0.01;
+        odom_msg_.twist.covariance[35] = 0.001;
     }
 
     nav_msgs__msg__Odometry *getData() { return &odom_msg_; }

@@ -81,8 +81,10 @@ need **two terminals** — the map is a browser tab, not a third terminal.
 
 **Terminal 1 — the entire robot stack.** micro-ROS agent (so teleop drives the
 motors), RPLIDAR A3 cropped to the **front 180°** (the rear is dropped so the
-battery behind the robot never appears as a phantom obstacle), MPU6050 IMU, rf2o
-laser odometry, SLAM Toolbox, and the web map viewer. One `Ctrl-C` stops all of it:
+battery behind the robot never appears as a phantom obstacle), MPU6050 IMU, the
+wheel+IMU EKF odometry (rf2o laser odometry stays on as a cross-check; pass
+`use_ekf:=false` to let it own odometry again), SLAM Toolbox, and the web map
+viewer. One `Ctrl-C` stops all of it:
 ```bash
 ros2 launch linorobot2_bringup robot.launch.py
 ```
@@ -117,9 +119,11 @@ cd ~/Desktop/linorobot2/linorobot2_navigation/maps && ros2 run nav2_map_server m
 To use it for navigation, set `MAP_NAME` in
 `linorobot2_navigation/launch/navigation.launch.py` to the new name.
 
-> This uses lidar + IMU SLAM (rf2o laser odometry), which needs no wheel
-> encoders. The step-by-step sequence below is the fuller base + EKF workflow;
-> use it when you want each piece in its own terminal or need to troubleshoot.
+> Odometry comes from the EKF fusing the Teensy's wheel velocity feedback with
+> the IMU (requires the `ERPM_TO_WHEEL_RADPS = 0.00842` firmware calibration —
+> re-flash and tape-test, or run `use_ekf:=false` for scan-match-only odometry).
+> The step-by-step sequence below is the fuller multi-terminal workflow; use it
+> when you want each piece in its own terminal or need to troubleshoot.
 
 #### Autonomous navigation — 3 commands
 
@@ -132,6 +136,14 @@ never run SLAM and navigation together):
 ```bash
 ros2 launch linorobot2_bringup robot.launch.py slam:=false
 ```
+
+> **Odometry note:** by default the robot_localization EKF now fuses the
+> Teensy's 50 Hz wheel odometry with the IMU and owns `odom->base_footprint`
+> (rf2o keeps running on `/odom_rf2o` as a cross-check only). This requires
+> Teensy firmware with the `ERPM_TO_WHEEL_RADPS = 0.00842` calibration fix —
+> re-flash `firmware/` first, then verify with the tape test (drive a measured
+> 2 m and compare `odom/unfiltered`). Until then, launch with `use_ekf:=false`
+> to fall back to the old rf2o-owned odometry.
 
 **Terminal 2 — Nav2 with the saved map** (loads the `MAP_NAME` default from
 `navigation.launch.py`; pass `map:=/abs/path/to/map.yaml` to override):

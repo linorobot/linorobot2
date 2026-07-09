@@ -39,9 +39,18 @@
 // torque = KP*(p_des-p) + KD*(v_des-v) + t_ff.  KP=0 => pure velocity control.
 #define SPIN_KP               0.0f   // position gain (0 = velocity control)
 #define SPIN_KD               3.0f   // velocity damping gain
-#define SPIN_TORQUE_FF        4.0f   // Nm feedforward to overcome stiction
-                                     // (applied with the sign of the command).
-                                     // TUNE DOWN if low-speed motion is jerky.
+
+// Friction/stiction feedforward. With KP=0 the torque law is
+// KD*(v_des - v) + t_ff, so any t_ff ABOVE the true friction torque acts as a
+// steady-state speed offset of (excess/KD) that the damping then fights -- at
+// the 4.0 Nm it used to be, 0.05 m/s commands lurched and oscillated. The FF
+// now ramps linearly with |v_des| up to SPIN_FF_FULL_RADPS (see ak10_mit.h),
+// removing the old +/-4 Nm bang-bang step across zero.
+// TUNING: if wheels stall on 0.05 m/s commands, raise SPIN_TORQUE_FF in
+// 0.25 Nm steps until they reliably start, then stop -- the ceiling should sit
+// just above measured breakaway torque, no higher.
+#define SPIN_TORQUE_FF        1.0f   // Nm feedforward ceiling (was 4.0)
+#define SPIN_FF_FULL_RADPS    1.0f   // |v_des| (rad/s) at which full FF applies
 
 // AK10-9 V3 MIT ranges (must match the motor firmware).
 #define P_MIN  (-12.56f)
@@ -72,7 +81,10 @@
 // empirical (steady 0.05 m/s drive -> ~99 ERPM); REFINE by driving a measured
 // distance and matching integrated odometry, together with WHEEL_DIAMETER.
 // ---------------------------------------------------------------------------
-#define ERPM_TO_WHEEL_RADPS  0.00677f   // wheel rad/s per ERPM count (TUNE)
+// 0.00842 = (0.05 m/s / 0.06 m wheel radius) / 99 ERPM, i.e. the value the
+// empirical note above actually implies. The previous 0.00677 under-reported
+// wheel speed by ~20%, which skewed odometry (and anything fusing it).
+#define ERPM_TO_WHEEL_RADPS  0.00842f   // wheel rad/s per ERPM count (TUNE)
 
 // Servo-mode status frame reports motor phase current at buf[4:5] as a signed
 // int16 in units of 0.01 A (per the CubeMars manual). CONFIRM against a clamp
@@ -83,7 +95,11 @@
 // Behavior
 // ---------------------------------------------------------------------------
 #define CONTROL_PERIOD_MS    20      // 50 Hz control/odometry loop
-#define CMD_VEL_TIMEOUT_MS   200     // stop if no cmd_vel for this long
+#define CMD_VEL_TIMEOUT_MS   400     // stop if no cmd_vel for this long.
+                                     // 400 rides through Nav2 BT/controller
+                                     // transitions (>200ms publish gaps) that
+                                     // used to slam the brake mid-drive; still
+                                     // stops within ~2 cm at the 0.05 m/s cap.
 #define FEEDBACK_STALE_MS    250     // treat motor feedback older than this as 0
 
 #endif

@@ -29,9 +29,13 @@ amcl:
     save_pose_rate: 0.5
     sigma_hit: 0.2
     tf_broadcast: true
-    transform_tolerance: 1.0
-    update_min_a: 0.2
-    update_min_d: 0.25
+    transform_tolerance: 0.5
+    # Update thresholds tuned for the 0.05 m/s speed cap: with the stock
+    # 0.25 m / 0.2 rad thresholds AMCL corrected map->odom only every ~5 s,
+    # and each correction was a visible lurch the controller reacted to.
+    # Smaller thresholds -> smaller, more frequent (per-second) corrections.
+    update_min_a: 0.1
+    update_min_d: 0.05
     z_hit: 0.5
     z_max: 0.05
     z_rand: 0.5
@@ -101,7 +105,7 @@ controller_server:
       angular_disengage_threshold: 0.3925
       forward_sampling_distance: 0.5
       rotate_to_heading_angular_vel: 0.25
-      max_angular_accel: 0.5
+      max_angular_accel: 0.25
       simulate_ahead_time: 1.0
       rotate_to_goal_heading: false
       rotate_to_heading_once: true
@@ -119,20 +123,24 @@ controller_server:
       rotate_to_heading_angular_vel: 0.25
       transform_tolerance: 0.1
       use_velocity_scaled_lookahead_dist: false
-      min_approach_linear_velocity: 0.025
-      approach_velocity_scaling_dist: 0.6
+      # With the 0.05 m/s cap the regulation features only had 0.025 m/s of
+      # authority and chattered the command across half its range. Narrow the
+      # regulated band to 0.04-0.05 and drop cost-based regulation (the 0.7 m
+      # inflation radius kept it active almost everywhere indoors).
+      min_approach_linear_velocity: 0.04
+      approach_velocity_scaling_dist: 0.3
       use_collision_detection: true
       max_allowed_time_to_collision_up_to_carrot: 1.0
       use_regulated_linear_velocity_scaling: true
-      use_cost_regulated_linear_velocity_scaling: true
+      use_cost_regulated_linear_velocity_scaling: false
       regulated_linear_scaling_min_radius: 0.9
-      regulated_linear_scaling_min_speed: 0.025
-      use_fixed_curvature_lookahead: false
+      regulated_linear_scaling_min_speed: 0.04
+      use_fixed_curvature_lookahead: true
       curvature_lookahead_dist: 0.6
       use_rotate_to_heading: true
       allow_reversing: false
       rotate_to_heading_min_angle: 0.785
-      max_angular_accel: 0.5
+      max_angular_accel: 0.25
       max_robot_pose_search_dist: 10.0
       stateful: true
 
@@ -296,11 +304,16 @@ velocity_smoother:
     # exceed 0.05 m/s linear / 0.25 rad/s angular, whatever upstream commands.
     max_velocity: [0.05, 0.0, 0.25]
     min_velocity: [-0.05, 0.0, -0.25]
-    max_accel: [0.1, 0.0, 0.5]
-    max_decel: [-0.5, 0.0, -1.0]
+    # Ramp rates matched to teleop_keyboard.py's proven-smooth 0.05 m/s^2 slew
+    # (autonomous previously decelerated at 0.5 m/s^2 -- 10x teleop). Stopping
+    # from 0.05 m/s at 0.1 m/s^2 still takes only 0.5 s / 12.5 mm.
+    max_accel: [0.05, 0.0, 0.25]
+    max_decel: [-0.1, 0.0, -0.5]
     odom_topic: "odom"
     odom_duration: 0.1
-    deadband_velocity: [0.0, 0.0, 0.0]
+    # Zero out sub-threshold dither commands: each tiny nonzero cmd_vel used to
+    # fire the firmware's stiction torque feedforward and twitch the drivetrain.
+    deadband_velocity: [0.01, 0.0, 0.05]
     velocity_timeout: 1.0
 
 collision_monitor:

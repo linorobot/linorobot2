@@ -29,8 +29,14 @@ flashed the Teensy joins the ROS 2 graph automatically.
 2. `LEFT_MOTOR_DIR` / `RIGHT_MOTOR_DIR` — flip a sign if a wheel spins the wrong
    way (mirrored drivetrains usually have one side negated; defaults match the
    bench test: left `+1`, right `-1`).
-3. `SPIN_KP / SPIN_KD / SPIN_TORQUE_FF` — copied from the bench test. If
-   low-speed motion is jerky during SLAM, lower `SPIN_TORQUE_FF`.
+3. `SPIN_KP / SPIN_KD / SPIN_TORQUE_FF` — the friction feedforward now ramps
+   linearly with the commanded speed up to `SPIN_FF_FULL_RADPS` (it used to be
+   a fixed ±4 Nm step, which lurched at crawl speeds). If wheels stall on
+   0.05 m/s commands, raise `SPIN_TORQUE_FF` in 0.25 Nm steps until they
+   reliably start; if low-speed motion is still jerky, lower it.
+4. `ERPM_TO_WHEEL_RADPS` — odometry velocity scale. Calibrate with the tape
+   test: drive a measured 2 m at 0.05 m/s, compare the `odom/unfiltered` pose
+   delta, and scale the constant by (true distance / reported distance).
 
 ## Host setup (one time)
 

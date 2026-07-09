@@ -51,9 +51,11 @@ public:
         float v_des = dir_ * wheel_omega;
         v_des = constrain(v_des, -MAX_WHEEL_OMEGA, MAX_WHEEL_OMEGA);
 
-        float t_ff = 0.0f;
-        if (v_des > 0.0f)       t_ff =  SPIN_TORQUE_FF;
-        else if (v_des < 0.0f)  t_ff = -SPIN_TORQUE_FF;
+        // Friction FF ramps with the command instead of stepping to the full
+        // +/-SPIN_TORQUE_FF for any nonzero v_des -- the old bang-bang put an
+        // 8 Nm discontinuity across zero and lurched at crawl speeds.
+        float t_ff = SPIN_TORQUE_FF *
+                     constrain(v_des / SPIN_FF_FULL_RADPS, -1.0f, 1.0f);
 
         sendMIT(0.0f, v_des, SPIN_KP, SPIN_KD, t_ff);
     }

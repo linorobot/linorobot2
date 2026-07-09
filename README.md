@@ -129,7 +129,16 @@ To use it for navigation, set `MAP_NAME` in
 
 Drive the robot to goals on a saved map (AMCL localization + Nav2). Speed is
 capped at **0.05 m/s** in `linorobot2_navigation/config/navigation.yaml`
-(`desired_linear_vel` + the `velocity_smoother` limits — change both to go faster).
+(MPPI `vx_max` + the `velocity_smoother` limits — change both to go faster).
+
+The robot avoids obstacles that appear **while it is moving**: the local
+controller (Nav2 MPPI) samples trajectories against the live lidar costmap and
+steers around anything it marks, while the global planner (NavFn) replans the
+route around obstacles once per second. The collision monitor is the last
+resort — it hard-stops the base if something shows up inside the 1.2 s
+time-to-collision envelope. Note the lidar only sees the **front 180°**, so
+the robot never reverses autonomously and won't react to obstacles approaching
+from behind.
 
 **Terminal 1 — robot base, no SLAM** (AMCL owns localization in this mode;
 never run SLAM and navigation together):
@@ -164,6 +173,15 @@ ros2 action send_goal /navigate_to_pose nav2_msgs/action/NavigateToPose "{pose: 
 ```
 The command streams feedback and returns on arrival; a new goal preempts the
 old one. Hard stop: `Ctrl-C` the goal, or run teleop and hit space.
+
+**Testing obstacle avoidance:** send a goal across a few meters of open floor,
+then place a box in the robot's path while it drives. Within a couple of
+costmap updates (~0.5 s) the box appears in the local costmap and the
+trajectory bends around it; if the detour is large, the global replan (1 Hz)
+reroutes instead. If the box lands too close to dodge, the collision monitor
+stops the base — pull the box away and the robot resumes on its own. Keep the
+box tall enough for the lidar plane and approach from the front (rear 180° is
+blind).
 
 If a goal is rejected ("Action server is inactive"), the pose was set too late —
 reactivate the stranded Nav2 nodes:

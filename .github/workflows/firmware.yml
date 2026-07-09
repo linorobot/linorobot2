@@ -34,13 +34,23 @@ jobs:
       - name: Cache PlatformIO packages
         uses: actions/cache@v4
         with:
+          # Deliberately NOT ~/.platformio/penv: caching the venv can pin a
+          # stale Python interpreter after a runner image update.
           path: |
-            ~/.platformio
+            ~/.platformio/packages
+            ~/.platformio/platforms
             firmware/.pio
           key: pio-${{ runner.os }}-${{ hashFiles('firmware/platformio.ini') }}
 
+      # micro_ros_platformio's library builder sources
+      # ~/.platformio/penv/bin/activate (the venv the official PlatformIO
+      # installer creates). A plain `pip install platformio` doesn't create
+      # it and the micro-ROS build fails, so install into that exact layout.
       - name: Install PlatformIO
-        run: pip install platformio
+        run: |
+          python3 -m venv "$HOME/.platformio/penv"
+          "$HOME/.platformio/penv/bin/pip" install platformio
+          echo "$HOME/.platformio/penv/bin" >> "$GITHUB_PATH"
 
       - name: Build firmware
         working-directory: firmware

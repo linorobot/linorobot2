@@ -102,4 +102,20 @@
                                      // stops within ~2 cm at the 0.05 m/s cap.
 #define FEEDBACK_STALE_MS    250     // treat motor feedback older than this as 0
 
+// Overcurrent/stall protection. If EITHER motor's |phase current| stays above
+// OVERCURRENT_AMPS for OVERCURRENT_MS continuously (a jammed wheel, a pinned
+// robot), the firmware latches a stop: motors brake and ignore cmd_vel until
+// the commanded twist returns to zero (teleop hard-stop, Nav2 cancel, or the
+// CMD_VEL_TIMEOUT failsafe). Driving at the 0.05 m/s cap on flat ground draws
+// well under 8 A, and a stalled AK10-9 will blow past it within the window.
+// TUNE: log /motor_current during normal driving and set the threshold ~2x the
+// worst normal draw. Depends on CURRENT_LSB_TO_AMP being confirmed.
+#define OVERCURRENT_AMPS     8.0f    // per-motor stall threshold, amps (TUNE)
+#define OVERCURRENT_MS       1000    // sustained this long -> latch a stop
+
+// Re-sync the micro-ROS epoch this often while connected. The Teensy clock
+// drifts relative to the agent; a once-per-connection sync (the old behavior)
+// let odom/IMU stamps walk away from ROS time over long sessions.
+#define TIME_SYNC_PERIOD_MS  60000
+
 #endif

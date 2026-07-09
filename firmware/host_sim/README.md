@@ -1,4 +1,4 @@
-# Host simulation — boot must not move the robot
+# Host simulation — boot must not move the robot, stalls must stop it
 
 Compiles the **real** `include/ak10_mit.h` + `include/config.h` on your PC
 (no Teensy, no PlatformIO) with stubbed `Arduino.h`/`FlexCAN_T4.h`, models the
@@ -16,6 +16,9 @@ boot/loop logic from `src/main.cpp` through four scenarios:
   stream feedback.
 - **D. Teensy reboots mid-drive** → a brake frame goes out within 50 ms,
   before the CAN settle delay.
+- **E. Wheel stall mid-drive** → sustained current above `OVERCURRENT_AMPS`
+  for `OVERCURRENT_MS` latches a stop (drive commands refused, only brakes go
+  out) until a zero cmd_vel releases it; a shorter spike must not latch.
 
 Run it:
 

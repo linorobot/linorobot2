@@ -18,7 +18,13 @@
 //   D. Teensy reboots mid-drive (motors executing an old velocity command)
 //      -> a brake frame goes out within a few ms of boot, before the 200 ms
 //         settle delay.
+//   E. A wheel stalls mid-drive (sustained overcurrent)
+//      -> the firmware latches a stop after OVERCURRENT_MS, refuses further
+//         drive commands, and releases only on a zero cmd_vel. A brief spike
+//         shorter than OVERCURRENT_MS must NOT latch.
 #include "ak10_mit.h"
+#include "kinematics.h"
+#include <cmath>
 #include <cstdio>
 #include <cstring>
 #include <vector>
@@ -35,7 +41,8 @@ struct FakeMotor
     bool powered = false;
     bool in_motor_mode = false;
     uint32_t last_stream_ms = 0;
-    int jerks = 0; // handshakes received while powered
+    int jerks = 0;             // handshakes received while powered
+    float current_amps = 0.0f; // reported in the status frame (scenario E)
 };
 FakeMotor fm_left{LEFT_MOTOR_ID, LEFT_MOTOR_CMD_ID};
 FakeMotor fm_right{RIGHT_MOTOR_ID, RIGHT_MOTOR_CMD_ID};
@@ -46,6 +53,7 @@ struct SentFrame
     uint32_t id;
     bool is_handshake;
     bool is_brake; // MIT frame with kp=0, v_des=0 (mid-scale), kd>0
+    bool is_drive; // MIT frame with kp=0, kd>0, v_des != 0
 };
 std::vector<SentFrame> sent;
 
@@ -66,9 +74,18 @@ static bool isBrake(const CAN_message_t &m)
     return kp == 0 && kd > 0 && v == 2047; // 2047 = zero velocity mid-scale
 }
 
+static bool isDrive(const CAN_message_t &m)
+{
+    if (m.len != 8 || isHandshake(m)) return false;
+    uint32_t kp = ((uint32_t)m.buf[0] << 4) | (m.buf[1] >> 4);
+    uint32_t kd = (((uint32_t)m.buf[1] & 0xF) << 8) | m.buf[2];
+    uint32_t v = ((uint32_t)m.buf[5] << 4) | (m.buf[6] >> 4);
+    return kp == 0 && kd > 0 && v != 2047; // nonzero velocity command
+}
+
 static void busWrite(const CAN_message_t &m)
 {
-    sent.push_back({fake_now, m.id, isHandshake(m), isBrake(m)});
+    sent.push_back({fake_now, m.id, isHandshake(m), isBrake(m), isDrive(m)});
     for (FakeMotor *fm : {&fm_left, &fm_right})
     {
         if (m.id != fm->cmd_id || !fm->powered) continue;
@@ -93,6 +110,9 @@ static bool busRead(CAN_message_t &m)
             m.len = 8;
             m.buf[0] = 0x7D; m.buf[1] = 0x00; // marker
             m.buf[2] = 0; m.buf[3] = 0;       // 0 ERPM
+            int16_t cur_raw = (int16_t)(fm->current_amps / CURRENT_LSB_TO_AMP);
+            m.buf[4] = (uint8_t)(((uint16_t)cur_raw) >> 8);
+            m.buf[5] = (uint8_t)(((uint16_t)cur_raw) & 0xFF);
             return true;
         }
     }
@@ -155,6 +175,83 @@ void loop_motor_fragment() // motor-related part of loop(), verbatim
             ak10EnterMotorMode(RIGHT_MOTOR_CMD_ID);
             right_motor->stop();
         });
+}
+
+// Overcurrent latch + drive gating, mirrored from main.cpp (checkOvercurrent
+// and the moveBase command path; odometry/micro-ROS parts omitted -- they
+// don't compile on host and don't affect the latch).
+Kinematics2WD kinematics;
+struct { struct { double x = 0; } linear; struct { double z = 0; } angular; } twist_msg;
+unsigned long prev_cmd_time = 0;
+
+bool overcurrent_latched = false;
+bool left_over = false, right_over = false;
+unsigned long left_over_since = 0, right_over_since = 0;
+
+void checkOvercurrent()
+{
+    unsigned long now = millis();
+
+    float amps = fabsf(left_motor->getCurrentAmps());
+    if (amps > OVERCURRENT_AMPS)
+    {
+        if (!left_over) { left_over = true; left_over_since = now; }
+    }
+    else
+        left_over = false;
+
+    amps = fabsf(right_motor->getCurrentAmps());
+    if (amps > OVERCURRENT_AMPS)
+    {
+        if (!right_over) { right_over = true; right_over_since = now; }
+    }
+    else
+        right_over = false;
+
+    if ((left_over && now - left_over_since >= OVERCURRENT_MS) ||
+        (right_over && now - right_over_since >= OVERCURRENT_MS))
+        overcurrent_latched = true;
+}
+
+void moveBase_motor_fragment() // command path of moveBase(), verbatim
+{
+    if (millis() - prev_cmd_time >= CMD_VEL_TIMEOUT_MS)
+    {
+        twist_msg.linear.x = 0.0;
+        twist_msg.angular.z = 0.0;
+    }
+
+    checkOvercurrent();
+    if (overcurrent_latched &&
+        twist_msg.linear.x == 0.0 && twist_msg.angular.z == 0.0)
+    {
+        overcurrent_latched = false;
+        left_over = right_over = false;
+    }
+
+    if (overcurrent_latched)
+    {
+        stopMotors();
+    }
+    else
+    {
+        Kinematics2WD::WheelOmega req =
+            kinematics.getWheelOmega(BASE_LINEAR_DIR * twist_msg.linear.x, twist_msg.angular.z);
+        left_motor->setWheelAngularVelocity(req.left);
+        right_motor->setWheelAngularVelocity(req.right);
+    }
+}
+
+// One 50 Hz control tick with an active cmd_vel publisher: refresh the command
+// (as twistCallback would), poll feedback, run the moveBase command path.
+static void driveTick(double lin, double ang)
+{
+    twist_msg.linear.x = lin;
+    twist_msg.angular.z = ang;
+    prev_cmd_time = millis();
+    ak10Poll(*left_motor, *right_motor);
+    moveBase_motor_fragment();
+    delay(CONTROL_PERIOD_MS);
 }
 
 // -------------------------------------------------------------------- runner
@@ -248,6 +345,43 @@ int main()
     CHECK(first_brake < 50, "brake frame sent within 50 ms of boot");
     CHECK(handshakesSent() == 0 && fm_left.jerks == 0 && fm_right.jerks == 0,
           "still no handshake / jerk on reboot");
+
+    printf("Scenario E: wheel stall -> overcurrent latch\n");
+    // Continue from scenario D's healthy state: both motors up and streaming.
+    size_t mark = sent.size();
+    fm_left.current_amps = fm_right.current_amps = 0.5f; // normal draw
+    for (int i = 0; i < 100; i++) driveTick(0.05, 0.0);
+    CHECK(!overcurrent_latched && sent.back().is_drive,
+          "normal driving passes velocity commands through");
+
+    // Brief spike shorter than OVERCURRENT_MS must not latch.
+    fm_left.current_amps = OVERCURRENT_AMPS + 4.0f;
+    uint32_t t0 = fake_now;
+    while (fake_now - t0 < OVERCURRENT_MS / 2) driveTick(0.05, 0.0);
+    fm_left.current_amps = 0.5f;
+    for (int i = 0; i < 50; i++) driveTick(0.05, 0.0);
+    CHECK(!overcurrent_latched, "sub-threshold-duration spike does not latch");
+
+    // Sustained stall: left wheel jams while a drive command is active.
+    fm_left.current_amps = OVERCURRENT_AMPS + 4.0f;
+    t0 = fake_now;
+    while (fake_now - t0 < OVERCURRENT_MS + 500) driveTick(0.05, 0.0);
+    CHECK(overcurrent_latched, "sustained overcurrent latches a stop");
+    mark = sent.size();
+    for (int i = 0; i < 50; i++) driveTick(0.05, 0.0); // keep commanding
+    bool all_brakes = true;
+    for (size_t i = mark; i < sent.size(); i++)
+        if (!sent[i].is_brake) all_brakes = false;
+    CHECK(all_brakes && sent.size() > mark,
+          "latched: drive commands are refused, only brakes go out");
+
+    // Zero command releases the latch; driving then resumes.
+    fm_left.current_amps = 0.5f; // jam cleared
+    for (int i = 0; i < 5; i++) driveTick(0.0, 0.0);
+    CHECK(!overcurrent_latched, "zero cmd_vel releases the latch");
+    for (int i = 0; i < 50; i++) driveTick(0.05, 0.0);
+    CHECK(!overcurrent_latched && sent.back().is_drive,
+          "driving resumes after release");
 
     printf(failures ? "\n%d FAILURE(S)\n" : "\nALL SCENARIOS PASS\n", failures);
     return failures ? 1 : 0;

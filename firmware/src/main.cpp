@@ -125,6 +125,37 @@ void twistCallback(const void *msgin)
     prev_cmd_time = millis();
 }
 
+// Overcurrent/stall latch (see config.h). over_since_* hold the millis() time
+// each motor first went over threshold; false = currently under threshold.
+bool overcurrent_latched = false;
+bool left_over = false, right_over = false;
+unsigned long left_over_since = 0, right_over_since = 0;
+
+void checkOvercurrent()
+{
+    unsigned long now = millis();
+
+    float amps = fabsf(left_motor.getCurrentAmps());
+    if (amps > OVERCURRENT_AMPS)
+    {
+        if (!left_over) { left_over = true; left_over_since = now; }
+    }
+    else
+        left_over = false;
+
+    amps = fabsf(right_motor.getCurrentAmps());
+    if (amps > OVERCURRENT_AMPS)
+    {
+        if (!right_over) { right_over = true; right_over_since = now; }
+    }
+    else
+        right_over = false;
+
+    if ((left_over && now - left_over_since >= OVERCURRENT_MS) ||
+        (right_over && now - right_over_since >= OVERCURRENT_MS))
+        overcurrent_latched = true;
+}
+
 void moveBase()
 {
     // Failsafe: zero the command if cmd_vel went quiet.
@@ -134,13 +165,30 @@ void moveBase()
         twist_msg.angular.z = 0.0;
     }
 
+    checkOvercurrent();
+    // A zero command (operator stop, Nav2 cancel, or the timeout failsafe
+    // above) releases the latch; anything else is refused while latched.
+    if (overcurrent_latched &&
+        twist_msg.linear.x == 0.0 && twist_msg.angular.z == 0.0)
+    {
+        overcurrent_latched = false;
+        left_over = right_over = false;
+    }
+
     // BASE_LINEAR_DIR flips the body forward axis to the ROS convention
     // (+x = forward). Apply it to the command here and to the odometry below so
     // both stay consistent; angular_z is already correct and is left untouched.
-    Kinematics2WD::WheelOmega req =
-        kinematics.getWheelOmega(BASE_LINEAR_DIR * twist_msg.linear.x, twist_msg.angular.z);
-    left_motor.setWheelAngularVelocity(req.left);
-    right_motor.setWheelAngularVelocity(req.right);
+    if (overcurrent_latched)
+    {
+        stopMotors();
+    }
+    else
+    {
+        Kinematics2WD::WheelOmega req =
+            kinematics.getWheelOmega(BASE_LINEAR_DIR * twist_msg.linear.x, twist_msg.angular.z);
+        left_motor.setWheelAngularVelocity(req.left);
+        right_motor.setWheelAngularVelocity(req.right);
+    }
 
     // Odometry from the motors' measured (encoder) velocity feedback.
     Kinematics2WD::Velocities vel = kinematics.getVelocities(
@@ -321,6 +369,9 @@ void loop()
                               : AGENT_DISCONNECTED;);
         if (agent_state == AGENT_CONNECTED)
         {
+            // Periodic re-sync: the Teensy clock drifts vs the agent's, so a
+            // single sync at connect lets stamps walk away over long sessions.
+            EXECUTE_EVERY_N_MS(TIME_SYNC_PERIOD_MS, syncTime(););
             rclc_executor_spin_some(&executor, RCL_MS_TO_NS(10));
         }
         break;

@@ -1,1 +1,4 @@
 .pio/
+host_sim/sim_boot
+frames_*.gv
+frames_*.pdf

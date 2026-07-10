@@ -20,12 +20,16 @@ cd ~/linorobot2_ws && colcon build --symlink-install && source install/setup.bas
 
 ---
 
-## 1. Boot-twitch fix (firmware)
+## 1. Boot behavior (firmware)
 
-**What changed:** the Teensy no longer blindly sends the MIT "enter motor
-mode" handshake on boot (which twitched both shafts). It probes for feedback
-first and only handshakes motors that are silent; a recovery check re-arms a
-motor that powers up late.
+**What changed (revised 2026-07-09 after hardware testing):** the Teensy
+sends the MIT "enter motor mode" handshake to both motors **unconditionally**
+at boot, braked immediately. The original probe-and-skip design (skip the
+handshake if the motor already streams feedback) turned out to be unsafe on
+real hardware: the AK10-9s stream their status frame even when NOT in MIT
+mode, so the probe skipped the handshake after a motor-battery power-cycle
+and the robot silently ignored every drive command. A small boot twitch is
+expected and accepted.
 
 **Flash the firmware** (from the Jetson, Teensy on USB):
 
@@ -34,25 +38,32 @@ cd ~/Desktop/linorobot2/firmware
 pio run -e teensy41 -t upload
 ```
 
+> **Flash quirk:** the first upload attempt frequently fails with
+> `error writing to Teensy` — just run the command again; the retry succeeds.
+> ALWAYS confirm the output ends `[SUCCESS]`: a failed upload can leave the
+> Teensy stranded in its bootloader (no /dev/ttyACM0, no micro-ROS, robot
+> dead until a successful flash).
+
 **Pass criteria:**
 
-1. *Teensy-only reboot, motors powered:* with the motor battery on, press the
-   Teensy's reset button (or re-flash). The wheels must NOT twitch. Verify
-   feedback still flows afterwards:
+1. *Any Teensy boot with the motor battery on:* both wheels give one small
+   twitch (the enable transient), then hold braked. Feedback flows:
 
    ```bash
    ros2 launch linorobot2_bringup robot.launch.py   # terminal 1
    ros2 topic echo /odom/unfiltered --once           # terminal 2: prints a message
    ```
 
-2. *Motor powered after Teensy:* boot the Teensy with the motor battery OFF,
-   then switch the battery on. Within ~3 s the recovery handshake arms the
-   motors (one small unavoidable enable transient per motor — this is the
-   motor's own enable behavior, only on a real power-on). `ros2 topic echo
-   /motor_current` starts showing nonzero-capable readings once armed.
+2. *Motor battery power-cycled while the Teensy stays up:* **also reboot the
+   Teensy afterwards** (reset button or re-flash). The motors resume streaming
+   on their own, which the firmware cannot distinguish from "still in MIT
+   mode" — without the reboot they may ignore all drive commands.
 
 3. *Reboot mid-drive:* drive with teleop, then reset the Teensy. The robot
    must brake immediately (within tens of ms), not coast.
+
+4. *Drive check:* teleop `i` moves the robot. If it doesn't, see section 13
+   (CAN link health) before suspecting software.
 
 ## 2. Host simulation (no hardware needed)
 
@@ -269,3 +280,42 @@ git commit --allow-empty -m "ci: exercise firmware workflow" && git push
 
 **Pass:** both `host-sim` and `pio-build` jobs green in the repo's Actions tab
 (first `pio-build` run is slow while the micro-ROS lib compiles; cached after).
+
+## 13. CAN link health (debugging "robot won't move")
+
+Hard-won on 2026-07-09: the robot went completely deaf to commands while all
+software looked healthy. Root cause was an **intermittent CAN transmit
+fault** — receive kept working perfectly (odometry streamed) while transmit
+frames died on the wire, so nothing commanded the motors and boot handshakes
+were lost. `/motor_current` now carries link diagnostics:
+
+```bash
+ros2 topic echo /motor_current --once --field data
+# [0] left amps   [1] right amps   [2] CAN frames received since boot
+# [3] last raw CAN id              [4] TX error counter  [5] RX error counter
+```
+
+**Healthy:** `[4]` and `[5]` sit at 0 and `[2]` climbs steadily.
+**TX wiring fault:** `[4]` bouncing high (tens to ~250) with `[5]` = 0 —
+commands are dying between the Teensy and the bus. Check, with the motor
+battery OFF: the Teensy pin 1 (CTX2) → transceiver TXD wire, the
+transceiver's Rs/S mode pin (must be tied low — floating = silent mode =
+receive-only!), its VCC/GND, and CANH/CANL + termination. CAN auto-retry can
+mask a sick link for a while (driving "works"), so a nonzero `[4]` deserves
+attention even when the robot moves.
+
+## 14. Exactly ONE micro-ROS agent
+
+`robot.launch.py` starts the agent. **Never start a second one** (manually or
+via a second launch): two agents on `/dev/ttyACM0` corrupt each other's
+sessions — symptoms are the Teensy connecting/disconnecting every ~2 s,
+topics flickering in and out, and cmd_vel doing nothing or acting delayed.
+If the robot behaves strangely, check first:
+
+```bash
+ps aux | grep micro_ros_agent | grep -v grep    # must show exactly one
+```
+
+Also note the agent does NOT respawn if it dies (e.g. the Teensy's USB device
+vanishing during a flash kills it) — if `/odom/unfiltered` is silent but
+`/dev/ttyACM0` exists, restart the launch.

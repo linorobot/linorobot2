@@ -46,11 +46,14 @@
 // the 4.0 Nm it used to be, 0.05 m/s commands lurched and oscillated. The FF
 // now ramps linearly with |v_des| up to SPIN_FF_FULL_RADPS (see ak10_mit.h),
 // removing the old +/-4 Nm bang-bang step across zero.
-// TUNING: if wheels stall on 0.05 m/s commands, raise SPIN_TORQUE_FF in
-// 0.25 Nm steps until they reliably start, then stop -- the ceiling should sit
-// just above measured breakaway torque, no higher.
-#define SPIN_TORQUE_FF        1.0f   // Nm feedforward ceiling (was 4.0)
-#define SPIN_FF_FULL_RADPS    1.0f   // |v_des| (rad/s) at which full FF applies
+// 2026-07-09 hardware validation: the sim-derived 1.0 Nm ceiling was never
+// tested on the robot and 4.0 Nm is what it has always driven with. The ramp
+// is kept (no bang-bang step across zero) but reaches full FF by 0.5 rad/s,
+// so 0.05 m/s commands (0.83 rad/s) get the full 4.0 Nm breakaway torque.
+// TUNING: if crawl-speed lurching appears, lower SPIN_TORQUE_FF in 0.5 Nm
+// steps and re-verify the wheels still break away from rest.
+#define SPIN_TORQUE_FF        4.0f   // Nm feedforward ceiling
+#define SPIN_FF_FULL_RADPS    0.5f   // |v_des| (rad/s) at which full FF applies
 
 // AK10-9 V3 MIT ranges (must match the motor firmware).
 #define P_MIN  (-12.56f)

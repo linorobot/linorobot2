@@ -149,12 +149,14 @@ void setup_motor_fragment() // motor-related part of setup(), verbatim
 {
     ak10Begin();
     stopMotors();
+    // 2026-07-09 hardware finding: real AK10-9s stream their status frame
+    // whether or not MIT mode is enabled, so "is it streaming?" cannot gate
+    // the handshake -- the old probe-and-skip left the motors ignoring every
+    // command after a battery power-cycle. Handshake unconditionally: the
+    // small enable transient is the price of guaranteed drivability.
     delay(200);
-    ak10ProbeFeedback(*left_motor, *right_motor, 500);
-    if (!left_motor->feedbackFresh())
-        ak10EnterMotorMode(LEFT_MOTOR_CMD_ID);
-    if (!right_motor->feedbackFresh())
-        ak10EnterMotorMode(RIGHT_MOTOR_CMD_ID);
+    ak10EnterMotorMode(LEFT_MOTOR_CMD_ID);
+    ak10EnterMotorMode(RIGHT_MOTOR_CMD_ID);
     delay(50);
     stopMotors();
 }
@@ -301,11 +303,17 @@ int main()
     fm_left.in_motor_mode = fm_right.in_motor_mode = true;
     teensyPowerOn();
     setup_motor_fragment();
-    CHECK(handshakesSent() == 0, "no enter-motor-mode handshake sent");
-    CHECK(fm_left.jerks == 0 && fm_right.jerks == 0, "neither motor jerked");
+    // The handshake is unconditional (see setup_motor_fragment), so a
+    // re-enable transient per motor is ACCEPTED here -- the alternative
+    // (probe-gating) left real motors undriveable after a battery cycle.
+    CHECK(handshakesSent() == 2, "handshake sent to both motors (by design)");
+    CHECK(fm_left.jerks == 1 && fm_right.jerks == 1,
+          "at most one enable transient per motor, immediately braked");
     CHECK(!sent.empty() && sent.back().is_brake, "ends holding a brake");
+    // setup() no longer polls; feedback lands on the first loop() passes.
+    for (int i = 0; i < 100; i++) loop_motor_fragment();
     CHECK(left_motor->feedbackFresh() && right_motor->feedbackFresh(),
-          "feedback still flowing (odometry alive)");
+          "feedback flowing once loop() runs (odometry alive)");
 
     printf("Scenario B: whole-robot cold boot (motors powered, not in motor mode)\n");
     fm_left.in_motor_mode = fm_right.in_motor_mode = false;
@@ -340,11 +348,15 @@ int main()
     teensyPowerOn();
     setup_motor_fragment();
     uint32_t first_brake = UINT32_MAX;
+    uint32_t first_handshake = UINT32_MAX;
     for (auto &f : sent)
-        if (f.is_brake) { first_brake = f.t; break; }
+    {
+        if (f.is_brake && first_brake == UINT32_MAX) first_brake = f.t;
+        if (f.is_handshake && first_handshake == UINT32_MAX) first_handshake = f.t;
+    }
     CHECK(first_brake < 50, "brake frame sent within 50 ms of boot");
-    CHECK(handshakesSent() == 0 && fm_left.jerks == 0 && fm_right.jerks == 0,
-          "still no handshake / jerk on reboot");
+    CHECK(first_brake < first_handshake,
+          "brake goes out before the enable handshake");
 
     printf("Scenario E: wheel stall -> overcurrent latch\n");
     // Continue from scenario D's healthy state: both motors up and streaming.

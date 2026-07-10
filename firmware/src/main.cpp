@@ -73,10 +73,15 @@ rcl_publisher_t imu_publisher;
 rcl_publisher_t motor_current_publisher;
 
 geometry_msgs__msg__Twist twist_msg;
-// /motor_current : [left, right] motor current draw in amps. Backed by a static
-// array so no dynamic allocation is needed for the micro-ROS sequence.
+// /motor_current : [0]=left amps, [1]=right amps, plus CAN link-health
+// diagnostics that earned their keep debugging an intermittent TX-wire fault
+// (2026-07-09): [2]=CAN frames received since boot, [3]=last raw CAN id,
+// [4]=TX error counter, [5]=RX error counter. A healthy bus holds [4] and
+// [5] at 0; sustained nonzero [4] means transmissions are dying on the wire
+// (check the transceiver TXD wire / Rs mode pin). Backed by a static array
+// so no dynamic allocation is needed for the micro-ROS sequence.
 std_msgs__msg__Float32MultiArray motor_current_msg;
-static float motor_current_data[2];
+static float motor_current_data[6];
 
 AK10 left_motor(LEFT_MOTOR_ID, LEFT_MOTOR_CMD_ID, LEFT_MOTOR_DIR);
 AK10 right_motor(RIGHT_MOTOR_ID, RIGHT_MOTOR_CMD_ID, RIGHT_MOTOR_DIR);
@@ -216,6 +221,16 @@ void publishData()
 
     motor_current_data[0] = left_motor.getCurrentAmps();
     motor_current_data[1] = right_motor.getCurrentAmps();
+    motor_current_data[2] = (float)ak10_rx_total;
+    motor_current_data[3] = (float)ak10_rx_last_id;
+    // FLEXCAN2 ECR register: low byte = TX error counter, next = RX error
+    // counter. TEC pegged at/above 128 (error-passive) means our transmissions
+    // are never ACKed -- i.e. the TX line to the bus is physically dead.
+    {
+        uint32_t ecr = *(volatile uint32_t *)0x401D401C;
+        motor_current_data[4] = (float)(ecr & 0xFF);         // TX error count
+        motor_current_data[5] = (float)((ecr >> 8) & 0xFF);  // RX error count
+    }
     RCSOFTCHECK(rcl_publish(&motor_current_publisher, &motor_current_msg, NULL));
 }
 
@@ -293,19 +308,18 @@ void setup()
     // Brake right away; motors not yet in motor mode ignore the frame.
     stopMotors();
 
-    // AK10-9 only streams feedback frames while in motor mode, so the mode is
-    // required for encoder odometry, not just commanding. But the "enter motor
-    // mode" handshake twitches each shaft the instant it lands -- on a mirrored
-    // drivetrain that reads as the robot jerking on every boot, and braking
-    // afterwards cannot undo it. So probe for feedback first and send the
-    // handshake only to motors that stay silent (a real motor power-on); on a
-    // Teensy-only reboot the motors are already in motor mode and are skipped.
+    // AK10-9 servo-firmware motors stream their status frame whether or not
+    // MIT motor mode is enabled, so "is it streaming feedback?" CANNOT tell
+    // whether the motor will accept MIT commands. The previous probe-and-skip
+    // logic (meant to avoid the enable twitch on Teensy-only reboots) skipped
+    // the handshake whenever the motors streamed -- after a motor power-cycle
+    // that left them enabled-but-not-in-MIT-mode, every velocity command was
+    // silently ignored and the robot would not drive. Send the handshake
+    // unconditionally: re-enabling an already-enabled motor produces at most
+    // the small damped transient, a robot that cannot move is worse.
     delay(200); // let the CAN bus and motor controllers settle
-    ak10ProbeFeedback(left_motor, right_motor, 500);
-    if (!left_motor.feedbackFresh())
-        ak10EnterMotorMode(LEFT_MOTOR_CMD_ID);
-    if (!right_motor.feedbackFresh())
-        ak10EnterMotorMode(RIGHT_MOTOR_CMD_ID);
+    ak10EnterMotorMode(LEFT_MOTOR_CMD_ID);
+    ak10EnterMotorMode(RIGHT_MOTOR_CMD_ID);
     // Latch a damped zero-velocity hold so the motors are braked before the
     // control loop takes over.
     delay(50);
@@ -317,8 +331,8 @@ void setup()
     // Point the Float32MultiArray at its static backing store: [left, right].
     std_msgs__msg__Float32MultiArray__init(&motor_current_msg);
     motor_current_msg.data.data = motor_current_data;
-    motor_current_msg.data.size = 2;
-    motor_current_msg.data.capacity = 2;
+    motor_current_msg.data.size = 6;
+    motor_current_msg.data.capacity = 6;
 
     pinMode(LED_BUILTIN, OUTPUT);
 }
@@ -330,10 +344,12 @@ void loop()
     // while the agent is connected).
     ak10Poll(left_motor, right_motor);
 
-    // Recovery: a motor that streams no feedback is not in motor mode (powered
-    // on after the Teensy, or power-cycled), so it would ignore commands
-    // forever. Re-send the enter handshake, braked immediately. The feedback
-    // gate means a healthy motor is never re-twitched by this.
+    // Recovery: a motor that streams NO feedback at all (powered on after the
+    // Teensy, dead bus at boot) gets the enter handshake re-sent, braked
+    // immediately. LIMITATION (2026-07-09): motors stream status frames even
+    // when NOT in MIT mode, so this silence gate cannot catch a battery
+    // power-cycle mid-session -- after cycling the motor battery, also reboot
+    // the Teensy so setup()'s unconditional handshake re-enables MIT mode.
     EXECUTE_EVERY_N_MS(
         3000,
         if (!left_motor.feedbackFresh())

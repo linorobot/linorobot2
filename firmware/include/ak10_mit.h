@@ -160,10 +160,13 @@ inline void ak10Begin()
     ak10_can.enableFIFO();
 }
 
-// Send the MIT "enter motor mode" command (FF..FC). Required once after motor
-// power-on before the motor accepts commands or streams feedback. CAUTION: the
-// enable transient twitches the shaft, so never send this to a motor that is
-// already in motor mode -- gate it on feedbackFresh() (see setup()/loop()).
+// Send the MIT "enter motor mode" command (FF..FC). Required after motor
+// power-on before the motor accepts MIT commands. NOTE (2026-07-09, verified
+// on hardware): the motors stream their status frame whether or not MIT mode
+// is enabled, so feedback presence CANNOT be used to skip this handshake --
+// gating it on feedbackFresh() left the robot undriveable after a battery
+// power-cycle. Send it unconditionally at boot, braked immediately after,
+// and accept the small enable transient.
 inline void ak10EnterMotorMode(uint32_t cmd_id)
 {
     CAN_message_t msg;
@@ -175,6 +178,10 @@ inline void ak10EnterMotorMode(uint32_t cmd_id)
     ak10_can.write(msg);
 }
 
+// DIAGNOSTIC counters: every CAN frame seen (any id) and the last raw id.
+static uint32_t ak10_rx_total = 0;
+static uint32_t ak10_rx_last_id = 0;
+
 // Drain the RX FIFO and route each servo-status frame to its motor. The motor
 // id is the LOW BYTE of the CAN arbitration id (e.g. 0x2968 -> 0x68), NOT buf[0].
 inline void ak10Poll(AK10 &left, AK10 &right)
@@ -182,6 +189,8 @@ inline void ak10Poll(AK10 &left, AK10 &right)
     CAN_message_t msg;
     while (ak10_can.read(msg))
     {
+        ak10_rx_total++;
+        ak10_rx_last_id = msg.id;
         if (msg.len < 4)
             continue;
         uint8_t id_low = (uint8_t)(msg.id & 0xFF);
@@ -189,22 +198,6 @@ inline void ak10Poll(AK10 &left, AK10 &right)
             left.handleFrame(msg);
         else if (id_low == right.id())
             right.handleFrame(msg);
-    }
-}
-
-// Listen for up to window_ms for feedback from each motor, returning early once
-// both have reported. Motors already in motor mode stream feedback on their
-// own, so after this runs feedbackFresh() tells whether a motor still needs the
-// "enter motor mode" handshake -- the handshake twitches the shaft, so it must
-// only go to motors that are actually silent (a real motor power-on).
-inline void ak10ProbeFeedback(AK10 &left, AK10 &right, uint32_t window_ms)
-{
-    uint32_t start = millis();
-    while (millis() - start < window_ms)
-    {
-        ak10Poll(left, right);
-        if (left.feedbackFresh() && right.feedbackFresh())
-            return;
     }
 }
 

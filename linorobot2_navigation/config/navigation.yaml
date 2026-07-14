@@ -404,10 +404,23 @@ collision_monitor:
       type: "polygon"
       action_type: "approach"
       footprint_topic: "/local_costmap/published_footprint"
-      time_before_collision: 1.2
+      # time_before_collision projects the FULL 0.55 m footprint along the whole
+      # twist for this long. At the 0.05 m/s cap 1.2 s was only 6 cm of forward
+      # lookahead, but during RotationShim's in-place turn (0.25 rad/s) it swept
+      # the footprint through 0.3 rad -- the 0.389 m circumscribed corners then
+      # clipped any wall within ~0.44 m, so "approach" scaled the ENTIRE twist
+      # (angular included) to zero and the robot could never even rotate to face
+      # the path: every goal deadlocked. 0.5 s keeps a safe forward stop margin
+      # (MPPI's CostCritic + 0.7 m inflation are the primary obstacle avoidance)
+      # while shrinking the rotation sweep to ~7 deg. TUNE: if goals still stall
+      # rotating in place near walls, drop to 0.3; if it clips obstacles going
+      # forward, raise it.
+      time_before_collision: 0.5
       simulation_time_step: 0.1
       min_points: 6
-      visualize: False
+      # Visualize the polygon so the collision zone is visible in RViz (add a
+      # Polygon display on /collision_monitor/polygons) while validating.
+      visualize: True
       enabled: True
     observation_sources: ["scan"]
     scan:

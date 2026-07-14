@@ -24,6 +24,33 @@
         max_z: 0.5
         invert: false  # remove points INSIDE the box, keep everything else
     filter2:
+      name: mount_structure
+      type: laser_filters/LaserScanBoxFilter
+      params:
+        # Mask the robot's OWN structure that the lidar sees ~0.22-0.26 m away
+        # (a mount post / battery-box front face just behind center). The lidar
+        # is mounted 0.185 m FORWARD of base_footprint and yawed 180 deg
+        # (base_footprint->laser = translation [0.185,0,0], RPY [0,0,pi]), so the
+        # raw scan return at laser-frame (x~0.223, y~-0.03) actually sits at
+        # base_footprint (0.185 - x_laser, -y_laser) = ~(-0.04..-0.08, +0.03..+0.14).
+        # Measured 2026-07-12 from live /scan: a stable ~50-point cluster whose
+        # base_footprint extent is x[-0.079,-0.038], y[0.029,0.139] -- behind
+        # center, slightly left, INSIDE the chassis footprint so it cannot be a
+        # real obstacle. Left unmasked it fed collision_monitor a permanent
+        # "collision" (action_type!=0 -> cmd_vel clamped to 0) and a phantom
+        # local-costmap obstacle, so EVERY Nav2 goal stalled (robot couldn't even
+        # rotate). battery_box (filter1) misses it because its front edge stops at
+        # x=-0.10; this small box sits just in front of that, kept behind center
+        # (max_x<=0) so it never blinds forward vision and preserves rear FOV.
+        box_frame: base_footprint
+        min_x: -0.14  # covers cluster back edge (-0.079) with margin; overlaps battery_box
+        max_x: 0.00   # up to base center only -- never masks anything ahead
+        min_y: -0.06  # small margin right of the cluster
+        max_y: 0.22   # covers cluster left edge (0.139) with margin
+        min_z: -0.5
+        max_z: 0.5
+        invert: false  # remove points INSIDE the box
+    filter3:
       name: invalidate_cropped
       type: laser_filters/LaserScanRangeFilter
       params:

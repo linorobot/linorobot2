@@ -25,13 +25,13 @@
     "semantic_hash": "c742a207183ac724a761da5a5a8e8026"
   },
   "firmware/include/ak10_mit.h": {
-    "mtime": 1782963451.3847842,
-    "ast_hash": "779c6d4657d91a66dad6dff62e8e7390",
-    "semantic_hash": "779c6d4657d91a66dad6dff62e8e7390"
+    "mtime": 1783666493.3838997,
+    "ast_hash": "66b8a33f49146e34d6eb4f3418b858df",
+    "semantic_hash": ""
   },
   "firmware/include/config.h": {
-    "mtime": 1783487810.3352041,
-    "ast_hash": "a7cf3be05ba719de99a60e7735d19059",
+    "mtime": 1783666268.3172214,
+    "ast_hash": "ee20ed4a6c9bbd0bf38a19a13f39f279",
     "semantic_hash": ""
   },
   "firmware/include/imu_mpu6050.h": {
@@ -45,13 +45,13 @@
     "semantic_hash": "6a38e378bcaf363f26fa445bd912c3b9"
   },
   "firmware/include/odometry.h": {
-    "mtime": 1782712518.1582594,
-    "ast_hash": "13ec53ee6cc399c2cf91c1fb07a3ec82",
-    "semantic_hash": "13ec53ee6cc399c2cf91c1fb07a3ec82"
+    "mtime": 1783665116.4480877,
+    "ast_hash": "1549302a0adaf38f98d5b1a5b5302466",
+    "semantic_hash": ""
   },
   "firmware/src/main.cpp": {
-    "mtime": 1783404127.1923022,
-    "ast_hash": "dc5fc8727567c9d8e86cc3bd9821071d",
+    "mtime": 1783666543.358787,
+    "ast_hash": "545a6f001abc1ce329d7af0821c88e88",
     "semantic_hash": ""
   },
   "install.bash": {
@@ -195,8 +195,8 @@
     "semantic_hash": "686903e70da5923acb95063266a810d4"
   },
   "README.md": {
-    "mtime": 1783495661.8028169,
-    "ast_hash": "cbe44c77a4873b60dc3bc6af89e62910",
+    "mtime": 1783660331.0043328,
+    "ast_hash": "a867c85fc8e439273dc25ab532957ead",
     "semantic_hash": ""
   },
   "ROBOT_INSTALLATION.md": {
@@ -290,9 +290,9 @@
     "semantic_hash": "b8bbf69e3b6952744acd05cd7afeb6ea"
   },
   "firmware/README.md": {
-    "mtime": 1782716682.9617903,
-    "ast_hash": "72ba2c389a571bf8ab95bc01dec62ebd",
-    "semantic_hash": "72ba2c389a571bf8ab95bc01dec62ebd"
+    "mtime": 1783660331.0043328,
+    "ast_hash": "a60f64deef01009df33e5d58a5c1ed37",
+    "semantic_hash": ""
   },
   "linorobot2/CMakeLists.txt": {
     "mtime": 1782631951.224959,
@@ -320,9 +320,9 @@
     "semantic_hash": ""
   },
   "linorobot2_bringup/config/box_laser_filter.yaml": {
-    "mtime": 1782631951.224959,
-    "ast_hash": "24884a486912ccedb800dfe67982741d",
-    "semantic_hash": "24884a486912ccedb800dfe67982741d"
+    "mtime": 1783660331.008333,
+    "ast_hash": "409492b651937c2e75256ed4692ebc18",
+    "semantic_hash": ""
   },
   "linorobot2_bringup/config/fake_laser.yaml": {
     "mtime": 1782631951.224959,
@@ -355,13 +355,13 @@
     "semantic_hash": "cfc0c552ee0260f7ae520dc091be076c"
   },
   "linorobot2_navigation/config/navigation.yaml": {
-    "mtime": 1783493748.2145832,
-    "ast_hash": "4d3a090d4379bb9ae3a94c20cf6e3825",
+    "mtime": 1783660331.008333,
+    "ast_hash": "bdb9cb08aa9d7126c3a4f58c5ccbf783",
     "semantic_hash": ""
   },
   "linorobot2_navigation/config/slam.yaml": {
-    "mtime": 1783401839.2810228,
-    "ast_hash": "47aa345f8f9b43394a869ef8ac13708e",
+    "mtime": 1783660331.008333,
+    "ast_hash": "8f3bfc5d78b829e9ca937b7820317ed0",
     "semantic_hash": ""
   },
   "linorobot2_navigation/maps/map.yaml": {
@@ -470,8 +470,8 @@
     "semantic_hash": "e0cc0e5d067f7f8a2980e1e0c6c59aa6"
   },
   ".claude/settings.json": {
-    "mtime": 1783400062.1891534,
-    "ast_hash": "d6434edba04bc5e861387508299b2423",
+    "mtime": 1783660331.0043328,
+    "ast_hash": "c612c59bd4458556aa737e071926f739",
     "semantic_hash": ""
   },
   "firmware/.pio/libdeps/teensy41/Adafruit BusIO/Adafruit_BusIO_Register.cpp": {
@@ -12570,13 +12570,13 @@
     "semantic_hash": ""
   },
   "linorobot2_bringup/launch/robot.launch.py": {
-    "mtime": 1783491740.7433228,
-    "ast_hash": "6f4fcff40330838a8d7a17c522b7376e",
+    "mtime": 1783660331.008333,
+    "ast_hash": "77cb37db5f3b43b2a56592dd0e987f65",
     "semantic_hash": ""
   },
   "CLAUDE.md": {
-    "mtime": 1783400062.1891534,
-    "ast_hash": "82efb97a359f5c7290bf2513d14686be",
+    "mtime": 1783660331.0043328,
+    "ast_hash": "58353fb1f4205c46220c9aad4b5f2f6a",
     "semantic_hash": ""
   },
   "firmware/.pio/libdeps/teensy41/Adafruit BusIO/.github/ISSUE_TEMPLATE.md": {
@@ -12777,6 +12777,46 @@
   "linorobot2_navigation/maps/apartment_map_2.yaml": {
     "mtime": 1783492045.2792528,
     "ast_hash": "ff2f3c6bb7e56bf3a2877e9f269f2e02",
+    "semantic_hash": ""
+  },
+  "firmware/host_sim/sim_boot.cpp": {
+    "mtime": 1783666634.024113,
+    "ast_hash": "e08d234679b94787eb2820c158aa6902",
+    "semantic_hash": ""
+  },
+  "firmware/host_sim/stub/Arduino.h": {
+    "mtime": 1783660331.0043328,
+    "ast_hash": "f15c02d241a079769ef1f0b5f37960d2",
+    "semantic_hash": ""
+  },
+  "firmware/host_sim/stub/FlexCAN_T4.h": {
+    "mtime": 1783660331.0043328,
+    "ast_hash": "7f47356104532eb434bce85271ba4ee2",
+    "semantic_hash": ""
+  },
+  "speed_recorder.py": {
+    "mtime": 1783660331.008333,
+    "ast_hash": "91752b266b83d1c723941448d86ad9fe",
+    "semantic_hash": ""
+  },
+  ".github/workflows/firmware.yml": {
+    "mtime": 1783660331.0043328,
+    "ast_hash": "b2c55dde458ddd84c2e089e35c139523",
+    "semantic_hash": ""
+  },
+  "TESTING.md": {
+    "mtime": 1783666877.8908784,
+    "ast_hash": "449f5d3908c6be5c310d6f827ddd8655",
+    "semantic_hash": ""
+  },
+  "firmware/host_sim/README.md": {
+    "mtime": 1783666725.1935668,
+    "ast_hash": "b840424411dc21b9217c6dec71651cf5",
+    "semantic_hash": ""
+  },
+  "firmware/frames_2026-07-09_22.30.21.pdf": {
+    "mtime": 1783661422.1057692,
+    "ast_hash": "898e447bbf17fe0925ce800c7211f569",
     "semantic_hash": ""
   }
 }

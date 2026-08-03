@@ -224,7 +224,7 @@ ros2 launch linorobot2_navigation slam.launch.py
 
 **Terminal 4 — Watch the map over SSH (headless, no RViz):**
 ```bash
-python3 ~/Desktop/map_viewer.py
+python3 ~/Desktop/linorobot2/linorobot2_bringup/scripts/map_viewer.py
 ```
 Then browse to `http://<robot-ip>:8000` from any machine on the LAN (or tunnel
 with `ssh -L 8000:localhost:8000 <user>@<robot-ip>` and open
@@ -307,7 +307,7 @@ ros2 launch linorobot2_navigation navigation.launch.py map:=<path_to_map>/<map_n
 ### Watching the map over SSH
 
 Over a plain SSH session there is no display, so instead of RViz this robot
-serves the live map as a web page from `~/Desktop/map_viewer.py`. The quick-start
+serves the live map as a web page from `linorobot2_bringup/scripts/map_viewer.py`. The quick-start
 `robot.launch.py` starts it automatically (disable with `map_viewer:=false`); in
 the step-by-step sequence it is Terminal 4. It subscribes to `/map` and the robot
 pose and serves an auto-refreshing PNG on port 8000 — no ROS or RViz needed on
@@ -315,7 +315,7 @@ the viewing machine.
 
 ```bash
 # On the robot (Terminal 4):
-python3 ~/Desktop/map_viewer.py
+python3 ~/Desktop/linorobot2/linorobot2_bringup/scripts/map_viewer.py
 
 # From your laptop, either browse directly (same LAN):
 #   http://<robot-ip>:8000

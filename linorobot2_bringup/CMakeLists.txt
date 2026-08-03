@@ -8,4 +8,9 @@ install(
   DESTINATION share/${PROJECT_NAME}
 )
 
+install(
+  PROGRAMS scripts/map_viewer.py
+  DESTINATION share/${PROJECT_NAME}/scripts
+)
+
 ament_package()

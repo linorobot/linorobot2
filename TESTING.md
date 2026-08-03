@@ -267,17 +267,28 @@ ros2 topic delay /odom/unfiltered
 **Pass:** the reported delay stays small and bounded (tens of ms) instead of
 growing steadily with uptime.
 
-## 10. map_viewer graceful skip
+## 10. map_viewer packaged with linorobot2_bringup + graceful skip
 
-**What changed:** if `/home/jetson1/Desktop/map_viewer.py` is missing, the
-launch logs `[map_viewer] ... not found -- skipping` and everything else still
-comes up (previously the whole launch died).
+**What changed:** `map_viewer.py` now lives in the repo at
+`linorobot2_bringup/scripts/map_viewer.py` and is installed to the package
+share directory; `robot.launch.py`'s `map_viewer_path` defaults to the
+installed copy instead of the old machine-local `~/Desktop/map_viewer.py`.
+If the script is missing (stale install, bad `map_viewer_path` override),
+the launch logs `[map_viewer] ... not found -- skipping` and everything else
+still comes up (previously the whole launch died).
 
 ```bash
+# Packaged default serves the page:
+cd ~/linorobot2_ws && colcon build --symlink-install && source install/setup.bash
+ros2 launch linorobot2_bringup robot.launch.py
+# then: curl -s -o /dev/null -w '%{http_code}\n' http://localhost:8000  -> 200
+
+# Graceful skip still works:
 ros2 launch linorobot2_bringup robot.launch.py map_viewer_path:=/nonexistent.py
 ```
 
-**Pass:** the skip message appears, and `ros2 topic hz /scan` still works.
+**Pass:** with the default, port 8000 answers (HTTP 200); with the bogus
+override, the skip message appears and `ros2 topic hz /scan` still works.
 
 ## 11. graphify hook guard (Claude tooling)
 

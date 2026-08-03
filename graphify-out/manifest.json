@@ -1,7 +1,7 @@
 {
   ".claude/settings.local.json": {
-    "mtime": 1784610734.9550993,
-    "ast_hash": "4aa60a2bb591b323f14be6dc0ee8aa61",
+    "mtime": 1785737922.5944822,
+    "ast_hash": "566d42421eed1dfcacc1fccb02698dab",
     "semantic_hash": ""
   },
   "docker/build": {
@@ -195,8 +195,8 @@
     "semantic_hash": "686903e70da5923acb95063266a810d4"
   },
   "README.md": {
-    "mtime": 1784614293.411354,
-    "ast_hash": "eaf5152401222a0b99eabc89f409a270",
+    "mtime": 1785738752.621041,
+    "ast_hash": "377a29411385825360ccb8dbd4d548af",
     "semantic_hash": ""
   },
   "ROBOT_INSTALLATION.md": {
@@ -310,8 +310,8 @@
     "semantic_hash": "83cfebf8113e118f065f642623c2d00d"
   },
   "linorobot2_bringup/CMakeLists.txt": {
-    "mtime": 1783400381.6574893,
-    "ast_hash": "2d023625cbb12958d483036ad80585c3",
+    "mtime": 1785738663.1240737,
+    "ast_hash": "8476f6bb99588772626e88f9584e6a78",
     "semantic_hash": ""
   },
   "linorobot2_bringup/config/angle_laser_filter.yaml": {
@@ -12570,8 +12570,8 @@
     "semantic_hash": ""
   },
   "linorobot2_bringup/launch/robot.launch.py": {
-    "mtime": 1784614295.0593662,
-    "ast_hash": "963f1feda2d5751da05b522a4d4ed0e8",
+    "mtime": 1785738706.7406762,
+    "ast_hash": "2d32a0c8a549ebeac7f417f5af312f1a",
     "semantic_hash": ""
   },
   "CLAUDE.md": {
@@ -12805,8 +12805,8 @@
     "semantic_hash": ""
   },
   "TESTING.md": {
-    "mtime": 1784615846.3103404,
-    "ast_hash": "8152c49b6135a29a165946bc27dae557",
+    "mtime": 1785738757.0254376,
+    "ast_hash": "819e0609f93d0361c9dda455cb35c7b2",
     "semantic_hash": ""
   },
   "firmware/host_sim/README.md": {
@@ -25117,6 +25117,11 @@
   "TROUBLESHOOTING.md": {
     "mtime": 1784612022.4847693,
     "ast_hash": "936dcabbaf969f2f2bdfacd322a0a87c",
+    "semantic_hash": ""
+  },
+  "linorobot2_bringup/scripts/map_viewer.py": {
+    "mtime": 1785738600.0924706,
+    "ast_hash": "b641473f68238bbadf3f96f61bb97ea8",
     "semantic_hash": ""
   }
 }

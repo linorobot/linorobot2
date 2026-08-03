@@ -143,7 +143,9 @@ def generate_launch_description():
         ),
         DeclareLaunchArgument(
             name='map_viewer_path',
-            default_value='/home/jetson1/Desktop/map_viewer.py',
+            default_value=PathJoinSubstitution(
+                [FindPackageShare('linorobot2_bringup'), 'scripts', 'map_viewer.py']
+            ),
             description='Path to the map_viewer.py web viewer script'
         ),
         DeclareLaunchArgument(
@@ -307,9 +309,10 @@ def generate_launch_description():
         # you can watch the map from a browser on your laptop over SSH -- no rviz,
         # no third terminal. Off with map_viewer:=false.
         #
-        # The script is machine-local (not in this repo), so degrade gracefully:
-        # if it is missing, log a pointer and keep the rest of the stack up
-        # instead of taking the whole launch down.
+        # The script ships with this package (scripts/map_viewer.py); still
+        # degrade gracefully if the path is wrong (e.g. a stale install or a
+        # map_viewer_path override): log a pointer and keep the rest of the
+        # stack up instead of taking the whole launch down.
         ExecuteProcess(
             condition=IfCondition(LaunchConfiguration('map_viewer')),
             cmd=['/bin/sh', '-c',

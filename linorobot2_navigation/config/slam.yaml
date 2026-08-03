@@ -27,7 +27,11 @@ slam_toolbox:
     throttle_scans: 1
     transform_publish_period: 0.02 #if 0 never publishes odometry
     map_update_interval: 0.5
-    resolution: 0.05
+    # 0.025 m cells (was 0.05): doorway frames and walls come out twice as
+    # crisp, which directly widens the plannable corridor through tight
+    # doors and gives AMCL sharper features to lock onto. Apartment-scale
+    # maps at 0.025 are still small; revert to 0.05 if mapping a warehouse.
+    resolution: 0.025
     # RPLIDAR A3 ranges to 25 m; 20 m (was 10) lets scan matching and loop
     # closure use the far wall of long straight aisles.
     max_laser_range: 20.0 #for rastering images

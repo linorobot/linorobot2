@@ -122,7 +122,7 @@ To use it for navigation, set `MAP_NAME` in
 `linorobot2_navigation/launch/navigation.launch.py` to the new name.
 
 > Odometry comes from the EKF fusing the Teensy's wheel velocity feedback with
-> the IMU (requires the `ERPM_TO_WHEEL_RADPS = 0.00842` firmware calibration —
+> the IMU (requires the `ERPM_TO_WHEEL_RADPS = 0.01237` firmware calibration —
 > re-flash and tape-test, or run `use_ekf:=false` for scan-match-only odometry).
 > The step-by-step sequence below is the fuller multi-terminal workflow; use it
 > when you want each piece in its own terminal or need to troubleshoot.
@@ -131,16 +131,23 @@ To use it for navigation, set `MAP_NAME` in
 
 Drive the robot to goals on a saved map (AMCL localization + Nav2). Speed is
 capped at **0.05 m/s** in `linorobot2_navigation/config/navigation.yaml`
-(MPPI `vx_max` + the `velocity_smoother` limits — change both to go faster).
+(RPP `desired_linear_vel` + the `velocity_smoother` limits — change both to go
+faster).
 
-The robot avoids obstacles that appear **while it is moving**: the local
-controller (Nav2 MPPI) samples trajectories against the live lidar costmap and
-steers around anything it marks, while the global planner (NavFn) replans the
-route around obstacles once per second. The collision monitor is the last
-resort — it hard-stops the base if something shows up inside the 1.2 s
-time-to-collision envelope. Note the scan is blind inside the **battery box
-masked directly behind the robot** (`box_laser_filter.yaml`), which is why the
-robot never reverses autonomously.
+The robot avoids obstacles that appear **while it is moving** — ✅ verified on
+hardware 2026-07-19. Three layers: the global planner (NavFn) replans the
+route around anything the lidar marks in the costmap once per second; the
+local controller (RegulatedPurePursuit) simulates 1 s ahead and brakes before
+contact; and the collision monitor hard-stops the base inside a 0.5 s
+time-to-collision envelope. (MPPI trajectory sampling was tried as the local
+controller but never produced motion at this speed cap on the Jetson — see git
+history.) Note the scan is blind inside the **battery box masked directly
+behind the robot** (`box_laser_filter.yaml`), so autonomous reversing is
+limited to a **short 0.15 m recovery retreat** (space the robot just drove
+through) when it gets stuck, e.g. misaligned at a doorway — it backs off,
+replans, and re-approaches straight (`navigate_to_pose_doorway_recovery.xml`). AMCL re-localizes itself on startup from
+the last saved pose (`pose_keeper.py`); only click "set robot pose" after
+moving the robot by hand.
 
 **Terminal 1 — robot base, no SLAM** (AMCL owns localization in this mode;
 never run SLAM and navigation together):
@@ -151,7 +158,7 @@ ros2 launch linorobot2_bringup robot.launch.py slam:=false
 > **Odometry note:** by default the robot_localization EKF now fuses the
 > Teensy's 50 Hz wheel odometry with the IMU and owns `odom->base_footprint`
 > (rf2o keeps running on `/odom_rf2o` as a cross-check only). This requires
-> Teensy firmware with the `ERPM_TO_WHEEL_RADPS = 0.00842` calibration fix —
+> Teensy firmware with the `ERPM_TO_WHEEL_RADPS = 0.01237` calibration fix —
 > re-flash `firmware/` first, then verify with the tape test (drive a measured
 > 2 m and compare `odom/unfiltered`). Until then, launch with `use_ekf:=false`
 > to fall back to the old rf2o-owned odometry.
@@ -176,14 +183,15 @@ ros2 action send_goal /navigate_to_pose nav2_msgs/action/NavigateToPose "{pose: 
 The command streams feedback and returns on arrival; a new goal preempts the
 old one. Hard stop: `Ctrl-C` the goal, or run teleop and hit space.
 
-**Testing obstacle avoidance:** send a goal across a few meters of open floor,
-then place a box in the robot's path while it drives. Within a couple of
-costmap updates (~0.5 s) the box appears in the local costmap and the
-trajectory bends around it; if the detour is large, the global replan (1 Hz)
-reroutes instead. If the box lands too close to dodge, the collision monitor
-stops the base — pull the box away and the robot resumes on its own. Keep the
-box tall enough for the lidar plane; any direction works except inside the
-masked battery box directly behind the robot.
+**Testing obstacle avoidance** (✅ passed 2026-07-19): send a goal across a few
+meters of open floor, then place a box in the robot's path while it drives.
+The box appears in the local costmap within ~0.5 s; the robot brakes if it is
+close (RPP collision detection), the global replan (1 Hz) routes around it,
+and the robot carries on. If the box lands too close to pass, the collision
+monitor stops the base — pull the box away and the robot resumes on its own.
+Keep the box tall enough for the lidar plane; any direction works except
+inside the masked battery box directly behind the robot. Keep goals ≥ 0.4 m
+(inflation radius) from walls or the planner will shift/reject them.
 
 If a goal is rejected ("Action server is inactive"), the pose was set too late —
 reactivate the stranded Nav2 nodes:

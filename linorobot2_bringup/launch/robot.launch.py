@@ -55,8 +55,9 @@
 # rf2o still runs as an independent cross-check on /odom_rf2o, without TF.
 #
 # use_ekf:=false restores the old behavior (rf2o owns the TF). Use it if the
-# Teensy still runs firmware older than the ERPM_TO_WHEEL_RADPS=0.00842 fix:
-# that firmware under-reports wheel speed ~20%, which would skew the EKF.
+# Teensy still runs firmware older than the ERPM_TO_WHEEL_RADPS=0.01237 fix
+# (tape test 2026-07-20): older firmware under-reports wheel speed, which
+# would skew the EKF.
 # After flashing, calibrate with the tape test (see firmware/include/config.h).
 #
 # Do NOT run this alongside the stock linorobot2 bringup -- its EKF also owns

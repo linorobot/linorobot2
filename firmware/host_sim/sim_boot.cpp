@@ -22,6 +22,10 @@
 //      -> the firmware latches a stop after OVERCURRENT_MS, refuses further
 //         drive commands, and releases only on a zero cmd_vel. A brief spike
 //         shorter than OVERCURRENT_MS must NOT latch.
+//   F. One wheel runs slower than commanded (friction mismatch -> veer)
+//      -> the per-wheel trim ramps that wheel's command up (clamped at
+//         WHEEL_TRIM_MAX), leaves the on-speed wheel alone, and resets on a
+//         zero command so a stale trim can't lurch the robot from rest.
 #include "ak10_mit.h"
 #include "kinematics.h"
 #include <cmath>
@@ -43,6 +47,7 @@ struct FakeMotor
     uint32_t last_stream_ms = 0;
     int jerks = 0;             // handshakes received while powered
     float current_amps = 0.0f; // reported in the status frame (scenario E)
+    int16_t erpm = 0;          // reported in the status frame (scenario F)
 };
 FakeMotor fm_left{LEFT_MOTOR_ID, LEFT_MOTOR_CMD_ID};
 FakeMotor fm_right{RIGHT_MOTOR_ID, RIGHT_MOTOR_CMD_ID};
@@ -54,6 +59,7 @@ struct SentFrame
     bool is_handshake;
     bool is_brake; // MIT frame with kp=0, v_des=0 (mid-scale), kd>0
     bool is_drive; // MIT frame with kp=0, kd>0, v_des != 0
+    float v_des;   // decoded MIT velocity command (motor frame, rad/s)
 };
 std::vector<SentFrame> sent;
 
@@ -83,9 +89,17 @@ static bool isDrive(const CAN_message_t &m)
     return kp == 0 && kd > 0 && v != 2047; // nonzero velocity command
 }
 
+static float mitVdes(const CAN_message_t &m)
+{
+    if (m.len != 8 || isHandshake(m)) return 0.0f;
+    uint32_t v = ((uint32_t)m.buf[5] << 4) | (m.buf[6] >> 4);
+    return ak10_uint_to_float(v, V_MIN, V_MAX, 12);
+}
+
 static void busWrite(const CAN_message_t &m)
 {
-    sent.push_back({fake_now, m.id, isHandshake(m), isBrake(m), isDrive(m)});
+    sent.push_back({fake_now, m.id, isHandshake(m), isBrake(m), isDrive(m),
+                    mitVdes(m)});
     for (FakeMotor *fm : {&fm_left, &fm_right})
     {
         if (m.id != fm->cmd_id || !fm->powered) continue;
@@ -109,7 +123,8 @@ static bool busRead(CAN_message_t &m)
             m.id = 0x2900 | fm->id; // servo status frame, low byte = motor id
             m.len = 8;
             m.buf[0] = 0x7D; m.buf[1] = 0x00; // marker
-            m.buf[2] = 0; m.buf[3] = 0;       // 0 ERPM
+            m.buf[2] = (uint8_t)(((uint16_t)fm->erpm) >> 8);   // ERPM hi
+            m.buf[3] = (uint8_t)(((uint16_t)fm->erpm) & 0xFF); // ERPM lo
             int16_t cur_raw = (int16_t)(fm->current_amps / CURRENT_LSB_TO_AMP);
             m.buf[4] = (uint8_t)(((uint16_t)cur_raw) >> 8);
             m.buf[5] = (uint8_t)(((uint16_t)cur_raw) & 0xFF);
@@ -155,10 +170,21 @@ void setup_motor_fragment() // motor-related part of setup(), verbatim
     // command after a battery power-cycle. Handshake unconditionally: the
     // small enable transient is the price of guaranteed drivability.
     delay(200);
+    // Brake each motor in the SAME millisecond as its enable: the handshake
+    // makes the motor execute whatever command it has latched, and the old
+    // 50 ms gap before the first brake let that run unopposed -- the robot
+    // visibly moved at every boot.
     ak10EnterMotorMode(LEFT_MOTOR_CMD_ID);
+    left_motor->stop();
     ak10EnterMotorMode(RIGHT_MOTOR_CMD_ID);
-    delay(50);
-    stopMotors();
+    right_motor->stop();
+    // Hold the brake while the enable transient damps out instead of trusting
+    // a single frame the controller may drop mid mode-switch.
+    for (int i = 0; i < BOOT_BRAKE_HOLD_MS / BOOT_BRAKE_PERIOD_MS; i++)
+    {
+        delay(BOOT_BRAKE_PERIOD_MS);
+        stopMotors();
+    }
 }
 
 void loop_motor_fragment() // motor-related part of loop(), verbatim
@@ -185,6 +211,7 @@ void loop_motor_fragment() // motor-related part of loop(), verbatim
 Kinematics2WD kinematics;
 struct { struct { double x = 0; } linear; struct { double z = 0; } angular; } twist_msg;
 unsigned long prev_cmd_time = 0;
+unsigned long prev_odom_time = 0;
 
 bool overcurrent_latched = false;
 bool left_over = false, right_over = false;
@@ -215,6 +242,20 @@ void checkOvercurrent()
         overcurrent_latched = true;
 }
 
+// Per-wheel closed-loop speed trim, mirrored from main.cpp (see config.h).
+float left_trim = 0.0f, right_trim = 0.0f;
+
+void updateWheelTrim(float &trim, float req, AK10 &motor, float dt)
+{
+    if (fabsf(req) < WHEEL_TRIM_MIN_CMD)
+        trim = 0.0f;
+    else if (motor.feedbackFresh() && dt > 0.0f && dt < 0.1f)
+    {
+        trim += WHEEL_TRIM_KI * (req - motor.getWheelAngularVelocity()) * dt;
+        trim = constrain(trim, -WHEEL_TRIM_MAX, WHEEL_TRIM_MAX);
+    }
+}
+
 void moveBase_motor_fragment() // command path of moveBase(), verbatim
 {
     if (millis() - prev_cmd_time >= CMD_VEL_TIMEOUT_MS)
@@ -231,16 +272,23 @@ void moveBase_motor_fragment() // command path of moveBase(), verbatim
         left_over = right_over = false;
     }
 
+    unsigned long now = millis();
+    float dt = (now - prev_odom_time) / 1000.0;
+    prev_odom_time = now;
+
     if (overcurrent_latched)
     {
+        left_trim = right_trim = 0.0f;
         stopMotors();
     }
     else
     {
         Kinematics2WD::WheelOmega req =
             kinematics.getWheelOmega(BASE_LINEAR_DIR * twist_msg.linear.x, twist_msg.angular.z);
-        left_motor->setWheelAngularVelocity(req.left);
-        right_motor->setWheelAngularVelocity(req.right);
+        updateWheelTrim(left_trim, req.left, *left_motor, dt);
+        updateWheelTrim(right_trim, req.right, *right_motor, dt);
+        left_motor->setWheelAngularVelocity(req.left + left_trim);
+        right_motor->setWheelAngularVelocity(req.right + right_trim);
     }
 }
 
@@ -293,6 +341,39 @@ static int handshakesSent()
     return c;
 }
 
+// Every handshake must be followed by a brake to the SAME cmd_id in the SAME
+// millisecond -- any gap is time the motor spends running its latched command
+// unopposed (the boot-movement bug).
+static bool everyHandshakeBrakedSameMs()
+{
+    for (size_t i = 0; i < sent.size(); i++)
+    {
+        if (!sent[i].is_handshake) continue;
+        bool braked = false;
+        for (size_t j = i + 1; j < sent.size(); j++)
+            if (sent[j].id == sent[i].id && sent[j].is_brake)
+            {
+                braked = sent[j].t == sent[i].t;
+                break;
+            }
+        if (!braked) return false;
+    }
+    return true;
+}
+
+// The brake must be actively held (re-sent) for the full hold window after
+// the last handshake, not fired once and forgotten.
+static bool brakeHeldAfterLastHandshake()
+{
+    uint32_t last_hs = 0, last_brake = 0;
+    for (auto &f : sent)
+    {
+        if (f.is_handshake) last_hs = f.t;
+        if (f.is_brake) last_brake = f.t;
+    }
+    return last_brake >= last_hs + BOOT_BRAKE_HOLD_MS - BOOT_BRAKE_PERIOD_MS;
+}
+
 int main()
 {
     flexcan_read_hook = busRead;
@@ -309,6 +390,10 @@ int main()
     CHECK(handshakesSent() == 2, "handshake sent to both motors (by design)");
     CHECK(fm_left.jerks == 1 && fm_right.jerks == 1,
           "at most one enable transient per motor, immediately braked");
+    CHECK(everyHandshakeBrakedSameMs(),
+          "each enable braked in the same millisecond (no unopposed window)");
+    CHECK(brakeHeldAfterLastHandshake(),
+          "brake actively held for the full boot hold window");
     CHECK(!sent.empty() && sent.back().is_brake, "ends holding a brake");
     // setup() no longer polls; feedback lands on the first loop() passes.
     for (int i = 0; i < 100; i++) loop_motor_fragment();
@@ -323,6 +408,10 @@ int main()
     CHECK(fm_left.jerks == 1 && fm_right.jerks == 1,
           "one unavoidable enable transient per motor (cold power-on only)");
     CHECK(fm_left.in_motor_mode && fm_right.in_motor_mode, "motors enabled");
+    CHECK(everyHandshakeBrakedSameMs(),
+          "each enable braked in the same millisecond (no unopposed window)");
+    CHECK(brakeHeldAfterLastHandshake(),
+          "brake actively held for the full boot hold window");
     CHECK(!sent.empty() && sent.back().is_brake, "ends holding a brake");
 
     printf("Scenario C: motor power arrives after the Teensy booted\n");
@@ -394,6 +483,55 @@ int main()
     for (int i = 0; i < 50; i++) driveTick(0.05, 0.0);
     CHECK(!overcurrent_latched && sent.back().is_drive,
           "driving resumes after release");
+
+    printf("Scenario F: left wheel runs slow -> per-wheel trim compensates\n");
+    // Reset the trims with zero commands, then have the fake motors report
+    // measured speed: left at 50% of the commanded wheel speed, right dead on.
+    for (int i = 0; i < 5; i++) driveTick(0.0, 0.0);
+    const float req_wheel =
+        (float)(BASE_LINEAR_DIR * 0.05 / (WHEEL_DIAMETER / 2.0)); // robot conv
+    fm_left.erpm =
+        (int16_t)lrintf(0.5f * req_wheel / (LEFT_MOTOR_DIR * ERPM_TO_WHEEL_RADPS));
+    fm_right.erpm =
+        (int16_t)lrintf(req_wheel / (RIGHT_MOTOR_DIR * ERPM_TO_WHEEL_RADPS));
+    size_t f_mark = sent.size();
+    for (int i = 0; i < 400; i++) driveTick(0.05, 0.0); // 8 s of driving
+    float l_first = 0, l_last = 0, r_first = 0, r_last = 0;
+    bool l_seen = false, r_seen = false;
+    for (size_t i = f_mark; i < sent.size(); i++)
+    {
+        if (!sent[i].is_drive) continue;
+        if (sent[i].id == LEFT_MOTOR_CMD_ID)
+        {
+            if (!l_seen) { l_first = sent[i].v_des; l_seen = true; }
+            l_last = sent[i].v_des;
+        }
+        if (sent[i].id == RIGHT_MOTOR_CMD_ID)
+        {
+            if (!r_seen) { r_first = sent[i].v_des; r_seen = true; }
+            r_last = sent[i].v_des;
+        }
+    }
+    CHECK(l_seen && r_seen, "drive frames reached both motors");
+    CHECK(fabsf(l_last) > fabsf(l_first) + 0.5f,
+          "slow wheel's command ramps up (trim integrating)");
+    CHECK(fabsf(l_last) <= fabsf(req_wheel) + WHEEL_TRIM_MAX + 0.05f,
+          "trim respects its clamp");
+    CHECK(fabsf(r_last - r_first) < 0.15f,
+          "on-speed wheel's command stays put");
+    // A stop must reset the trim: the first drive frame after restarting from
+    // rest must not carry the stale trim.
+    for (int i = 0; i < 5; i++) driveTick(0.0, 0.0);
+    f_mark = sent.size();
+    driveTick(0.05, 0.0);
+    float l_resume = 0; bool resume_seen = false;
+    for (size_t i = f_mark; i < sent.size(); i++)
+        if (sent[i].is_drive && sent[i].id == LEFT_MOTOR_CMD_ID)
+        {
+            l_resume = sent[i].v_des; resume_seen = true; break;
+        }
+    CHECK(resume_seen && fabsf(fabsf(l_resume) - fabsf(req_wheel)) < 0.1f,
+          "trim resets at zero command (no lurch on restart)");
 
     printf(failures ? "\n%d FAILURE(S)\n" : "\nALL SCENARIOS PASS\n", failures);
     return failures ? 1 : 0;

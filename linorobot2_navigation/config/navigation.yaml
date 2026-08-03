@@ -13,10 +13,13 @@ amcl:
     global_frame_id: "map"
     lambda_short: 0.1
     laser_likelihood_max_dist: 2.0
-    laser_max_range: 100.0
+    # RPLIDAR A3 real range; 100.0 wasted the sensor model's dynamic range.
+    laser_max_range: 25.0
     laser_min_range: -1.0
     laser_model_type: "likelihood_field"
-    max_beams: 60
+    # 60 beams threw away 95% of the A3's ~1200 returns per scan. 120 beams
+    # roughly halves pose jitter for a modest CPU cost.
+    max_beams: 120
     max_particles: 2000
     min_particles: 500
     odom_frame_id: "odom"
@@ -27,7 +30,9 @@ amcl:
     resample_interval: 1
     robot_model_type: "nav2_amcl::DifferentialMotionModel"
     save_pose_rate: 0.5
-    sigma_hit: 0.2
+    # Tighter measurement model (was 0.2) — justified once the map is
+    # re-drawn at 0.025 m; pulls the pose estimate harder onto crisp walls.
+    sigma_hit: 0.15
     tf_broadcast: true
     transform_tolerance: 0.5
     # Update thresholds tuned for the 0.05 m/s speed cap: with the stock
@@ -56,8 +61,13 @@ bt_navigator:
       plugin: "nav2_bt_navigator::NavigateToPoseNavigator"
     navigate_through_poses:
       plugin: "nav2_bt_navigator::NavigateThroughPosesNavigator"
-    # 'default_nav_through_poses_bt_xml' and 'default_nav_to_pose_bt_xml' are use defaults:
-    # nav2_bt_navigator/navigate_to_pose_w_replanning_and_recovery.xml
+    # Custom BT: the stock 0.30 m BackUp reversed blind (battery-box lidar
+    # mask) into a wall. This tree uses a SHORT 0.15 m retreat instead -- only
+    # re-entering space the robot just drove through -- then replans, which
+    # straightens out doorway approaches. Recovery order: clear costmaps,
+    # short retreat, wait, spin (spin last: riskiest next to doorframes).
+    default_nav_to_pose_bt_xml: "/home/jetson1/Desktop/linorobot2/linorobot2_navigation/config/navigate_to_pose_doorway_recovery.xml"
+    # 'default_nav_through_poses_bt_xml' uses the default:
     # nav2_bt_navigator/navigate_through_poses_w_replanning_and_recovery.xml
     # They can be set here or via a RewrittenYaml remap from a parent launch file to Nav2.
 
@@ -71,7 +81,9 @@ bt_navigator:
 
 controller_server:
   ros__parameters:
-    controller_frequency: 20.0
+    # 10 Hz: the Jetson CPU can't hold MPPI at 20 Hz (measured 10-12 Hz), and a
+    # loop that misses its rate degrades trajectory tracking.
+    controller_frequency: 10.0
     costmap_update_timeout: 0.30
     min_x_velocity_threshold: 0.001
     min_y_velocity_threshold: 0.5
@@ -85,8 +97,14 @@ controller_server:
     # Progress checker parameters
     progress_checker:
       plugin: "nav2_controller::SimpleProgressChecker"
-      required_movement_radius: 0.5
-      movement_time_allowance: 10.0
+      # With the 0.05 m/s speed cap, 0.5 m / 10 s equalled the robot's maximum
+      # speed, so any slowdown aborted the goal ("Failed to make progress").
+      # 8 s: the robot needs only 2 s to cover 0.1 m at the cap, and a shorter
+      # window means a stuck doorway approach reaches the backup recovery in
+      # seconds instead of a minute. Don't go below ~6 s (tight in-place
+      # maneuvers make slow but real progress).
+      required_movement_radius: 0.1
+      movement_time_allowance: 8.0
     # Goal checker parameters
     #precise_goal_checker:
     #  plugin: "nav2_controller::SimpleGoalChecker"
@@ -99,118 +117,57 @@ controller_server:
       xy_goal_tolerance: 0.35
       yaw_goal_tolerance: 0.35
     # RotationShim rotates in place toward the path heading first (safe with the
-    # front-only 180 deg lidar), then hands off to MPPI. MPPI samples trajectories
-    # against the local costmap, so the robot STEERS AROUND obstacles that appear
-    # mid-drive instead of just stopping (the old RegulatedPurePursuit only
-    # tracked the path and braked for collisions).
+    # front-only lidar), then hands off to RegulatedPurePursuit -- the proven
+    # controller from the jazzy branch. MPPI was tried here and never produced
+    # forward motion on this hardware: at a 0.05 m/s cap its sampling optimizer
+    # sat at vx=0 while the 10 Hz loop starved the Jetson (see git history).
+    # Obstacle handling with RPP: the global planner replans around costmap
+    # obstacles at 1 Hz, RPP's own collision detection brakes before impact
+    # along the path, and the collision_monitor is the final stop layer.
     FollowPath:
       plugin: "nav2_rotation_shim_controller::RotationShimController"
-      primary_controller: "nav2_mppi_controller::MPPIController"
+      primary_controller: "nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController"
       angular_dist_threshold: 0.785
       angular_disengage_threshold: 0.3925
       forward_sampling_distance: 0.5
       rotate_to_heading_angular_vel: 0.25
-      max_angular_accel: 0.25
+      max_angular_accel: 0.5
       simulate_ahead_time: 1.0
       rotate_to_goal_heading: false
       rotate_to_heading_once: true
       use_path_orientations: false
 
-      # ---- MPPI (primary controller) ----
-      time_steps: 60
-      model_dt: 0.05
-      # batch_size 1000 (default 2000) keeps the 20 Hz control loop comfortable
-      # on the Jetson CPU.
-      batch_size: 1000
+      # ---- RegulatedPurePursuit (primary controller) ----
       # SPEED CAP: keep autonomous linear speed at/below 0.05 m/s (drivetrain
       # protection). The velocity_smoother max_velocity below enforces the same
       # cap as the final gate before /cmd_vel -- change BOTH to go faster.
-      vx_max: 0.05
-      # No reversing: the battery box directly behind the robot is masked out
-      # of the scan (box_laser_filter.yaml), so the robot cannot verify that
-      # space is clear. Keep vx_min at 0.0.
-      vx_min: 0.0
-      vy_max: 0.0
-      wz_max: 0.25
-      # Accel limits match the velocity_smoother envelope below (max_accel
-      # [0.05, 0, 0.25] / max_decel [-0.1, 0, -0.5]) so MPPI never plans a
-      # trajectory the smoother will clip.
-      ax_max: 0.05
-      ax_min: -0.1
-      ay_max: 0.0
-      az_max: 0.25
-      # Sampling noise scaled to the small velocity envelope (defaults assume
-      # ~0.5 m/s robots). wz_std stays relatively large so trajectories explore
-      # enough steering to arc around obstacles.
-      vx_std: 0.02
-      vy_std: 0.0
-      wz_std: 0.1
-      iteration_count: 1
-      prune_distance: 1.0
+      desired_linear_vel: 0.05
+      lookahead_dist: 0.6
+      min_lookahead_dist: 0.3
+      max_lookahead_dist: 0.9
+      lookahead_time: 1.5
       transform_tolerance: 0.1
-      temperature: 0.3
-      gamma: 0.015
-      motion_model: "DiffDrive"
-      visualize: false
-      regenerate_noises: false
-      TrajectoryVisualizer:
-        trajectory_step: 5
-        time_step: 3
-      critics: ["ConstraintCritic", "CostCritic", "GoalCritic", "GoalAngleCritic", "PathAlignCritic", "PathFollowCritic", "PathAngleCritic", "PreferForwardCritic"]
-      ConstraintCritic:
-        enabled: true
-        cost_power: 1
-        cost_weight: 4.0
-      GoalCritic:
-        enabled: true
-        cost_power: 1
-        cost_weight: 5.0
-        threshold_to_consider: 1.4
-      GoalAngleCritic:
-        enabled: true
-        cost_power: 1
-        cost_weight: 3.0
-        threshold_to_consider: 0.5
-      PreferForwardCritic:
-        enabled: true
-        cost_power: 1
-        cost_weight: 5.0
-        threshold_to_consider: 0.5
-      # CostCritic is what bends trajectories around obstacles marked in the
-      # local costmap (voxel layer fed by /scan). Footprint collision safety is
-      # covered by the 0.7 m inflation radius + the collision_monitor.
-      CostCritic:
-        enabled: true
-        cost_power: 1
-        cost_weight: 3.81
-        critical_cost: 300.0
-        consider_footprint: false
-        collision_cost: 1000000.0
-        near_goal_distance: 1.0
-        trajectory_point_step: 2
-      PathAlignCritic:
-        enabled: true
-        cost_power: 1
-        cost_weight: 14.0
-        max_path_occupancy_ratio: 0.05
-        trajectory_point_step: 4
-        threshold_to_consider: 0.5
-        offset_from_furthest: 20
-        use_path_orientations: false
-      PathFollowCritic:
-        enabled: true
-        cost_power: 1
-        cost_weight: 5.0
-        offset_from_furthest: 5
-        threshold_to_consider: 1.4
-      PathAngleCritic:
-        enabled: true
-        cost_power: 1
-        cost_weight: 2.0
-        offset_from_furthest: 4
-        threshold_to_consider: 0.5
-        max_angle_to_furthest: 1.0
-        mode: 0
+      use_velocity_scaled_lookahead_dist: false
+      min_approach_linear_velocity: 0.025
+      approach_velocity_scaling_dist: 0.6
+      use_collision_detection: true
+      max_allowed_time_to_collision_up_to_carrot: 1.0
+      use_regulated_linear_velocity_scaling: true
+      # Cost-regulated scaling OFF: with inflated cost covering much of the
+      # apartment, it would scale the already-capped 0.05 m/s toward the
+      # 0.025 floor everywhere. Curvature scaling stays on.
+      use_cost_regulated_linear_velocity_scaling: false
+      regulated_linear_scaling_min_radius: 0.9
+      regulated_linear_scaling_min_speed: 0.025
+      use_fixed_curvature_lookahead: false
+      curvature_lookahead_dist: 0.6
+      use_rotate_to_heading: true
+      # No reversing: the battery box directly behind the robot is masked out
+      # of the scan (box_laser_filter.yaml), so reverse space cannot be checked.
+      allow_reversing: false
+      rotate_to_heading_min_angle: 0.785
+      max_robot_pose_search_dist: 10.0
+      stateful: true
 
 local_costmap:
   local_costmap:
@@ -225,11 +182,19 @@ local_costmap:
       resolution: 0.05
       # 550mm x 550mm square chassis, centered on base_footprint
       footprint: "[[0.275, 0.275], [0.275, -0.275], [-0.275, -0.275], [-0.275, 0.275]]"
+      # Default padding is 0.05 (robot treated as 0.65 m wide). 0.01 makes the
+      # effective width 0.57 m so ~0.6 m gaps (doorways) become plannable.
+      # Real clearance in a 0.6 m gap is ~2.5 cm per side: only viable because
+      # speed is capped at 0.05 m/s and the collision monitor guards contact.
+      footprint_padding: 0.01
       plugins: ["voxel_layer", "inflation_layer"]
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 3.0
-        inflation_radius: 0.70
+        # 0.4 m = robot half-body (0.28 m inscribed) + ~0.1 m wall clearance,
+        # so goals near walls stay plannable. Below ~0.35 the planner would
+        # put the robot's body inside walls; do not reduce further.
+        inflation_radius: 0.40
       voxel_layer:
         plugin: "nav2_costmap_2d::VoxelLayer"
         enabled: True
@@ -266,6 +231,11 @@ global_costmap:
       robot_base_frame: base_footprint
       # 550mm x 550mm square chassis, centered on base_footprint
       footprint: "[[0.275, 0.275], [0.275, -0.275], [-0.275, -0.275], [-0.275, 0.275]]"
+      # Default padding is 0.05 (robot treated as 0.65 m wide). 0.01 makes the
+      # effective width 0.57 m so ~0.6 m gaps (doorways) become plannable.
+      # Real clearance in a 0.6 m gap is ~2.5 cm per side: only viable because
+      # speed is capped at 0.05 m/s and the collision monitor guards contact.
+      footprint_padding: 0.01
       resolution: 0.05
       track_unknown_space: true
       plugins: ["static_layer", "obstacle_layer", "inflation_layer"]
@@ -289,7 +259,8 @@ global_costmap:
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 3.0
-        inflation_radius: 0.7
+        # Matches the local costmap: half-body + ~0.1 m wall clearance.
+        inflation_radius: 0.40
       always_send_full_costmap: True
 
 # The yaml_filename does not need to be specified since it going to be set by defaults in launch.
@@ -381,9 +352,11 @@ velocity_smoother:
     max_decel: [-0.1, 0.0, -0.5]
     odom_topic: "odom"
     odom_duration: 0.1
-    # Zero out sub-threshold dither commands: each tiny nonzero cmd_vel used to
-    # fire the firmware's stiction torque feedforward and twitch the drivetrain.
-    deadband_velocity: [0.01, 0.0, 0.05]
+    # Deadband disabled: at [0.01, 0, 0.05] it swallowed every accel-limited
+    # ramp-up from standstill (MPPI's and RotationShim's first commands are
+    # sub-deadband), so autonomous motion could never start. If idle stiction
+    # twitching returns, fix the dither at its source (MPPI noise) instead.
+    deadband_velocity: [0.0, 0.0, 0.0]
     velocity_timeout: 1.0
 
 collision_monitor:

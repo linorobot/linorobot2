@@ -1,0 +1,54 @@
+<!--
+  Copy of nav2_bt_navigator/navigate_to_pose_w_replanning_and_recovery.xml with
+  a modified recovery set for this robot.
+
+  The lidar is blind directly behind the robot (battery box masked out by
+  box_laser_filter.yaml), so the stock 0.30 m BackUp once reversed it into a
+  wall. It is replaced by a SHORT 0.15 m retreat at low speed: the robot only
+  re-enters space it physically occupied seconds earlier, which is safe even
+  without rear sensing. This is the "stuck at a doorway" recovery: back off,
+  costmaps clear, the planner replans a straight approach, and RotationShim
+  rotates to the new heading before driving: back up and straighten out.
+
+  Recovery order per failure (round robin): short retreat first (the one that
+  fixes a misaligned doorway), then clear costmaps, then wait, then spin. Spin is last because rotating in place next to a doorframe is
+  the recovery most likely to trip the collision monitor.
+-->
+<root BTCPP_format="4" main_tree_to_execute="MainTree">
+  <BehaviorTree ID="MainTree">
+    <RecoveryNode number_of_retries="6" name="NavigateRecovery">
+      <PipelineSequence name="NavigateWithReplanning">
+        <ControllerSelector selected_controller="{selected_controller}" default_controller="FollowPath" topic_name="controller_selector"/>
+        <PlannerSelector selected_planner="{selected_planner}" default_planner="GridBased" topic_name="planner_selector"/>
+        <RateController hz="1.0">
+          <RecoveryNode number_of_retries="1" name="ComputePathToPose">
+            <ComputePathToPose goal="{goal}" path="{path}" planner_id="{selected_planner}" error_code_id="{compute_path_error_code}"/>
+            <Sequence>
+              <WouldAPlannerRecoveryHelp error_code="{compute_path_error_code}"/>
+              <ClearEntireCostmap name="ClearGlobalCostmap-Context" service_name="global_costmap/clear_entirely_global_costmap"/>
+            </Sequence>
+          </RecoveryNode>
+        </RateController>
+        <FollowPath path="{path}" controller_id="{selected_controller}" error_code_id="{follow_path_error_code}"/>
+      </PipelineSequence>
+      <Sequence>
+        <Fallback>
+          <WouldAControllerRecoveryHelp error_code="{follow_path_error_code}"/>
+          <WouldAPlannerRecoveryHelp error_code="{compute_path_error_code}"/>
+        </Fallback>
+        <ReactiveFallback name="RecoveryFallback">
+          <GoalUpdated/>
+          <RoundRobin name="RecoveryActions">
+            <BackUp backup_dist="0.15" backup_speed="0.05" error_code_id="{backup_code_id}"/>
+            <Sequence name="ClearingActions">
+              <ClearEntireCostmap name="ClearLocalCostmap-Subtree" service_name="local_costmap/clear_entirely_local_costmap"/>
+              <ClearEntireCostmap name="ClearGlobalCostmap-Subtree" service_name="global_costmap/clear_entirely_global_costmap"/>
+            </Sequence>
+            <Wait wait_duration="5.0"/>
+            <Spin spin_dist="1.57" error_code_id="{spin_error_code}"/>
+          </RoundRobin>
+        </ReactiveFallback>
+      </Sequence>
+    </RecoveryNode>
+  </BehaviorTree>
+</root>

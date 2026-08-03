@@ -161,6 +161,24 @@ void checkOvercurrent()
         overcurrent_latched = true;
 }
 
+// Per-wheel closed-loop speed trim (see config.h): integrate the
+// commanded-vs-measured wheel speed error and offset the command until the
+// measured speed converges, so a left/right friction mismatch can't make the
+// robot veer. Reset at (near-)zero command; dt outliers (first tick after a
+// reconnect) are skipped rather than integrated.
+float left_trim = 0.0f, right_trim = 0.0f;
+
+void updateWheelTrim(float &trim, float req, AK10 &motor, float dt)
+{
+    if (fabsf(req) < WHEEL_TRIM_MIN_CMD)
+        trim = 0.0f;
+    else if (motor.feedbackFresh() && dt > 0.0f && dt < 0.1f)
+    {
+        trim += WHEEL_TRIM_KI * (req - motor.getWheelAngularVelocity()) * dt;
+        trim = constrain(trim, -WHEEL_TRIM_MAX, WHEEL_TRIM_MAX);
+    }
+}
+
 void moveBase()
 {
     // Failsafe: zero the command if cmd_vel went quiet.
@@ -180,29 +198,32 @@ void moveBase()
         left_over = right_over = false;
     }
 
+    unsigned long now = millis();
+    float dt = (now - prev_odom_time) / 1000.0;
+    prev_odom_time = now;
+
     // BASE_LINEAR_DIR flips the body forward axis to the ROS convention
     // (+x = forward). Apply it to the command here and to the odometry below so
     // both stay consistent; angular_z is already correct and is left untouched.
     if (overcurrent_latched)
     {
+        left_trim = right_trim = 0.0f;
         stopMotors();
     }
     else
     {
         Kinematics2WD::WheelOmega req =
             kinematics.getWheelOmega(BASE_LINEAR_DIR * twist_msg.linear.x, twist_msg.angular.z);
-        left_motor.setWheelAngularVelocity(req.left);
-        right_motor.setWheelAngularVelocity(req.right);
+        updateWheelTrim(left_trim, req.left, left_motor, dt);
+        updateWheelTrim(right_trim, req.right, right_motor, dt);
+        left_motor.setWheelAngularVelocity(req.left + left_trim);
+        right_motor.setWheelAngularVelocity(req.right + right_trim);
     }
 
     // Odometry from the motors' measured (encoder) velocity feedback.
     Kinematics2WD::Velocities vel = kinematics.getVelocities(
         left_motor.getWheelAngularVelocity(),
         right_motor.getWheelAngularVelocity());
-
-    unsigned long now = millis();
-    float dt = (now - prev_odom_time) / 1000.0;
-    prev_odom_time = now;
     odometry.update(dt, BASE_LINEAR_DIR * vel.linear_x, vel.angular_z);
 }
 
@@ -318,12 +339,21 @@ void setup()
     // unconditionally: re-enabling an already-enabled motor produces at most
     // the small damped transient, a robot that cannot move is worse.
     delay(200); // let the CAN bus and motor controllers settle
+    // Brake each motor in the SAME millisecond as its enable: the handshake
+    // makes the motor execute whatever command it has latched, and the old
+    // 50 ms gap before the first brake let that run unopposed -- the robot
+    // visibly moved at every boot.
     ak10EnterMotorMode(LEFT_MOTOR_CMD_ID);
+    left_motor.stop();
     ak10EnterMotorMode(RIGHT_MOTOR_CMD_ID);
-    // Latch a damped zero-velocity hold so the motors are braked before the
-    // control loop takes over.
-    delay(50);
-    stopMotors();
+    right_motor.stop();
+    // Hold the brake while the enable transient damps out instead of trusting
+    // a single frame the controller may drop mid mode-switch.
+    for (int i = 0; i < BOOT_BRAKE_HOLD_MS / BOOT_BRAKE_PERIOD_MS; i++)
+    {
+        delay(BOOT_BRAKE_PERIOD_MS);
+        stopMotors();
+    }
     imu.init();
 
     geometry_msgs__msg__Twist__init(&twist_msg);

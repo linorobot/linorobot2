@@ -84,10 +84,15 @@
 // empirical (steady 0.05 m/s drive -> ~99 ERPM); REFINE by driving a measured
 // distance and matching integrated odometry, together with WHEEL_DIAMETER.
 // ---------------------------------------------------------------------------
-// 0.00842 = (0.05 m/s / 0.06 m wheel radius) / 99 ERPM, i.e. the value the
-// empirical note above actually implies. The previous 0.00677 under-reported
-// wheel speed by ~20%, which skewed odometry (and anything fusing it).
-#define ERPM_TO_WHEEL_RADPS  0.00842f   // wheel rad/s per ERPM count (TUNE)
+// Calibrated by the tape test (TESTING.md section 4): drive a measured
+// distance, read integrated odometry, divide this constant by
+// (reported / actual), re-flash, repeat until within +/-0.05 m.
+// History (all driven-distance measurements -- recalibrate, don't look up):
+//   0.00677 -> 0.00842 (2026-07-09)
+//   -> 0.01138 (2026-07-20: read 1.11 m over ~1.50 m actual, k=0.74)
+//   -> 0.01237 (2026-07-20 second pass: read 1.38 m over 1.50 m, k=0.92)
+// Re-run the tape test after any wheel/drivetrain change.
+#define ERPM_TO_WHEEL_RADPS  0.01237f   // wheel rad/s per ERPM count (measured)
 
 // Servo-mode status frame reports motor phase current at buf[4:5] as a signed
 // int16 in units of 0.01 A (per the CubeMars manual). CONFIRM against a clamp
@@ -105,6 +110,19 @@
                                      // stops within ~2 cm at the 0.05 m/s cap.
 #define FEEDBACK_STALE_MS    250     // treat motor feedback older than this as 0
 
+// Per-wheel closed-loop speed trim. From the robot's side the AK10s run open
+// loop (internal KD damping + a torque FF shared by both wheels), so any
+// left/right friction mismatch makes the wheels settle at different speeds
+// and the robot veers (measured 2026-07-20: /odom/unfiltered angular.z biased
+// +0.005..+0.027 rad/s while driving "straight", i.e. up to ~20% wheel-speed
+// mismatch at the 0.05 m/s crawl). moveBase() integrates each wheel's
+// commanded-vs-measured speed error and offsets the command until measured
+// speed converges. The trim resets at (near-)zero command so a stale trim can
+// never lurch the robot from rest.
+#define WHEEL_TRIM_KI        2.0f    // (rad/s of trim) per second per rad/s of error
+#define WHEEL_TRIM_MAX       2.0f    // rad/s clamp (~worst-case FF overspeed (4 Nm)/KD)
+#define WHEEL_TRIM_MIN_CMD   0.1f    // rad/s; below this the trim resets to zero
+
 // Overcurrent/stall protection. If EITHER motor's |phase current| stays above
 // OVERCURRENT_AMPS for OVERCURRENT_MS continuously (a jammed wheel, a pinned
 // robot), the firmware latches a stop: motors brake and ignore cmd_vel until
@@ -115,6 +133,16 @@
 // worst normal draw. Depends on CURRENT_LSB_TO_AMP being confirmed.
 #define OVERCURRENT_AMPS     8.0f    // per-motor stall threshold, amps (TUNE)
 #define OVERCURRENT_MS       1000    // sustained this long -> latch a stop
+
+// Boot-time brake hold. The MIT "enter motor mode" handshake makes the motor
+// start executing whatever command it has latched, so each enable is braked
+// in the SAME millisecond and then the brake is re-sent every
+// BOOT_BRAKE_PERIOD_MS for BOOT_BRAKE_HOLD_MS while the enable transient
+// damps out. The old sequence (enable both, wait 50 ms, brake once) left the
+// motors running an unopposed stale command -- the robot visibly moved at
+// every boot.
+#define BOOT_BRAKE_HOLD_MS   300     // hold the brake this long after enable
+#define BOOT_BRAKE_PERIOD_MS 10      // re-send the brake frame this often
 
 // Re-sync the micro-ROS epoch this often while connected. The Teensy clock
 // drifts relative to the agent; a once-per-connection sync (the old behavior)

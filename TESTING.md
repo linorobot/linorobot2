@@ -31,6 +31,16 @@ mode, so the probe skipped the handshake after a motor-battery power-cycle
 and the robot silently ignored every drive command. A small boot twitch is
 expected and accepted.
 
+**Revised 2026-07-20 (robot moved at boot):** the old sequence enabled both
+motors, waited 50 ms, then sent a single brake — so for 50 ms each motor ran
+whatever MIT command it had latched, unopposed, and the robot visibly rolled
+during boot. Now each motor's brake frame goes out in the **same millisecond**
+as its enable handshake, and the brake is re-sent every `BOOT_BRAKE_PERIOD_MS`
+(10 ms) for `BOOT_BRAKE_HOLD_MS` (300 ms) while the enable transient damps
+out (constants in `firmware/include/config.h`). The host sim
+(`firmware/host_sim/`) now fails if any enable is not braked in the same
+millisecond or the hold window shrinks.
+
 **Flash the firmware** (from the Jetson, Teensy on USB):
 
 ```bash
@@ -46,8 +56,10 @@ pio run -e teensy41 -t upload
 
 **Pass criteria:**
 
-1. *Any Teensy boot with the motor battery on:* both wheels give one small
-   twitch (the enable transient), then hold braked. Feedback flows:
+1. *Any Teensy boot with the motor battery on:* at most a barely perceptible
+   per-wheel twitch (the enable transient, braked in the same millisecond) —
+   the robot must NOT roll or visibly move during boot. Then it holds braked.
+   Feedback flows:
 
    ```bash
    ros2 launch linorobot2_bringup robot.launch.py   # terminal 1
@@ -68,7 +80,7 @@ pio run -e teensy41 -t upload
 ## 2. Host simulation (no hardware needed)
 
 **What changed:** `firmware/host_sim/` compiles the real driver headers on any
-PC and replays boot + stall scenarios (A–E).
+PC and replays boot, stall, and wheel-trim scenarios (A–F).
 
 ```bash
 cd firmware/host_sim
@@ -83,7 +95,7 @@ g++ -std=c++14 -Wall -Wextra -Istub -I../include sim_boot.cpp -o sim_boot && ./s
 **What changed:** robot_localization now fuses the Teensy's 50 Hz wheel
 odometry with the IMU and owns `odom->base_footprint`; rf2o is a diagnostic
 cross-check on `/odom_rf2o` only. Requires the firmware from section 1 (the
-`ERPM_TO_WHEEL_RADPS = 0.00842` calibration).
+`ERPM_TO_WHEEL_RADPS = 0.01237` calibration).
 
 ```bash
 ros2 launch linorobot2_bringup robot.launch.py        # terminal 1
@@ -119,8 +131,10 @@ must restore rf2o-owned TF (view_frames shows rf2o as the broadcaster).
 
 ## 4. ERPM calibration tape test
 
-**What changed:** `ERPM_TO_WHEEL_RADPS` was corrected from 0.00677 to 0.00842
-(~20% error). Confirm on your floor:
+**What changed:** `ERPM_TO_WHEEL_RADPS` history: 0.00677 → 0.00842 → 0.01138 →
+**0.01237** (2026-07-20, two tape-test passes: 1.11 m reported over ~1.50 m
+actual with 0.00842, then 1.38 m over 1.50 m with 0.01138). Confirm on your
+floor:
 
 1. Tape a start line, measure exactly 2.00 m, tape a finish line.
 2. Reset odometry by restarting the launch, align the robot on the start line.
@@ -135,11 +149,17 @@ must restore rf2o-owned TF (view_frames shows rf2o as the broadcaster).
 `ERPM_TO_WHEEL_RADPS` in `firmware/include/config.h` by `k`, re-flash
 (section 1), repeat.
 
-## 5. MPPI obstacle steering (autonomous navigation)
+## 5. Obstacle avoidance (autonomous navigation) — ✅ PASSED 2026-07-19
 
-**What changed:** the local controller is now RotationShim + **MPPI** (was
-RegulatedPurePursuit), tuned for the 0.05 m/s cap; global costmap updates at
-2 Hz; MPPI accel limits now match the velocity_smoother envelope.
+**What changed:** the local controller is RotationShim + **RegulatedPurePursuit**
+again. MPPI was tried and reverted: at the 0.05 m/s cap its optimizer output
+vx=0 permanently while starving the Jetson CPU (see git history and
+navigation.yaml comments). Avoidance = 1 Hz global replan around costmap
+obstacles + RPP collision braking + collision monitor (0.5 s envelope).
+Inflation radius 0.4 m; the stock 0.30 m BackUp recovery is replaced by a
+short 0.15 m retreat (rear lidar blind zone — only re-enters just-traversed
+space), used to back off and re-approach when stuck at doorways;
+pose_keeper auto-restores AMCL's pose on startup.
 
 ```bash
 ros2 launch linorobot2_bringup robot.launch.py slam:=false    # terminal 1
@@ -151,17 +171,17 @@ pose), then sanity-check the controller actually loaded:
 
 ```bash
 ros2 param get /controller_server FollowPath.primary_controller
-# expect: nav2_mppi_controller::MPPIController
+# expect: nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController
 ```
 
 Send a goal a few meters across open floor (click the map page, paste the
 generated `ros2 action send_goal /navigate_to_pose ...` command), then place a
 box in the robot's path mid-drive.
 
-**Pass:** the trajectory bends AROUND the box within ~0.5 s (it does not just
-stop); a too-close box triggers the collision monitor stop, and removing it
-lets the robot resume on its own. Motion at the speed cap is smooth — no
-lurch-pause-lurch cycling (that was the old accel-limit mismatch).
+**Pass** (verified 2026-07-19): the robot brakes if the box is close, the 1 Hz
+global replan routes around it, and the robot resumes without help; a too-close
+box triggers the collision monitor stop, and removing it lets the robot resume
+on its own.
 
 ## 6. speed_recorder.py
 
@@ -319,3 +339,37 @@ ps aux | grep micro_ros_agent | grep -v grep    # must show exactly one
 Also note the agent does NOT respawn if it dies (e.g. the Teensy's USB device
 vanishing during a flash kills it) — if `/odom/unfiltered` is silent but
 `/dev/ttyACM0` exists, restart the launch.
+
+## 15. Straight-line drive (per-wheel speed trim)
+
+**What changed (2026-07-20):** the robot always veered when driving straight.
+`/odom/unfiltered angular.z` captured during a straight teleop run showed a
+sustained yaw bias (+0.005..+0.027 rad/s in 0.0018 rad/s = 1-ERPM steps), i.e.
+the wheels genuinely spin at different speeds: each AK10 runs effectively
+open-loop from the robot's side (internal KD damping + a torque feedforward
+shared by both wheels), so a left/right friction mismatch becomes a
+wheel-speed mismatch of up to ~20% at the 0.05 m/s crawl. The firmware now
+closes the loop: `moveBase()` integrates each wheel's commanded-vs-measured
+speed error (`WHEEL_TRIM_KI`) and offsets that wheel's command until measured
+speed converges, clamped at `WHEEL_TRIM_MAX` and reset whenever the command is
+(near) zero so a stale trim can never lurch the robot from rest. Constants in
+`firmware/include/config.h`; host-sim scenario F covers ramp, clamp, no-touch
+on the on-speed wheel, and reset-at-zero.
+
+**Flash** (section 1), then verify:
+
+1. Wheels-up sanity: command a straight drive and confirm both wheels converge
+   to the same speed within ~2 s (watch `/odom/unfiltered angular.z` → should
+   decay toward 0).
+2. Floor test: drive straight for 3+ m with teleop.
+
+   ```bash
+   ros2 topic echo /odom/unfiltered --field twist.twist.angular.z
+   ```
+
+**Pass:** after the first ~2 s of a straight run, angular.z hovers around zero
+(±0.005 rad/s average, single 1-count samples of ±0.0018+ are fine) in BOTH
+drive directions, and the robot visibly tracks straight — lateral drift under
+~10 cm over 3 m. If it still veers with angular.z ≈ 0, the residual is
+mechanical (wheel diameter mismatch / slip) — measure the wheels, don't retune
+the trim.

@@ -9,10 +9,13 @@ boot/loop logic from `src/main.cpp` through four scenarios:
   "enter motor mode" handshake goes to **both** motors unconditionally (2026-07-09
   hardware finding: motors stream status frames even outside MIT mode, so a
   probe-and-skip gate silently left them undriveable after a battery cycle).
-  The one small enable transient per motor is accepted and braked immediately.
+  The one small enable transient per motor is accepted, braked in the **same
+  millisecond** as the handshake, and the brake is then actively held for
+  `BOOT_BRAKE_HOLD_MS` (no unopposed window for a latched command to run —
+  the old 50 ms gap was the robot-moves-at-boot bug).
 - **B. Whole-robot cold power-on** → exactly one handshake per motor (the
   motor's own one-time enable transient; not removable from the Teensy side),
-  ending in a brake hold.
+  each braked in the same millisecond, ending in the same held brake.
 - **C. Motor battery switched on after the Teensy** → the recovery check
   enables the motors within ~3 s and never re-sends the handshake once they
   stream feedback.
@@ -21,6 +24,10 @@ boot/loop logic from `src/main.cpp` through four scenarios:
 - **E. Wheel stall mid-drive** → sustained current above `OVERCURRENT_AMPS`
   for `OVERCURRENT_MS` latches a stop (drive commands refused, only brakes go
   out) until a zero cmd_vel releases it; a shorter spike must not latch.
+- **F. One wheel runs slower than commanded** (friction mismatch → veer) →
+  the per-wheel trim ramps that wheel's command up (clamped at
+  `WHEEL_TRIM_MAX`), leaves the on-speed wheel alone, and resets on a zero
+  command so a stale trim can't lurch the robot from rest.
 
 Run it:
 

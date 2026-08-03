@@ -14,7 +14,7 @@
 
 import os
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
+from launch.actions import DeclareLaunchArgument, ExecuteProcess, IncludeLaunchDescription
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.conditions import IfCondition
@@ -42,6 +42,10 @@ def generate_launch_description():
         [FindPackageShare('linorobot2_navigation'), 'config', 'navigation.yaml']
     )
 
+    pose_keeper_path = PathJoinSubstitution(
+        [FindPackageShare('linorobot2_navigation'), 'scripts', 'pose_keeper.py']
+    )
+
     return LaunchDescription([
         DeclareLaunchArgument(
             name='sim', 
@@ -62,8 +66,27 @@ def generate_launch_description():
         ),
 
         # NOTE: nav2_bringup has no initial-pose launch arguments; AMCL takes its
-        # initial pose from the /initialpose topic. Use the map viewer's
-        # "set robot pose" button (or `ros2 topic pub /initialpose ...`).
+        # initial pose from the /initialpose topic. The pose_keeper below
+        # replays the last saved AMCL pose automatically; the map viewer's
+        # "set robot pose" button (or `ros2 topic pub /initialpose ...`) is
+        # only needed the first time, or after the robot was moved by hand
+        # while navigation was down.
+
+        DeclareLaunchArgument(
+            name='restore_pose',
+            default_value='true',
+            description='Auto-localize AMCL from the last saved pose on startup'
+        ),
+
+        # Saves /amcl_pose to ~/.ros/linorobot2_last_pose.json (1 Hz) and
+        # republishes it to /initialpose on startup until AMCL localizes.
+        ExecuteProcess(
+            cmd=['python3', pose_keeper_path,
+                 '--ros-args', '-p',
+                 ['restore:=', LaunchConfiguration('restore_pose')]],
+            name='pose_keeper',
+            output='screen'
+        ),
 
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(nav2_launch_path),

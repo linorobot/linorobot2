@@ -13,7 +13,7 @@ jobs:
       matrix:
         base_image: [hardware, gazebo, gazebo-cuda]
     steps:
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
       
       - name: Create fake udev directory for hardware builds
         run: |

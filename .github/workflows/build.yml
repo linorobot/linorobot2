@@ -10,6 +10,7 @@ jobs:
   build:
     runs-on: ubuntu-24.04
     strategy:
+      fail-fast: false
       matrix:
         base_image: [hardware, gazebo, gazebo-cuda]
     steps:

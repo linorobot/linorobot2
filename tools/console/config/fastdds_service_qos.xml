@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Fast DDS QoS for ROS 2 service replies.
+
+  rmw_fastrtps will not send a service response until the server's response
+  writer has matched the client's response reader, and it waits at most
+  max_blocking_time for that match (see the "workaround for the race on the
+  discovery of services" block in rmw_fastrtps_shared_cpp/src/rmw_response.cpp).
+  Fast DDS defaults that to 100 ms (QosPolicies.hpp, max_blocking_time{0,
+  100000000}).
+
+  Console starts nav2 uncomposed, so ~30 participants come up at once and that
+  match routinely takes longer than 100 ms. The reply is then dropped with
+  "failed to send response to /NODE/change_state (timeout): client will not
+  receive response", and nav2's lifecycle_manager waits forever for a reply
+  that never arrives; it hangs mid-transition reporting no error of its own.
+
+  rmw_fastrtps looks up a datawriter profile by topic name and, failing that,
+  one named exactly "service" (rmw_fastrtps_cpp/src/rmw_service.cpp), so this
+  applies to service endpoints only and leaves ordinary topics alone.
+
+  This is a ceiling, not a delay: the write proceeds as soon as the match
+  happens, so a healthy machine pays nothing for it.
+-->
+<dds xmlns="http://www.eprosima.com/XMLSchemas/fastRTPS_Profiles">
+  <profiles>
+    <data_writer profile_name="service">
+      <qos>
+        <reliability>
+          <kind>RELIABLE</kind>
+          <max_blocking_time>
+            <sec>10</sec>
+            <nanosec>0</nanosec>
+          </max_blocking_time>
+        </reliability>
+      </qos>
+    </data_writer>
+    <data_reader profile_name="service">
+      <qos>
+        <reliability>
+          <kind>RELIABLE</kind>
+          <max_blocking_time>
+            <sec>10</sec>
+            <nanosec>0</nanosec>
+          </max_blocking_time>
+        </reliability>
+      </qos>
+    </data_reader>
+  </profiles>
+</dds>

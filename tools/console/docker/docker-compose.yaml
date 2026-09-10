@@ -1,0 +1,134 @@
+# Linorobot2 Console — its own Compose stack.
+#
+# The console never writes into the repo's upstream docker/ dir. This file
+# (and the .env + devices.generated.yaml the console writes next to it) is the
+# console's own, free to change. It reuses the upstream image + Dockerfile
+# (built, not modified) and drives navigation/SLAM through the console's own
+# launch_nav2.py / launch_bringup.py rather than linorobot2_navigation's.
+#
+# All paths are relative to this file (tools/console/docker/), so
+# ../../.. is the repo root.
+#
+# Usage (the console does this for you):
+#   docker compose --env-file .env \
+#     -f docker-compose.yaml -f devices.generated.yaml <up|build|down> <service>
+
+x-repo: &repo ../../..
+
+services:
+  build:
+    image: linorobot2:${BASE_IMAGE:-jazzy}
+    build:
+      context: *repo
+      dockerfile: docker/Dockerfile          # upstream Dockerfile — invoked, not edited
+      args:
+        - VIRTUALGL_VER=${VIRTUALGL_VER:-3.1}
+        - HOST_UID=${HOST_UID:-1000}
+        - HOST_GID=${HOST_GID:-1000}
+        - BASE_IMAGE=${BASE_IMAGE:-jazzy}
+        - DOCKER_ROS_DISTRO=${DOCKER_ROS_DISTRO:-jazzy}
+        - ROBOT_BASE=${ROBOT_BASE:-2wd}
+        - LASER_SENSOR=${LASER_SENSOR:-}
+        - DEPTH_SENSOR=${DEPTH_SENSOR:-}
+      target: final
+
+  base:
+    image: linorobot2:${BASE_IMAGE:-jazzy}
+    stdin_open: true
+    tty: true
+    network_mode: host
+    ipc: host
+    privileged: true
+    environment:
+      - GPU_ID=${GPU_ID:-0}
+      - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
+      - LINOROBOT2_BASE=${ROBOT_BASE:-2wd}
+      - LINOROBOT2_LASER_SENSOR=${LASER_SENSOR:-}
+      - LINOROBOT2_DEPTH_SENSOR=${DEPTH_SENSOR:-}
+      - DISPLAY=${DISPLAY:-:0}
+      - QT_X11_NO_MITSHM=1
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ${HOME}/.Xauthority:/home/ros/.Xauthority
+      # The host repo's config/ dir -- config/<robot>_config.yaml is the single
+      # source of truth, so the containers read the same file the Console
+      # writes and git-commits, not the copy baked into the image.
+      - ../config:/home/ros/linorobot2_ws/src/linorobot2/tools/console/config:rw
+      - ../../../linorobot2_navigation/maps:/home/ros/linorobot2_ws/src/linorobot2/linorobot2_navigation/maps:rw
+
+  # --- console's own launchers -------------------------------------------------
+  bringup:
+    container_name: console-bringup
+    extends: base
+    command: >
+      ros2 launch
+      /home/ros/linorobot2_ws/src/linorobot2/tools/console/launch_bringup.py
+      config_file:=/home/ros/linorobot2_ws/src/linorobot2/tools/console/config/${ROBOT_NAME:-linorobot2}_config.yaml
+      odom_topic:=${ODOM_TOPIC:-/odom}
+      joy:=${LAUNCH_JOYSTICK:-false}
+
+  slam:
+    container_name: console-slam
+    extends: base
+    command: >
+      ros2 launch
+      /home/ros/linorobot2_ws/src/linorobot2/tools/console/launch_nav2.py
+      config_file:=/home/ros/linorobot2_ws/src/linorobot2/tools/console/config/${ROBOT_NAME:-linorobot2}_config.yaml
+      slam:=true rviz:=${RVIZ:-false} sim:=${SIM:-false}
+
+  navigate:
+    container_name: console-navigate
+    extends: base
+    command: >
+      ros2 launch
+      /home/ros/linorobot2_ws/src/linorobot2/tools/console/launch_nav2.py
+      config_file:=/home/ros/linorobot2_ws/src/linorobot2/tools/console/config/${ROBOT_NAME:-linorobot2}_config.yaml
+      slam:=false
+      map:=/home/ros/linorobot2_ws/src/linorobot2/linorobot2_navigation/maps/${WORLD:-turtlebot3_world}.yaml
+      rviz:=${RVIZ:-false} sim:=${SIM:-false}
+
+  save-map:
+    container_name: console-save-map
+    extends: base
+    command: >
+      ros2 run nav2_map_server map_saver_cli
+      -f /home/ros/linorobot2_ws/src/linorobot2/linorobot2_navigation/maps/${MAP_NAME:-map}
+      --fmt png --ros-args -p save_map_timeout:=10000.
+
+  # --- unchanged conveniences -----------------------------------------------
+  gazebo:
+    container_name: console-gazebo
+    extends: base
+    environment:
+      - IGN_IP=127.0.0.1
+      - GZ_IP=127.0.0.1
+    command: >
+      ros2 launch linorobot2_gazebo gazebo.launch.py
+      world_name:=${WORLD:-turtlebot3_world}
+      spawn_x:=${SPAWN_X:-0.0} spawn_y:=${SPAWN_Y:-0.0} spawn_yaw:=${SPAWN_Z:-0.0}
+    devices:
+      - /dev:/dev
+    volumes:
+      - ../../../linorobot2_gazebo/worlds:/home/ros/linorobot2_ws/src/linorobot2/linorobot2_gazebo/worlds:rw
+      - ../../../linorobot2_gazebo/models:/home/ros/linorobot2_ws/src/linorobot2/linorobot2_gazebo/models:rw
+
+  rviz:
+    container_name: console-rviz
+    extends: base
+    command: rviz2 -d /home/ros/linorobot2_ws/src/linorobot2/linorobot2_navigation/rviz/linorobot2_navigation.rviz
+
+  dev:
+    container_name: console-dev
+    extends: base
+    command: sleep infinity
+    volumes:
+      - ../../..:/home/ros/linorobot2_ws/src/linorobot2
+
+  kasmvnc:
+    container_name: console-kasmvnc
+    image: lsiobase/kasmvnc:alpine321
+    network_mode: host
+    environment:
+      - DISPLAY=:200
+    volumes:
+      - ../../../docker/kasm-autostart:/defaults/autostart

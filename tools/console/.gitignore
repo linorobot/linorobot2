@@ -1,0 +1,6 @@
+web/console_config.json
+web/console_nav2_*.yaml
+web/console_ekf.yaml
+web/console_slam.yaml
+web/__pycache__/
+config/.active_robot

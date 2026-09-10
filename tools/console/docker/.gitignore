@@ -1,0 +1,4 @@
+# Console-generated at runtime (Docker install mode)
+.env
+devices.generated.yaml
+docker-compose.override.yaml

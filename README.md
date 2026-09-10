@@ -114,6 +114,16 @@ ros2 launch linorobot2_navigation navigation.launch.py map:=<path_to_map>/<map_n
 
 ## Tools
 
+### Linorobot2 Console
+
+A browser-based cockpit for the robot computer. Monitor robot health, manage micro-ROS agent connections, tune Nav2 & SLAM parameters visually, trigger one-click bringup/SLAM/Nav2, and drive via on-screen virtual gamepad:
+
+```bash
+python3 tools/console/web/server.py --port 8090
+```
+
+Open [http://localhost:8090](http://localhost:8090) in your browser. All console launchers and parameters are self-contained in `tools/console/`. See [`tools/console/README.md`](tools/console/README.md) for details.
+
 ### image_to_gazebo
 
 Convert any floor plan or building layout image into a Gazebo world with a GUI:

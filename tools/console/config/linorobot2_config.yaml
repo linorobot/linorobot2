@@ -1,0 +1,35 @@
+# ==============================================================================
+# Linorobot2 Robot Config -- robot: linorobot2
+#
+# Single source of truth for this robot. The Linorobot2 Console reads/writes it
+# and git-auto-commits it on the active branch before every action (bringup,
+# install, SLAM, navigation, flash, ...), so `git log config/` records exactly
+# what configuration each run used.
+#
+# One file per robot: config/<robot_name>_config.yaml. Switch robots from the
+# Console header (🤖 Robot field). The active robot is remembered in
+# config/.active_robot (git-ignored, per-machine).
+# ==============================================================================
+
+console:
+  workspace_path: "~/linorobot2_ws"
+  # Blank = detect (env ROS_DISTRO, an installed /opt/ros/<distro>, then
+  # the Ubuntu release: 24.04 -> jazzy, 26.04 -> lyrical). Pinning a distro
+  # here would override that on a fresh clone.
+  ros_distro: ""
+  install_mode: "native"
+  agent_engine: ""
+  auto_bringup: true
+  agent_transport: "serial"
+  agent_device: "/dev/ttyACM0"
+  agent_port: "8888"
+  agent_baud: "921600"
+  base_type: "2wd"
+  laser_sensor: ""
+  depth_sensor: ""
+  robot_name: "linorobot2"
+  ros_domain_id: 0
+  madgwick: true
+  laser_serial_port: ""
+  laser_baud: ""
+  depth_serial_port: ""

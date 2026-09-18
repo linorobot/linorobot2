@@ -3,12 +3,12 @@ on:
   schedule:
     - cron: '0 0 * * 5'  # Every Friday at midnight UTC
   push:
-    branches: [ jazzy ]
+    branches: [ jazzy, lyrical ]
   pull_request:
-    branches: [ jazzy ] # Adjust this if your default branch is different
+    branches: [ jazzy, lyrical ]
 jobs:
   build:
-    runs-on: ubuntu-24.04
+    runs-on: ${{ (github.base_ref || github.ref_name) == 'lyrical' && 'ubuntu-26.04' || 'ubuntu-24.04' }}
     strategy:
       fail-fast: false
       matrix:
@@ -24,7 +24,9 @@ jobs:
 
       - name: Install and Build ROS2 environment - ${{ matrix.base_image }}
         run: |
-          export ROS_DISTRO=jazzy
+          TARGET_BRANCH="${GITHUB_BASE_REF:-${GITHUB_REF_NAME:-jazzy}}"
+          export ROS_DISTRO="${TARGET_BRANCH}"
+          export DOCKER_ROS_DISTRO="${TARGET_BRANCH}"
           export ROBOT_BASE=2wd
           export LASER_SENSOR=ld19
           export BASE_IMAGE=${{ matrix.base_image }}

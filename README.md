@@ -6,6 +6,7 @@
 ROS 2 Distro | Branch | Build status
 :----------: | :----: | :----------:
 **Jazzy** | [`jazzy`](../../tree/jazzy) | [![Jazzy Build](../../actions/workflows/build.yml/badge.svg?branch=jazzy)](../../actions/workflows/build.yml?branch=jazzy)
+**Lyrical** | [`lyrical`](../../tree/lyrical) | [![Lyrical Build](../../actions/workflows/build.yml/badge.svg?branch=lyrical)](../../actions/workflows/build.yml?branch=lyrical)
 
 # linorobot2
 

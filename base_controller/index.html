@@ -980,8 +980,8 @@
 <h4 id="differential-drive-controller">Differential Drive Controller<a class="headerlink" href="#differential-drive-controller" title="Permanent link">&para;</a></h4>
 <p>The drive controller is defined in <code>linorobot2_description/urdf/controllers/diff_drive.urdf.xacro</code>:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nt">&lt;plugin</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">  </span><span class="na">filename=</span><span class="s">&quot;gz-sim-diff-drive-system&quot;</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">  </span><span class="na">name=</span><span class="s">&quot;gz::sim::systems::DiffDrive&quot;</span><span class="nt">&gt;</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">  </span><span class="na">filename=</span><span class="s">"gz-sim-diff-drive-system"</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">  </span><span class="na">name=</span><span class="s">"gz::sim::systems::DiffDrive"</span><span class="nt">&gt;</span>
 <a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">  </span><span class="nt">&lt;topic&gt;</span>cmd_vel<span class="nt">&lt;/topic&gt;</span>
 <a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">  </span><span class="nt">&lt;child_frame_id&gt;</span>base_footprint<span class="nt">&lt;/child_frame_id&gt;</span>
 <a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">  </span><span class="nt">&lt;odom_topic&gt;</span>odom/unfiltered<span class="nt">&lt;/odom_topic&gt;</span>
@@ -1001,9 +1001,9 @@
 <p>The <code>wheel_separation</code> and <code>wheel_radius</code> values are passed in from the robot's URDF (e.g. <code>linorobot2_description/urdf/robots/2wd.urdf.xacro</code>) using the values defined in <code>&lt;robot_type&gt;_properties.urdf.xacro</code>. If you change the robot's dimensions in the properties file, the controller picks them up automatically.</p>
 <h4 id="imu">IMU<a class="headerlink" href="#imu" title="Permanent link">&para;</a></h4>
 <p>The simulated IMU is defined in <code>linorobot2_description/urdf/sensors/imu.urdf.xacro</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nt">&lt;plugin</span><span class="w"> </span><span class="na">filename=</span><span class="s">&quot;gz-sim-imu-system&quot;</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;gz::sim::systems::Imu&quot;</span><span class="nt">/&gt;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nt">&lt;plugin</span><span class="w"> </span><span class="na">filename=</span><span class="s">"gz-sim-imu-system"</span><span class="w"> </span><span class="na">name=</span><span class="s">"gz::sim::systems::Imu"</span><span class="nt">/&gt;</span>
 <a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="nt">&lt;sensor</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;imu_sensor&quot;</span><span class="w"> </span><span class="na">type=</span><span class="s">&quot;imu&quot;</span><span class="nt">&gt;</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="nt">&lt;sensor</span><span class="w"> </span><span class="na">name=</span><span class="s">"imu_sensor"</span><span class="w"> </span><span class="na">type=</span><span class="s">"imu"</span><span class="nt">&gt;</span>
 <a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">  </span><span class="nt">&lt;topic&gt;</span>imu/data<span class="nt">&lt;/topic&gt;</span>
 <a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">  </span><span class="nt">&lt;update_rate&gt;</span>50<span class="nt">&lt;/update_rate&gt;</span>
 <a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="nt">&lt;/sensor&gt;</span>

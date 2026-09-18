@@ -1303,7 +1303,7 @@ No extra setup is needed. <code>/opt/ros/&lt;ros_distro&gt;/setup.bash</code> is
 <div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="w">  </span><span class="nt">bringup</span><span class="p">:</span>
 <a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">...</span>
 <a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">devices</span><span class="p p-Indicator">:</span>
-<a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dev/ttyACM0:/dev/ttyACM0</span><span class="w"> </span><span class="c1"># Robot&#39;s microcontroller (e.g. Pico)</span>
+<a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dev/ttyACM0:/dev/ttyACM0</span><span class="w"> </span><span class="c1"># Robot's microcontroller (e.g. Pico)</span>
 <a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dev/ldlidar:/dev/ldlidar</span><span class="w"> </span><span class="c1"># Laser sensor (adjust to match your sensor symlink)</span>
 </code></pre></div>
 <h3 id="5-run-the-robot">5. Run the robot<a class="headerlink" href="#5-run-the-robot" title="Permanent link">&para;</a></h3>
@@ -1404,7 +1404,7 @@ No extra setup is needed. <code>/opt/ros/&lt;ros_distro&gt;/setup.bash</code> is
 </code></pre></div>
 <p>A minimal profile looks like this:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-profile</span>
-<a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a><span class="nt">root</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;%= ENV[&quot;TMUXINATOR_CONFIG&quot;] %&gt;</span>
+<a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a><span class="nt">root</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;%= ENV["TMUXINATOR_CONFIG"] %&gt;</span>
 <a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a>
 <a id="__codelineno-32-4" name="__codelineno-32-4" href="#__codelineno-32-4"></a><span class="nt">pre_window</span><span class="p">:</span>
 <a id="__codelineno-32-5" name="__codelineno-32-5" href="#__codelineno-32-5"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">export DISPLAY=:200</span>

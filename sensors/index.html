@@ -1020,22 +1020,22 @@
 <h3 id="how-sensors-are-included">How Sensors Are Included<a class="headerlink" href="#how-sensors-are-included" title="Permanent link">&para;</a></h3>
 <p>Each robot type's URDF (<code>linorobot2_description/urdf/robots/&lt;robot_type&gt;.urdf.xacro</code>) already includes the laser and depth sensor:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">&lt;xacro:generic_laser&gt;</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nt">&lt;xacro:insert_block</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;laser_pose&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nt">&lt;xacro:insert_block</span><span class="w"> </span><span class="na">name=</span><span class="s">"laser_pose"</span><span class="w"> </span><span class="nt">/&gt;</span>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="nt">&lt;/xacro:generic_laser&gt;</span>
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
 <a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="nt">&lt;xacro:depth_sensor&gt;</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">  </span><span class="nt">&lt;xacro:insert_block</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;depth_sensor_pose&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">  </span><span class="nt">&lt;xacro:insert_block</span><span class="w"> </span><span class="na">name=</span><span class="s">"depth_sensor_pose"</span><span class="w"> </span><span class="nt">/&gt;</span>
 <a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="nt">&lt;/xacro:depth_sensor&gt;</span>
 </code></pre></div>
 <p>The <code>laser_pose</code> and <code>depth_sensor_pose</code> blocks define where the sensors are mounted relative to <code>base_link</code>. These are defined in the robot's properties file.</p>
 <h3 id="configuring-sensor-positions">Configuring Sensor Positions<a class="headerlink" href="#configuring-sensor-positions" title="Permanent link">&para;</a></h3>
 <p>Sensor positions are set in <code>linorobot2_description/urdf/&lt;robot_type&gt;_properties.urdf.xacro</code>. For example, in <code>2wd_properties.urdf.xacro</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">&lt;xacro:property</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;laser_pose&quot;</span><span class="nt">&gt;</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">&lt;origin</span><span class="w"> </span><span class="na">xyz=</span><span class="s">&quot;0.12 0 0.33&quot;</span><span class="w"> </span><span class="na">rpy=</span><span class="s">&quot;0 0 0&quot;</span><span class="nt">/&gt;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">&lt;xacro:property</span><span class="w"> </span><span class="na">name=</span><span class="s">"laser_pose"</span><span class="nt">&gt;</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">&lt;origin</span><span class="w"> </span><span class="na">xyz=</span><span class="s">"0.12 0 0.33"</span><span class="w"> </span><span class="na">rpy=</span><span class="s">"0 0 0"</span><span class="nt">/&gt;</span>
 <a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="nt">&lt;/xacro:property&gt;</span>
 <a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="nt">&lt;xacro:property</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;depth_sensor_pose&quot;</span><span class="nt">&gt;</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">  </span><span class="nt">&lt;origin</span><span class="w"> </span><span class="na">xyz=</span><span class="s">&quot;0.14 0.0 0.045&quot;</span><span class="w"> </span><span class="na">rpy=</span><span class="s">&quot;0 0 0&quot;</span><span class="nt">/&gt;</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="nt">&lt;xacro:property</span><span class="w"> </span><span class="na">name=</span><span class="s">"depth_sensor_pose"</span><span class="nt">&gt;</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">  </span><span class="nt">&lt;origin</span><span class="w"> </span><span class="na">xyz=</span><span class="s">"0.14 0.0 0.045"</span><span class="w"> </span><span class="na">rpy=</span><span class="s">"0 0 0"</span><span class="nt">/&gt;</span>
 <a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="nt">&lt;/xacro:property&gt;</span>
 </code></pre></div>
 <p>All positions are measured from <code>base_link</code> (the point about which the robot rotates).

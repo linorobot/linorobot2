@@ -316,7 +316,7 @@ function install_microros {
     cd $WORKSPACE
     if [ ! -d src/micro_ros_setup ]
         then
-            git clone -b $ROS_DISTRO https://github.com/micro-ROS/micro_ros_setup.git src/micro_ros_setup
+            git clone -b $ROS_DISTRO https://github.com/PaulBouchier/micro_ros_setup.git src/micro_ros_setup
     fi
     sudo apt install -y python3-vcstool build-essential
     sudo apt update && rosdep update

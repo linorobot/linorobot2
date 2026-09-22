@@ -6,6 +6,7 @@ import math
 import numpy as np
 import threading
 import re
+import yaml
 from linorobot2_gazebo.map_to_gazebo import process_maps
 
 _SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -47,6 +48,10 @@ _SRC_PKG_DIR = _resolve_src_pkg_dir()
 _DEFAULT_IMAGES_DIR = (
     os.path.join(_SRC_PKG_DIR, 'linorobot2_gazebo', 'images')
     if _SRC_PKG_DIR else os.path.join(_SCRIPT_DIR, 'images')
+)
+_DEFAULT_MAPS_DIR = (
+    os.path.join(os.path.dirname(_SRC_PKG_DIR), 'linorobot2_navigation', 'maps')
+    if _SRC_PKG_DIR else None
 )
 
 _DEFAULT_MODELS_DIR = (
@@ -111,6 +116,12 @@ class MapImageProcessor(tk.Tk):
         self.status_bar.pack(fill=tk.X, padx=5, pady=2)
 
         # Sidebar controls
+        # Load Map (YAML) button
+        load_map_button = ttk.Button(sidebar_frame, text="Load Map", command=self.load_map)
+        load_map_button.pack(fill=tk.X, padx=10, pady=5)
+
+        ttk.Separator(sidebar_frame).pack(fill=tk.X, padx=10, pady=5)
+
         # Load image button
         load_button = ttk.Button(sidebar_frame, text="Load Image", command=self.load_image)
         load_button.pack(fill=tk.X, padx=10, pady=5)
@@ -131,7 +142,7 @@ class MapImageProcessor(tk.Tk):
         wall_height_frame = ttk.Frame(sidebar_frame)
         wall_height_frame.pack(fill=tk.X, padx=10, pady=5)
         ttk.Label(wall_height_frame, text="Wall Height:").pack(side=tk.LEFT)
-        self.wall_height_var = tk.DoubleVar(value=1.0)
+        self.wall_height_var = tk.DoubleVar(value=0.5)
         wall_height_entry = ttk.Entry(wall_height_frame, textvariable=self.wall_height_var, width=10)
         wall_height_entry.pack(side=tk.RIGHT)
 
@@ -152,6 +163,92 @@ class MapImageProcessor(tk.Tk):
         self.origin_var = tk.StringVar(value="Origin: [0.0, 0.0, 0.0]")
         origin_label = ttk.Label(info_frame, textvariable=self.origin_var)
         origin_label.pack(anchor=tk.W, padx=5, pady=2)
+
+    def load_map(self):
+        """Load a SLAM-generated .yaml map file and populate all map info automatically"""
+        file_types = [
+            ("Map YAML files", "*.yaml *.yml"),
+            ("All files", "*.*")
+        ]
+        yaml_path = filedialog.askopenfilename(
+            title="Select a map YAML file",
+            filetypes=file_types,
+            initialdir=_DEFAULT_MAPS_DIR if _DEFAULT_MAPS_DIR and os.path.isdir(_DEFAULT_MAPS_DIR) else None
+        )
+
+        if not yaml_path:
+            return
+
+        try:
+            with open(yaml_path, 'r') as f:
+                map_data = yaml.safe_load(f)
+        except Exception as e:
+            self._show_result_dialog("Error", f"Failed to read YAML file:\n{str(e)}", is_error=True)
+            return
+
+        # Validate required fields
+        if 'image' not in map_data:
+            self._show_result_dialog("Error", "YAML file has no 'image' field.", is_error=True)
+            return
+        if 'resolution' not in map_data:
+            self._show_result_dialog("Error", "YAML file has no 'resolution' field.", is_error=True)
+            return
+
+        # Resolve image path: always a filename next to the YAML
+        yaml_dir = os.path.dirname(os.path.abspath(yaml_path))
+        image_path = os.path.join(yaml_dir, map_data['image'])
+
+        if not os.path.isfile(image_path):
+            self._show_result_dialog(
+                "Error",
+                f"Map image not found:\n{image_path}\n\nMake sure '{map_data['image']}' is in the same directory as the YAML.",
+                is_error=True
+            )
+            return
+
+        try:
+            loaded_image = Image.open(image_path)
+        except Exception as e:
+            self._show_result_dialog("Error", f"Failed to open map image:\n{str(e)}", is_error=True)
+            return
+
+        resolution = float(map_data['resolution'])
+        origin = map_data.get('origin', [0.0, 0.0, 0.0])
+        if isinstance(origin, (list, tuple)) and len(origin) >= 2:
+            origin = [float(origin[0]), float(origin[1]), float(origin[2]) if len(origin) > 2 else 0.0]
+        else:
+            origin = [0.0, 0.0, 0.0]
+
+        map_name = os.path.splitext(os.path.basename(yaml_path))[0]
+        img_width, img_height = loaded_image.size
+
+        # Compute origin pixel from YAML world coordinates (inverse of set_origin_point formula)
+        origin_pixel_x = -origin[0] / resolution - 0.5
+        origin_pixel_y = img_height + origin[1] / resolution - 0.5
+
+        self.__map_info = {
+            "map_name": map_name,
+            "image": image_path,
+            "resolution": resolution,
+            "origin": origin,
+            "negate": int(map_data.get('negate', 0)),
+            "occupied_thresh": float(map_data.get('occupied_thresh', 0.65)),
+            "free_thresh": float(map_data.get('free_thresh', 0.196)),
+            "origin_pixel": (origin_pixel_x, origin_pixel_y)
+        }
+
+        self.image_path = image_path
+        self.current_image = loaded_image
+        self.canvas.delete("all")
+        self.click_points = []
+        self.click_count = 0
+        self.click_mode = None
+
+        self.resolution_var.set(f"Resolution: {resolution:.6f} meters/pixel")
+        self.origin_var.set(f"Origin: [{origin[0]:.2f}, {origin[1]:.2f}, {origin[2]:.2f}]")
+
+        self.display_image()
+        self.status_bar.config(text=f"Map loaded: {os.path.basename(yaml_path)}")
 
     def load_image(self):
         """Load an image file and display it on the canvas"""
@@ -465,23 +562,26 @@ class MapImageProcessor(tk.Tk):
         return s.lower()                                      # lowercase
 
     def _show_result_dialog(self, title: str, message: str, is_error: bool = False):
-        """Small centered modal result dialog, similar in size to _ask_float_dialog."""
+        """Centered modal result dialog that auto-sizes to its content."""
         dialog = tk.Toplevel(self)
         dialog.title(title)
         dialog.resizable(False, False)
         dialog.transient(self)
 
-        self.update_idletasks()
-        px = self.winfo_x() + self.winfo_width() // 2 - 130
-        py = self.winfo_y() + self.winfo_height() // 2 - 55
-        dialog.geometry(f"260x110+{px}+{py}")
-        dialog.wait_visibility()
-        dialog.grab_set()
-
         color = "red" if is_error else "black"
-        ttk.Label(dialog, text=message, wraplength=230, justify=tk.LEFT,
+        ttk.Label(dialog, text=message, wraplength=380, justify=tk.LEFT,
                   foreground=color).pack(padx=15, pady=(15, 10))
         ttk.Button(dialog, text="OK", command=dialog.destroy).pack(pady=(0, 10))
+
+        dialog.update_idletasks()
+        w = dialog.winfo_reqwidth()
+        h = dialog.winfo_reqheight()
+        self.update_idletasks()
+        px = self.winfo_x() + self.winfo_width() // 2 - w // 2
+        py = self.winfo_y() + self.winfo_height() // 2 - h // 2
+        dialog.geometry(f"+{px}+{py}")
+        dialog.wait_visibility()
+        dialog.grab_set()
 
         dialog.bind("<Return>", lambda e: dialog.destroy())
         dialog.bind("<Escape>", lambda e: dialog.destroy())
@@ -499,8 +599,8 @@ class MapImageProcessor(tk.Tk):
         # Center on parent
         self.update_idletasks()
         px = self.winfo_x() + self.winfo_width() // 2 - 115
-        py = self.winfo_y() + self.winfo_height() // 2 - 55
-        dialog.geometry(f"230x110+{px}+{py}")
+        py = self.winfo_y() + self.winfo_height() // 2 - 70
+        dialog.geometry(f"230x140+{px}+{py}")
         dialog.wait_visibility()
         dialog.grab_set()
 
@@ -538,7 +638,7 @@ class MapImageProcessor(tk.Tk):
         dialog.wait_window()
         return result[0]
 
-    def _ask_world_save_dialog(self) -> tuple[str | None, str | None, str | None]:
+    def _ask_world_save_dialog(self, default_name: str = "") -> tuple[str | None, str | None, str | None]:
         """Centered dialog to get world name, model dir, and world SDF dir before generating."""
         result = [None, None, None]
 
@@ -557,7 +657,7 @@ class MapImageProcessor(tk.Tk):
 
         # World Name row
         ttk.Label(dialog, text="World Name:").pack(anchor=tk.W, padx=15, pady=(15, 0))
-        name_var = tk.StringVar()
+        name_var = tk.StringVar(value=default_name)
         name_entry = ttk.Entry(dialog, textvariable=name_var, width=45)
         name_entry.pack(fill=tk.X, padx=15, pady=(3, 0))
         name_entry.focus_set()
@@ -675,8 +775,9 @@ class MapImageProcessor(tk.Tk):
         # Get the wall height from the input field
         wall_height = self.wall_height_var.get()
 
-        # Show save dialog
-        world_name, model_dir, world_dir = self._ask_world_save_dialog()
+        # Show save dialog, pre-fill with the loaded map/image name
+        default_name = self.__map_info.get("map_name") or ""
+        world_name, model_dir, world_dir = self._ask_world_save_dialog(default_name=default_name)
         if world_name is None:
             return
 

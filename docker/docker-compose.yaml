@@ -9,7 +9,7 @@ services:
         - HOST_UID=${HOST_UID:-1000}
         - HOST_GID=${HOST_GID:-1000}
         - BASE_IMAGE=${BASE_IMAGE}
-        - DOCKER_ROS_DISTRO=${DOCKER_ROS_DISTRO:-jazzy}
+        - DOCKER_ROS_DISTRO=${DOCKER_ROS_DISTRO:-lyrical}
         - ROBOT_BASE=${ROBOT_BASE}
         - LASER_SENSOR=${LASER_SENSOR}
         - DEPTH_SENSOR=${DEPTH_SENSOR}
@@ -33,7 +33,7 @@ services:
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - $HOME/.Xauthority:/home/ros/.Xauthority
-      - ../linorobot2_navigation/maps:/home/ros/linorobot2_ws/src/linorobot2/linorobot2_navigation/maps:rw)
+      - ../linorobot2_navigation/maps:/home/ros/linorobot2_ws/src/linorobot2/linorobot2_navigation/maps:rw
 
   gazebo:
     container_name: gazebo
@@ -50,8 +50,8 @@ services:
     devices:
       - /dev:/dev
     volumes:
-      - ../linorobot2_gazebo/worlds:/home/ros/linorobot2_ws/src/linorobot2/linorobot2_gazebo/worlds:rw)
-      - ../linorobot2_gazebo/models:/home/ros/linorobot2_ws/src/linorobot2/linorobot2_gazebo/models:rw)
+      - ../linorobot2_gazebo/worlds:/home/ros/linorobot2_ws/src/linorobot2/linorobot2_gazebo/worlds:rw
+      - ../linorobot2_gazebo/models:/home/ros/linorobot2_ws/src/linorobot2/linorobot2_gazebo/models:rw
 
   dev:
     container_name: dev

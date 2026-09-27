@@ -67,6 +67,8 @@ bt_navigator:
 
 controller_server:
   ros__parameters:
+    # Lyrical Nav2 defaults to TwistStamped; linorobot2 (gz bridge, firmware) uses Twist
+    enable_stamped_cmd_vel: false
     controller_frequency: 20.0
     costmap_update_timeout: 0.30
     min_x_velocity_threshold: 0.001
@@ -244,6 +246,8 @@ smoother_server:
 
 behavior_server:
   ros__parameters:
+    # Lyrical Nav2 defaults to TwistStamped; linorobot2 (gz bridge, firmware) uses Twist
+    enable_stamped_cmd_vel: false
     local_costmap_topic: local_costmap/costmap_raw
     global_costmap_topic: global_costmap/costmap_raw
     local_footprint_topic: local_costmap/published_footprint
@@ -282,6 +286,8 @@ waypoint_follower:
 
 velocity_smoother:
   ros__parameters:
+    # Lyrical Nav2 defaults to TwistStamped; linorobot2 (gz bridge, firmware) uses Twist
+    enable_stamped_cmd_vel: false
     smoothing_frequency: 20.0
     scale_velocities: False
     feedback: "OPEN_LOOP"
@@ -296,6 +302,8 @@ velocity_smoother:
 
 collision_monitor:
   ros__parameters:
+    # Lyrical Nav2 defaults to TwistStamped; linorobot2 (gz bridge, firmware) uses Twist
+    enable_stamped_cmd_vel: false
     base_frame_id: "base_footprint"
     odom_frame_id: "odom"
     cmd_vel_in_topic: "cmd_vel_smoothed"
@@ -327,6 +335,8 @@ collision_monitor:
 
 docking_server:
   ros__parameters:
+    # Lyrical Nav2 defaults to TwistStamped; linorobot2 (gz bridge, firmware) uses Twist
+    enable_stamped_cmd_vel: false
     controller_frequency: 50.0
     initial_perception_timeout: 5.0
     wait_charge_timeout: 5.0
@@ -385,3 +395,8 @@ loopback_simulator:
     map_frame_id: "map"
     scan_frame_id: "base_scan"  # tb4_loopback_simulator.launch.py remaps to 'rplidar_link'
     update_duration: 0.02
+
+following_server:
+  ros__parameters:
+    # Lyrical Nav2 defaults to TwistStamped; linorobot2 (gz bridge, firmware) uses Twist
+    enable_stamped_cmd_vel: false

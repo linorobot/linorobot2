@@ -87,7 +87,10 @@ RUN /bin/bash -c " \
     fi"
 
 # Update rosdep and install dependencies
+# Upgrade first so base-image ROS packages match the current sync; otherwise
+# newly installed packages can be ABI-incompatible with stale ones.
 RUN sudo apt-get update && \
+    sudo apt-get upgrade -y && \
     rosdep update --rosdistro=${DOCKER_ROS_DISTRO} && \
     rosdep install \
         --rosdistro=${DOCKER_ROS_DISTRO} \

@@ -200,6 +200,30 @@ Available values: `2wd`, `4wd`, `mecanum`.
 
 The simulation package already includes RVIZ configurations, so you do not need to install `linorobot2_viz` separately when using the simulation.
 
+### 2.2 Test simulation using default robot and world
+
+Start gazebo with the default 2wd robot in the default turtlebot3 world. The robot must be spawned
+offset from the origin, where a piller is located.
+
+```bash
+ros2 launch linorobot2_gazebo gazebo.launch.py spawn_x:=0.5
+```
+
+In another window, launch navigation with default parameters for the default robot:
+
+```bash
+ros2 launch linorobot2_navigation navigation.launch.py sim:=true
+```
+
+In a third window, launch rviz:
+
+```bash
+ros2 run rviz2 rviz2 -d $(ros2 pkg prefix nav2_bringup)/share/nav2_bringup/rviz/nav2_default_view.rviz --ros-args -p use_sim_time:=true
+```
+
+Set the initial pose to just in front of the center pillar. Set a target pose and watch it navigate to the
+target pose.
+
 ## Docker Option
 
 If you're not running a supported combination of Ubuntu and ROS2 versions,

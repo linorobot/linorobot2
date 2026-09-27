@@ -20,6 +20,7 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.conditions import IfCondition
 from launch_ros.substitutions import FindPackageShare
 from launch_ros.actions import Node
+from nav2_common.launch import RewrittenYaml
 from launch.conditions import IfCondition
 
 
@@ -40,6 +41,21 @@ def generate_launch_description():
 
     nav2_config_path = PathJoinSubstitution(
         [FindPackageShare('linorobot2_navigation'), 'config', 'navigation.yaml']
+    )
+
+    # Seed AMCL with the initial_pose_* launch args. Without an initial pose,
+    # map->base_link never appears and the costmaps abort bringup after
+    # initial_transform_timeout (60 s) unless a pose is set in RViz first.
+    nav2_params = RewrittenYaml(
+        source_file=nav2_config_path,
+        param_rewrites={
+            'amcl.ros__parameters.set_initial_pose': 'true',
+            'amcl.ros__parameters.initial_pose.x': LaunchConfiguration('initial_pose_x'),
+            'amcl.ros__parameters.initial_pose.y': LaunchConfiguration('initial_pose_y'),
+            'amcl.ros__parameters.initial_pose.z': '0.0',
+            'amcl.ros__parameters.initial_pose.yaw': LaunchConfiguration('initial_pose_yaw'),
+        },
+        convert_types=True,
     )
 
     return LaunchDescription([
@@ -84,10 +100,7 @@ def generate_launch_description():
             launch_arguments={
                 'map': LaunchConfiguration("map"),
                 'use_sim_time': LaunchConfiguration("sim"),
-                'params_file': nav2_config_path,
-                'initial_pose_x': LaunchConfiguration('initial_pose_x'),
-                'initial_pose_y': LaunchConfiguration('initial_pose_y'),
-                'initial_pose_yaw': LaunchConfiguration('initial_pose_yaw'),
+                'params_file': nav2_params,
                 # Nav2 bringup enables these by default; unconfigured mask
                 # servers publish on /map and fight with map_server.
                 'use_keepout_zones': 'False',

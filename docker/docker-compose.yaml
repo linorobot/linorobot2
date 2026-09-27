@@ -46,7 +46,7 @@ services:
       world_name:=${WORLD:-turtlebot3_world}
       spawn_x:=${SPAWN_X:-0.0}
       spawn_y:=${SPAWN_Y:-0.0}
-      spawn_yaw:=${SPAWN_Z:-0.0}
+      spawn_yaw:=${SPAWN_YAW:-0.0}
     devices:
       - /dev:/dev
     volumes:
@@ -105,7 +105,7 @@ services:
   rviz-nav:
     container_name: rviz-nav
     extends: base
-    command: rviz2 -d /home/ros/linorobot2_ws/src/linorobot2/linorobot2_navigation/rviz/linorobot2_navigation.rviz
+    command: rviz2 -d /home/ros/linorobot2_ws/src/linorobot2/linorobot2_navigation/rviz/linorobot2_navigation.rviz --ros-args -p use_sim_time:=${SIM:-false}
 
   rviz:
     container_name: rviz

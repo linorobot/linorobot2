@@ -87,7 +87,11 @@ def generate_launch_description():
                 'params_file': nav2_config_path,
                 'initial_pose_x': LaunchConfiguration('initial_pose_x'),
                 'initial_pose_y': LaunchConfiguration('initial_pose_y'),
-                'initial_pose_yaw': LaunchConfiguration('initial_pose_yaw')
+                'initial_pose_yaw': LaunchConfiguration('initial_pose_yaw'),
+                # Nav2 bringup enables these by default; unconfigured mask
+                # servers publish on /map and fight with map_server.
+                'use_keepout_zones': 'False',
+                'use_speed_zones': 'False',
             }.items()
         ),
 

@@ -485,6 +485,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#22-test-simulation-using-default-robot-and-world" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 Test simulation using default robot and world
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -891,6 +902,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#22-test-simulation-using-default-robot-and-world" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 Test simulation using default robot and world
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1182,32 +1204,45 @@ the following simplified Robot Software installation procedure.</p>
 </code></pre></div>
 <p>Available values: <code>2wd</code>, <code>4wd</code>, <code>mecanum</code>.</p>
 <p>The simulation package already includes RVIZ configurations, so you do not need to install <code>linorobot2_viz</code> separately when using the simulation.</p>
+<h3 id="22-test-simulation-using-default-robot-and-world">2.2 Test simulation using default robot and world<a class="headerlink" href="#22-test-simulation-using-default-robot-and-world" title="Permanent link">&para;</a></h3>
+<p>Start gazebo with the default 2wd robot in the default turtlebot3 world. The robot must be spawned
+offset from the origin, where a piller is located.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>ros2<span class="w"> </span>launch<span class="w"> </span>linorobot2_gazebo<span class="w"> </span>gazebo.launch.py<span class="w"> </span>spawn_x:<span class="o">=</span><span class="m">0</span>.5
+</code></pre></div>
+<p>In another window, launch navigation with default parameters for the default robot:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>ros2<span class="w"> </span>launch<span class="w"> </span>linorobot2_navigation<span class="w"> </span>navigation.launch.py<span class="w"> </span>sim:<span class="o">=</span><span class="nb">true</span>
+</code></pre></div>
+<p>In a third window, launch rviz:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>ros2<span class="w"> </span>run<span class="w"> </span>rviz2<span class="w"> </span>rviz2<span class="w"> </span>-d<span class="w"> </span><span class="k">$(</span>ros2<span class="w"> </span>pkg<span class="w"> </span>prefix<span class="w"> </span>nav2_bringup<span class="k">)</span>/share/nav2_bringup/rviz/nav2_default_view.rviz<span class="w"> </span>--ros-args<span class="w"> </span>-p<span class="w"> </span>use_sim_time:<span class="o">=</span><span class="nb">true</span>
+</code></pre></div>
+<p>Set the initial pose to just in front of the center pillar. Set a target pose and watch it navigate to the
+target pose.</p>
 <h2 id="docker-option">Docker Option<a class="headerlink" href="#docker-option" title="Permanent link">&para;</a></h2>
 <p>If you're not running a supported combination of Ubuntu and ROS2 versions,
 or if you're running simulation in the cloud where you don't even have Ubuntu,
 Docker is a convenient alternative for running simulation.</p>
 <p>Install Docker using the <a href="https://docs.docker.com/engine/install/">official instructions</a> and follow the <a href="https://docs.docker.com/engine/install/linux-postinstall/">post-install steps</a> to run Docker without <code>sudo</code>.</p>
 <p>Customize <code>docker/.env</code> if needed (e.g., to change the robot type), then build the image:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/linorobot/linorobot2.git
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="nb">cd</span><span class="w"> </span>linorobot2/docker
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>docker<span class="w"> </span>compose<span class="w"> </span>build
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/linorobot/linorobot2.git
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="nb">cd</span><span class="w"> </span>linorobot2/docker
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>docker<span class="w"> </span>compose<span class="w"> </span>build
 </code></pre></div>
 <p>To start the simulation in Docker:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># Start Gazebo</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>gazebo
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="c1"># In another terminal, start navigation</span>
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SIM</span><span class="o">=</span><span class="nb">true</span>
-<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>navigate
-<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>
-<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="c1"># In another terminal, open RViz</span>
-<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>rviz-nav
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1"># Start Gazebo</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>gazebo
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="c1"># In another terminal, start navigation</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SIM</span><span class="o">=</span><span class="nb">true</span>
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>navigate
+<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>
+<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="c1"># In another terminal, open RViz</span>
+<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>rviz-nav
 </code></pre></div>
 <p>If you see "Unable to create rendering window" errors with Gazebo, run <code>xhost +</code> first.</p>
 <p>You can also run everything in daemon mode:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SIM</span><span class="o">=</span><span class="nb">true</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">RVIZ</span><span class="o">=</span><span class="nb">true</span>
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d<span class="w"> </span>gazebo<span class="w"> </span>navigate
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">SIM</span><span class="o">=</span><span class="nb">true</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">RVIZ</span><span class="o">=</span><span class="nb">true</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d<span class="w"> </span>gazebo<span class="w"> </span>navigate
 </code></pre></div>
 <p>Shut everything down with <code>docker compose down</code>. View logs with <code>docker compose logs</code>.</p>
 <blockquote>

@@ -364,3 +364,27 @@ Start your profile with:
 ```bash
 tmuxinator start my-profile
 ```
+
+## Troubleshooting
+
+### RViz map and costmaps flicker when the GUI is forwarded to the host
+
+**Symptom:** RViz runs, but the map and costmap displays flicker rapidly (about 10 Hz), alternating between drawn and blank. Laser scans and other displays may look normal.
+
+**When it happens:** the Lyrical image (Ubuntu 26.04, RViz built on Qt 6) forwards its window to a host desktop running an **X11 session** (e.g. GNOME on Xorg on Ubuntu 22.04/24.04). This is the setup used by `./dev` and by running a GUI service with `DISPLAY` set to the host display. It has also been seen with Lyrical in a distrobox on the same kind of host. The same container does not flicker when shown under a Wayland session or through KasmVNC.
+
+This is a display issue only: the map, costmaps and navigation are unaffected.
+
+**Workarounds** (any one of these):
+
+- **Use a Wayland session on the host.** At the login screen, choose "Ubuntu on Wayland" (gear icon), then run RViz as usual.
+- **Use the browser view.** Route the GUI to KasmVNC (see [Web Visualization](#web-visualization)):
+    ```bash
+    docker compose up -d kasmvnc
+    DISPLAY=:200 docker compose up rviz-nav
+    ```
+    Then open `http://localhost:3000`.
+- **Run RViz from a native Jazzy install on the host** with `use_sim_time:=true`. Jazzy RViz can display topics from the Lyrical container.
+
+!!! note
+    RViz in the Lyrical image may log `GLSL link result : active samplers with a different type refer to the same texture image unit` for `indexed_8bit_image`. This error also appears where maps render correctly, and it is not the cause of the flicker.

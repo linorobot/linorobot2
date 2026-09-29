@@ -180,6 +180,7 @@ the following simplified Robot Software installation procedure.
 ```bash
 cd <host_machine_ws>
 git clone -b $ROS_DISTRO https://github.com/linorobot/linorobot2 src/linorobot2
+git clone https://github.com/linorobot/linorobot2_viz src/linorobot2_viz
 rosdep update && rosdep install --from-path src --ignore-src -y --skip-keys microxrcedds_agent --skip-keys micro_ros_agent
 colcon build
 source install/setup.bash
@@ -218,7 +219,7 @@ ros2 launch linorobot2_navigation navigation.launch.py sim:=true
 In a third window, launch rviz:
 
 ```bash
-ros2 run rviz2 rviz2 -d $(ros2 pkg prefix nav2_bringup)/share/nav2_bringup/rviz/nav2_default_view.rviz --ros-args -p use_sim_time:=true
+ros2 launch linorobot2_viz navigation.launch.py sim:=true
 ```
 
 Set the initial pose to just in front of the center pillar. Set a target pose and watch it navigate to the

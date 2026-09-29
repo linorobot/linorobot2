@@ -1190,9 +1190,10 @@ the following simplified Robot Software installation procedure.</p>
 <h3 id="21-install-robot-software-packages">2.1 Install Robot Software Packages<a class="headerlink" href="#21-install-robot-software-packages" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nb">cd</span><span class="w"> </span>&lt;host_machine_ws&gt;
 <a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>git<span class="w"> </span>clone<span class="w"> </span>-b<span class="w"> </span><span class="nv">$ROS_DISTRO</span><span class="w"> </span>https://github.com/linorobot/linorobot2<span class="w"> </span>src/linorobot2
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>rosdep<span class="w"> </span>update<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>rosdep<span class="w"> </span>install<span class="w"> </span>--from-path<span class="w"> </span>src<span class="w"> </span>--ignore-src<span class="w"> </span>-y<span class="w"> </span>--skip-keys<span class="w"> </span>microxrcedds_agent<span class="w"> </span>--skip-keys<span class="w"> </span>micro_ros_agent
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>colcon<span class="w"> </span>build
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="nb">source</span><span class="w"> </span>install/setup.bash
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/linorobot/linorobot2_viz<span class="w"> </span>src/linorobot2_viz
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>rosdep<span class="w"> </span>update<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>rosdep<span class="w"> </span>install<span class="w"> </span>--from-path<span class="w"> </span>src<span class="w"> </span>--ignore-src<span class="w"> </span>-y<span class="w"> </span>--skip-keys<span class="w"> </span>microxrcedds_agent<span class="w"> </span>--skip-keys<span class="w"> </span>micro_ros_agent
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>colcon<span class="w"> </span>build
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="nb">source</span><span class="w"> </span>install/setup.bash
 </code></pre></div>
 <blockquote>
 <p>The <code>--skip-keys</code> flags prevent a known <a href="https://github.com/micro-ROS/micro_ros_setup/issues/138">rosdep issue</a> with micro-ROS keys. Always include them when running <code>rosdep install</code> on this workspace.</p>
@@ -1213,7 +1214,7 @@ offset from the origin, where a piller is located.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>ros2<span class="w"> </span>launch<span class="w"> </span>linorobot2_navigation<span class="w"> </span>navigation.launch.py<span class="w"> </span>sim:<span class="o">=</span><span class="nb">true</span>
 </code></pre></div>
 <p>In a third window, launch rviz:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>ros2<span class="w"> </span>run<span class="w"> </span>rviz2<span class="w"> </span>rviz2<span class="w"> </span>-d<span class="w"> </span><span class="k">$(</span>ros2<span class="w"> </span>pkg<span class="w"> </span>prefix<span class="w"> </span>nav2_bringup<span class="k">)</span>/share/nav2_bringup/rviz/nav2_default_view.rviz<span class="w"> </span>--ros-args<span class="w"> </span>-p<span class="w"> </span>use_sim_time:<span class="o">=</span><span class="nb">true</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>ros2<span class="w"> </span>launch<span class="w"> </span>linorobot2_viz<span class="w"> </span>navigation.launch.py<span class="w"> </span>sim:<span class="o">=</span><span class="nb">true</span>
 </code></pre></div>
 <p>Set the initial pose to just in front of the center pillar. Set a target pose and watch it navigate to the
 target pose.</p>

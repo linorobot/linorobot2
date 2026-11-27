@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.2">
     
     
       
@@ -31,10 +31,10 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -801,6 +801,34 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rviz-map-and-costmaps-flicker-when-the-gui-is-forwarded-to-the-host" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RViz map and costmaps flicker when the GUI is forwarded to the host
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1129,6 +1157,34 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rviz-map-and-costmaps-flicker-when-the-gui-is-forwarded-to-the-host" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RViz map and costmaps flicker when the GUI is forwarded to the host
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1425,6 +1481,25 @@ No extra setup is needed. <code>/opt/ros/&lt;ros_distro&gt;/setup.bash</code> is
 <p>Start your profile with:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a>tmuxinator<span class="w"> </span>start<span class="w"> </span>my-profile
 </code></pre></div>
+<h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h2>
+<h3 id="rviz-map-and-costmaps-flicker-when-the-gui-is-forwarded-to-the-host">RViz map and costmaps flicker when the GUI is forwarded to the host<a class="headerlink" href="#rviz-map-and-costmaps-flicker-when-the-gui-is-forwarded-to-the-host" title="Permanent link">&para;</a></h3>
+<p><strong>Symptom:</strong> RViz runs, but the map and costmap displays flicker rapidly (about 10 Hz), alternating between drawn and blank. Laser scans and other displays may look normal.</p>
+<p><strong>When it happens:</strong> the Lyrical image (Ubuntu 26.04, RViz built on Qt 6) forwards its window to a host desktop running an <strong>X11 session</strong> (e.g. GNOME on Xorg on Ubuntu 22.04/24.04). This is the setup used by <code>./dev</code> and by running a GUI service with <code>DISPLAY</code> set to the host display. It has also been seen with Lyrical in a distrobox on the same kind of host. The same container does not flicker when shown under a Wayland session or through KasmVNC.</p>
+<p>This is a display issue only: the map, costmaps and navigation are unaffected.</p>
+<p><strong>Workarounds</strong> (any one of these):</p>
+<ul>
+<li><strong>Use a Wayland session on the host.</strong> At the login screen, choose "Ubuntu on Wayland" (gear icon), then run RViz as usual.</li>
+<li><strong>Use the browser view.</strong> Route the GUI to KasmVNC (see <a href="#web-visualization">Web Visualization</a>):
+    <div class="highlight"><pre><span></span><code><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d<span class="w"> </span>kasmvnc
+<a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a><span class="nv">DISPLAY</span><span class="o">=</span>:200<span class="w"> </span>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>rviz-nav
+</code></pre></div>
+    Then open <code>http://localhost:3000</code>.</li>
+<li><strong>Run RViz from a native Jazzy install on the host</strong> with <code>use_sim_time:=true</code>. Jazzy RViz can display topics from the Lyrical container.</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>RViz in the Lyrical image may log <code>GLSL link result : active samplers with a different type refer to the same texture image unit</code> for <code>indexed_8bit_image</code>. This error also appears where maps render correctly, and it is not the cause of the flicker.</p>
+</div>
 
 
 
@@ -1520,10 +1595,10 @@ No extra setup is needed. <code>/opt/ros/&lt;ros_distro&gt;/setup.bash</code> is
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.footer", "navigation.top", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.footer", "navigation.top", "content.code.copy"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../assets/javascripts/bundle.a5f9d56c.min.js"></script>
       
     
   </body>

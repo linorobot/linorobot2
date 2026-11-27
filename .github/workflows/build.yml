@@ -13,6 +13,9 @@ jobs:
       fail-fast: false
       matrix:
         base_image: [hardware, gazebo, gazebo-cuda]
+        # althack/ros2 has no lyrical-cuda-gazebo image, so skip gazebo-cuda on lyrical
+        exclude:
+          - base_image: ${{ (github.base_ref || github.ref_name) == 'lyrical' && 'gazebo-cuda' || 'none' }}
     steps:
       - uses: actions/checkout@v5
       

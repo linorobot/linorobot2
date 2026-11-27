@@ -1,16 +1,16 @@
-ARG DOCKER_ROS_DISTRO=jazzy
-ARG BASE_IMAGE=gazebo-cuda
+ARG DOCKER_ROS_DISTRO=lyrical
+ARG BASE_IMAGE=gazebo
 FROM althack/ros2:${DOCKER_ROS_DISTRO}-dev AS hardware
 FROM althack/ros2:${DOCKER_ROS_DISTRO}-gazebo AS gazebo
 FROM althack/ros2:${DOCKER_ROS_DISTRO}-cuda-gazebo AS gazebo-cuda
 
-FROM ${BASE_IMAGE:-gazebo-cuda} AS final
+FROM ${BASE_IMAGE:-gazebo} AS final
 
 # Build arguments
 ARG VIRTUALGL_VER="3.1"
 ARG TARGETARCH
-ARG DOCKER_ROS_DISTRO=jazzy
-ARG BASE_IMAGE=gazebo-cuda
+ARG DOCKER_ROS_DISTRO=lyrical
+ARG BASE_IMAGE=gazebo
 ARG ROBOT_BASE=
 ARG LASER_SENSOR=
 ARG DEPTH_SENSOR=
@@ -87,7 +87,10 @@ RUN /bin/bash -c " \
     fi"
 
 # Update rosdep and install dependencies
+# Upgrade first so base-image ROS packages match the current sync; otherwise
+# newly installed packages can be ABI-incompatible with stale ones.
 RUN sudo apt-get update && \
+    sudo apt-get upgrade -y && \
     rosdep update --rosdistro=${DOCKER_ROS_DISTRO} && \
     rosdep install \
         --rosdistro=${DOCKER_ROS_DISTRO} \

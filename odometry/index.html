@@ -917,6 +917,7 @@
 <li>The resulting linear and angular velocities are integrated to update the robot's pose.</li>
 </ol>
 <p>The computed odometry is published to <code>odom/unfiltered</code> via micro-ROS.</p>
+<p><strong>Note:</strong> firmware requires a quadrature encoder, which provides four detectable edges per encoder revolution. The pico microcontroller senses all 4 edges, and you should set the COUNTS_PER_REV macro in your_robot_config.h (in linorobot2_hardware/config/custom) to 4 times the gear ratio between the encoder and the robot drive wheel. The esp32 microcontroller senses two of the edges, and you should set the COUNTS_PER_REV macro in your_robot_config.h (in linorobot2_hardware/config/custom) to 2 times the gear ratio between the encoder and the robot drive wheel.</p>
 <h3 id="simulated-robot">Simulated Robot<a class="headerlink" href="#simulated-robot" title="Permanent link">&para;</a></h3>
 <p>In Gazebo, the <code>gz-sim-diff-drive-system</code> plugin in <code>linorobot2_description/urdf/controllers/diff_drive.urdf.xacro</code> handles this. It reads the simulated joint states of the left and right wheel joints, applies the same differential drive kinematics using the configured <code>wheel_separation</code> and <code>wheel_radius</code>, and publishes the result to <code>odom/unfiltered</code> at 50 Hz. The upstream consumers (EKF, SLAM, Nav2) see no difference.</p>
 <p>In ROS2, odometry is published as a <code>nav_msgs/Odometry</code> message, which contains the robot's estimated pose (position + orientation) and its current velocity.</p>

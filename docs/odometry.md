@@ -19,6 +19,8 @@ On the Physical Robot, odometry is calculated inside the microcontroller firmwar
 
 The computed odometry is published to `odom/unfiltered` via micro-ROS.
 
+**Note:** firmware requires a quadrature encoder, which provides four detectable edges per encoder revolution. The pico microcontroller senses all 4 edges, and you should set the COUNTS_PER_REV macro in your_robot_config.h (in linorobot2_hardware/config/custom) to 4 times the gear ratio between the encoder and the robot drive wheel. The esp32 microcontroller senses two of the edges, and you should set the COUNTS_PER_REV macro in your_robot_config.h (in linorobot2_hardware/config/custom) to 2 times the gear ratio between the encoder and the robot drive wheel.
+
 ### Simulated Robot
 
 In Gazebo, the `gz-sim-diff-drive-system` plugin in `linorobot2_description/urdf/controllers/diff_drive.urdf.xacro` handles this. It reads the simulated joint states of the left and right wheel joints, applies the same differential drive kinematics using the configured `wheel_separation` and `wheel_radius`, and publishes the result to `odom/unfiltered` at 50 Hz. The upstream consumers (EKF, SLAM, Nav2) see no difference.
